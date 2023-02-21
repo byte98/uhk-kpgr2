@@ -1,0 +1,46 @@
+{
+    "name": "Demo scena",
+    "camera": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "azimuth": 0,
+        "zenith": 0
+    },
+    "solids": [
+        {
+            "name": "Trojuhelnik_1",
+            "parts": [
+                {
+                    "name": "Cast_001",
+                    "primitives": [
+                        {
+                            "type": "TRIANGLE",
+                            "name": "Trojuhelnik_001",
+                            "vertices": [
+                                {
+                                    "name": "Vrchol_001",
+                                    "x": 10,
+                                    "y": 10,
+                                    "z": 10
+                                },
+                                {
+                                    "name": "Vrchol_002",
+                                    "x": 10,
+                                    "y": 20,
+                                    "z": 10
+                                },
+                                {
+                                    "name": "Vrchol_003",
+                                    "x": 10,
+                                    "y": 30,
+                                    "z": 40
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
