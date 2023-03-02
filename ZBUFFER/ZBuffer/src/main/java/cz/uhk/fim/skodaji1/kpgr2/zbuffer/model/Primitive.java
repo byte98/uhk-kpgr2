@@ -26,12 +26,7 @@ import java.util.List;
  * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
 public interface Primitive extends Mutable
-{
-    /**
-     * Counter of created primitives
-     */
-    public static long COUNTER = 0;
-    
+{    
     /**
      * Gets vertices which creates primitive
      * @return List of vertices in primitive
@@ -97,7 +92,7 @@ public interface Primitive extends Mutable
         {
             switch(this.getPrimitiveType())
             {
-                case TRIANGLE: reti = "trojúhelník"; break;
+                case TRIANGLE: reti = "Trojúhelník"; break;
             }
         }
         return reti;

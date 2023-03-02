@@ -32,13 +32,12 @@ import javax.swing.JPanel;
  */
 public class Panel extends JPanel
 {
-       public static final int WIDTH = 1366, HEIGHT = 768;
 
     private ImageBuffer raster;
 
-    public Panel() {
-        setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        raster = new ImageBuffer(WIDTH, HEIGHT);
+    public Panel(int width, int height) {
+        setPreferredSize(new Dimension(width, height));
+        raster = new ImageBuffer(width, height);
     }
 
     @Override

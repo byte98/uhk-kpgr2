@@ -27,6 +27,16 @@ import javax.swing.ImageIcon;
 public class Icon
 {
     /**
+     * Icon which plays role of border of toolbar
+     */
+    public static final Icon TOOLBAR_BORDER = new Icon("border.png");
+    
+    /**
+     * Icon which plays role of border of details panel
+     */
+    public static final Icon DETAILS_BORDER = new Icon("border_detail.png");
+    
+    /**
      * Icon of detail
      */
     public static final Icon DETAIL = new Icon("detail.png");
@@ -155,6 +165,36 @@ public class Icon
      * Icon of type used in tree view
      */
     public static final Icon TREE_TYPE = new Icon("tree_type.png");
+    
+    /**
+     * Icon of rendering used in tree view
+     */
+    public static final Icon TREE_RENDER = new Icon("tree_render.png");
+    
+    /**
+     * Icon of camera space used in tree view
+     */
+    public static final Icon TREE_CAMSPACE = new Icon("tree_camspace.png");
+    
+    /**
+     * Icon of furthermost Z coordinate used in tree view
+     */
+    public static final Icon TREE_ZFAR = new Icon("tree_zfar.png");
+    
+    /**
+     * Icon of nearest Z coordinate used in tree view
+     */
+    public static final Icon TREE_ZNEAR = new Icon("tree_znear.png");
+    
+    /**
+     * Icon of width of object used in tree view
+     */
+    public static final Icon TREE_WIDTH = new Icon("tree_width.png");
+    
+    /**
+     * Icon of height of object used in tree view
+     */
+    public static final Icon TREE_HEIGHT = new Icon("tree_height.png");
     
     /**
      * Name of file containing icon

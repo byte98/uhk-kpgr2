@@ -59,5 +59,6 @@ public class MainWindowController
         JsonLoader loader = new JsonLoader(f.getAbsolutePath());
         loader.load();
         this.mainWindow.setScene(loader.getResult());
+        this.mainWindow.setRenderer(loader.getRenderer());
     }
 }

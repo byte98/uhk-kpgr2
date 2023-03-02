@@ -21,14 +21,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import cz.uhk.fim.kpgr2.transforms.Camera;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableCamera;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableVertex;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Part;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Primitive;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.PrimitiveType;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Scene;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Solid;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Triangle;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.render.CameraSpace;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.render.Renderer;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -52,6 +54,11 @@ public class JsonLoader
     private Scene result;
     
     /**
+     * Renderer loaded from JSON file
+     */
+    private Renderer renderer;
+    
+    /**
      * Creates new loader of data from JSON file
      * @param file Path to file
      */
@@ -70,6 +77,15 @@ public class JsonLoader
     }
     
     /**
+     * Gets renderer loaded from JSON
+     * @return Renderer loaded from JSON file
+     */
+    public Renderer getRenderer()
+    {
+        return this.renderer;
+    }
+    
+    /**
      * Loads data from file
      */
     public void load()
@@ -82,6 +98,7 @@ public class JsonLoader
             JsonObject details = root.getAsJsonObject();
             this.result = new Scene(details.get("name").getAsString());
             this.result.setCamera(this.loadCamera(details.get("camera")));
+            this.renderer = this.loadRenderer(details.get("render"));
             JsonElement solids = details.get("solids");
             JsonArray solidsArray = solids.getAsJsonArray();
             for(JsonElement solid: solidsArray)
@@ -93,6 +110,34 @@ public class JsonLoader
         {
             Logger.getLogger(JsonLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    /**
+     * Loads renderer from JSON element
+     * @param elem Element containing information about rendering process
+     * @return Renderer loaded from JSON
+     */
+    private Renderer loadRenderer(JsonElement elem)
+    {
+        Renderer reti = new Renderer();
+        JsonObject rendererObj = elem.getAsJsonObject();
+        reti.setCameraSpace(this.loadCamSpace(rendererObj.get("camspace")));
+        return reti;
+    }
+    
+    /**
+     * Loads camera space from JSON element
+     * @param elem Element containing information about camera space
+     * @return Camera space loaded from JSON
+     */
+    private CameraSpace loadCamSpace(JsonElement elem)
+    {
+        JsonObject csObj = elem.getAsJsonObject();
+        double zf = csObj.get("zf").getAsDouble();
+        double zn = csObj.get("zn").getAsDouble();
+        int w     = csObj.get("width").getAsInt();
+        int h     = csObj.get("height").getAsInt();
+        return new CameraSpace(zn, zf, w, h);
     }
     
     /**
@@ -137,25 +182,26 @@ public class JsonLoader
     private Part loadPart(JsonElement elem)
     {
         JsonObject partObj = elem.getAsJsonObject();
-        Part reti = new Part(partObj.get("name").getAsString());
+        PrimitiveType type = PrimitiveType.fromString(partObj.get("type").getAsString());
+        Part reti = new Part(type, partObj.get("name").getAsString());
         JsonArray primitivesArr = partObj.get("primitives").getAsJsonArray();
         for(JsonElement primitive: primitivesArr)
         {
-            reti.addPrimitive(this.loadPrimitive(primitive));
+            reti.addPrimitive(this.loadPrimitive(type, primitive));
         }
         return reti;
     }
     
     /**
      * Loads primitive from JSON element
+     * @param type Type of primitive which will be loaded
      * @param elem Element containing information about primitive
      * @return Primitive loaded from JSON
      */
-    private Primitive loadPrimitive(JsonElement elem)
+    private Primitive loadPrimitive(PrimitiveType type, JsonElement elem)
     {
-        JsonObject primitiveObj = elem.getAsJsonObject();
         Primitive reti = null;
-        if (primitiveObj.get("type").getAsString().trim().toUpperCase().equals("TRIANGLE"))
+        if (type == PrimitiveType.TRIANGLE)
         {
             reti = this.loadTriangle(elem);
         }

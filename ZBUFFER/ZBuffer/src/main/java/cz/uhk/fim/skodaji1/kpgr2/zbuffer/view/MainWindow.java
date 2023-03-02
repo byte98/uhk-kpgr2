@@ -25,12 +25,17 @@ import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Part;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Primitive;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Scene;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Solid;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.render.Renderer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -60,6 +65,7 @@ import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.MatteBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -98,10 +104,11 @@ public class MainWindow extends JFrame
      */
     private JPanel detailsPanel;
     
+    
     /**
-     * Panel used to draw scene
+     * Panel which holds renderer
      */
-    private Panel panel;
+    private JPanel renderPanel;
     
     /**
      * Controller of window
@@ -156,8 +163,9 @@ public class MainWindow extends JFrame
     {
         this.initializeToolBar();
         this.initializeDetailsPanel();
-        this.panel = new Panel();
-        this.contentSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.panel, this.detailsPanel);
+        this.renderPanel = new JPanel(new GridBagLayout());
+        this.renderPanel.setBackground(Color.BLACK);
+        this.contentSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.renderPanel, this.detailsPanel);
         this.getContentPane().add(this.contentSplit, BorderLayout.CENTER);
         this.contentSplit.setDividerLocation(1000);
     }
@@ -169,6 +177,7 @@ public class MainWindow extends JFrame
     {
         this.detailsPanel = new JPanel();
         this.detailsPanel.setLayout(new BorderLayout());
+        this.detailsPanel.setBorder(new MatteBorder(8, 0, 0, 0, Icon.DETAILS_BORDER.toImageIcon()));
         JLabel detailsHeader = new JLabel("Detaily");
         detailsHeader.setFont(detailsHeader.getFont().deriveFont(Font.BOLD));
         JPanel header = new JPanel(new FlowLayout(FlowLayout.LEADING, MainWindow.H_GAP, MainWindow.V_GAP));
@@ -185,31 +194,6 @@ public class MainWindow extends JFrame
             {
                 JPanel reti = new JPanel(new FlowLayout(FlowLayout.LEADING));
                 reti.setSize(Integer.MAX_VALUE, 32);
-                /*
-                if (row > 0)
-                {
-                    TreePath tp = tree.getPathForRow(row);
-                    if (Objects.nonNull(tp))
-                    {
-                        TreePath parent = tp.getParentPath();
-                        if (Objects.nonNull(parent))
-                        {
-                            TreeNode parentNode = (TreeNode)parent.getLastPathComponent();
-                            TreeNode last = (TreeNode)parentNode.getChildAt(parentNode.getChildCount() - 1);
-                            if (value.equals(last))
-                            {
-                                //reti.add(new IconView(Icon.TREE_LEAF));
-                                JLabel label = new JLabel("|");
-                                reti.add(label);
-                            }
-                            else
-                            {
-                                //reti.add(new IconView(Icon.TREE_BRANCH));
-                            }
-                        }                        
-                    }
-                }
-                */
                 if (value instanceof TreeNode)
                 {
                     TreeNode node = (TreeNode)value;
@@ -263,6 +247,23 @@ public class MainWindow extends JFrame
     {
         this.scene = scene;
         this.showStructure(scene);
+    }
+    
+    /**
+     * Sets renderer which renders screen
+     * @param renderer Renderer which renders screen
+     */
+    public void setRenderer(Renderer renderer)
+    {
+        DefaultTreeModel model = (DefaultTreeModel)this.structure.getModel();
+        TreeNode root = (TreeNode)model.getRoot();
+        TreeNode render = new TreeNode(Icon.TREE_RENDER, "Renderování", null);
+        TreeNode camSpace = new TreeNode(Icon.TREE_CAMSPACE, "Zobrazovací objem", renderer.getCameraSpace());
+        render.add(camSpace);
+        root.add(render);
+        model.reload();
+        this.renderPanel.removeAll();
+        this.renderPanel.add(renderer.getOutput());
     }
     
     /**
@@ -321,33 +322,18 @@ public class MainWindow extends JFrame
         {
             JComponent propName = new JPanel(new FlowLayout(FlowLayout.LEADING));
             // For known props create also an icon
-            if (prop.toLowerCase().trim().equals("jméno") || prop.toLowerCase().trim().equals("název"))
-            {
-                propName = MainWindow.createIconLabel(Icon.TREE_TEXT, prop);
-            }
-            else if (prop.toLowerCase().trim().equals("x"))
-            {
-                propName = MainWindow.createIconLabel(Icon.TREE_X, prop);
-            }
-            else if (prop.toLowerCase().trim().equals("y"))
-            {
-                propName = MainWindow.createIconLabel(Icon.TREE_Y, prop);
-            }
-            else if (prop.toLowerCase().trim().equals("z"))
-            {
-                propName = MainWindow.createIconLabel(Icon.TREE_Z, prop);
-            }
-            else if (prop.toLowerCase().trim().equals("zenit") || prop.toLowerCase().trim().equals("azimut"))
-            {
-                propName = MainWindow.createIconLabel(Icon.TREE_ANGLE, prop);
-            }
-            else if (prop.toLowerCase().trim().equals("typ") || prop.toLowerCase().trim().equals("druh"))
-            {
-                propName = MainWindow.createIconLabel(Icon.TREE_TYPE, prop);
-            }
-            else
-            {
-                propName.add(new JLabel(prop));
+            switch (prop.toLowerCase().trim()) {
+                case "jméno", "název" -> propName = MainWindow.createIconLabel(Icon.TREE_TEXT, prop);
+                case "x" -> propName = MainWindow.createIconLabel(Icon.TREE_X, prop);
+                case "y" -> propName = MainWindow.createIconLabel(Icon.TREE_Y, prop);
+                case "z" -> propName = MainWindow.createIconLabel(Icon.TREE_Z, prop);
+                case "zenit", "azimut" -> propName = MainWindow.createIconLabel(Icon.TREE_ANGLE, prop);
+                case "typ", "druh" -> propName = MainWindow.createIconLabel(Icon.TREE_TYPE, prop);
+                case "zn" -> propName = MainWindow.createIconLabel(Icon.TREE_ZNEAR, prop);
+                case "zf" -> propName = MainWindow.createIconLabel(Icon.TREE_ZFAR, prop);
+                case "výška" -> propName = MainWindow.createIconLabel(Icon.TREE_HEIGHT, prop);
+                case "šířka" -> propName = MainWindow.createIconLabel(Icon.TREE_WIDTH, prop);
+                default -> propName.add(new JLabel(prop));
             }
             JComponent propVal = null;
             if (obj.getType(prop) == String.class)
@@ -436,6 +422,7 @@ public class MainWindow extends JFrame
     private void initializeToolBar()
     {
         JToolBar toolBar = new JToolBar();
+        toolBar.setBorder(new MatteBorder(0, 0, 8, 0, Icon.TOOLBAR_BORDER.toImageIcon()));
         toolBar.setLayout(new FlowLayout(FlowLayout.LEADING, MainWindow.H_GAP, MainWindow.V_GAP));
         toolBar.setFloatable(false);
         toolBar.add(MainWindow.createButton(Icon.LOAD, "Načíst", new ActionListener(){
@@ -478,14 +465,14 @@ public class MainWindow extends JFrame
                     MainWindow.this.getContentPane().remove(layout.getLayoutComponent(BorderLayout.CENTER));
                     MainWindow.this.getContentPane().add(MainWindow.this.contentSplit, BorderLayout.CENTER);
                     MainWindow.this.contentSplit.removeAll();
-                    MainWindow.this.contentSplit.add(MainWindow.this.panel, 0);
+                    MainWindow.this.contentSplit.add(MainWindow.this.renderPanel, 0);
                     MainWindow.this.contentSplit.add(MainWindow.this.detailsPanel, 1);
                 }
                 else
                 {
                     BorderLayout layout = (BorderLayout)MainWindow.this.getContentPane().getLayout();
                     MainWindow.this.getContentPane().remove(layout.getLayoutComponent(BorderLayout.CENTER));
-                    MainWindow.this.getContentPane().add(MainWindow.this.panel, BorderLayout.CENTER);
+                    MainWindow.this.getContentPane().add(MainWindow.this.renderPanel, BorderLayout.CENTER);
                 }
                 SwingUtilities.updateComponentTreeUI(MainWindow.this);
                 MainWindow.this.contentSplit.setDividerLocation(0.7);

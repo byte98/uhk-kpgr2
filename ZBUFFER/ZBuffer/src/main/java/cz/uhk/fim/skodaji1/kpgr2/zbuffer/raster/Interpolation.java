@@ -32,7 +32,7 @@ public abstract class Interpolation
      * @param step Actual step of interpolation
      * @return Interpolation of two colours
      */
-    public static Col colour(Col c1, Col c2, double step)
+    public static Col col(Col c1, Col c2, double step)
     {
         Col min = c1.getARGB() < c2.getARGB() ? c1 : c2;
         Col max = min == c1 ? c2 : c1;
@@ -41,6 +41,20 @@ public abstract class Interpolation
         double b = Interpolation.compute(min.b, max.b, step);
         double a = Interpolation.compute(min.a, max.a, step);
         return new Col(r, g, b, a);
+    }
+    
+    /**
+     * Interpolates two double precision numbers
+     * @param d1 First double
+     * @param d2 Second double
+     * @param step Actual step of interpolation
+     * @return Interpolation of two double precision numbers
+     */
+    public static double dbl(double d1, double d2, double step)
+    {
+        double min = d1 < d2 ? d1 : d2;
+        double max = min == d1 ? d2 : d1;
+        return Interpolation.compute(min, max, step);
     }
     
     /**

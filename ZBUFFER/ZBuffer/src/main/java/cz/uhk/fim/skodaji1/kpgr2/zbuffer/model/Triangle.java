@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Jiri Skoda <jiri.skoda@student.upce.cz>
+ * Copyright (C) 2023 Jiri Skoda <jiri.skoda@uhk.cz>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,10 +22,15 @@ import java.util.List;
 
 /**
  * Class representing one triangle
- * @author Jiri Skoda <jiri.skoda@student.upce.cz>
+ * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
 public class Triangle implements Primitive
 {
+    /**
+     * Counter of created triangles
+     */
+    private static long COUNTER = 0;
+    
     /**
      * Name of triangle
      */
@@ -41,9 +46,7 @@ public class Triangle implements Primitive
      */
     public Triangle()
     {
-        this.name = String.format("Trojuhelnik_%03d", Primitive.COUNTER);
-        Primitive.COUNTER = Primitive.COUNTER + 1;
-        this.vertices = new ArrayList<>();
+        this(String.format("Trojuhelnik_%03d", Triangle.COUNTER));
     }
     
     /**
@@ -53,6 +56,7 @@ public class Triangle implements Primitive
     public Triangle(String name)
     {
         this.name = name;
+        Triangle.COUNTER = Triangle.COUNTER + 1;
         this.vertices = new ArrayList<>();
     }
     

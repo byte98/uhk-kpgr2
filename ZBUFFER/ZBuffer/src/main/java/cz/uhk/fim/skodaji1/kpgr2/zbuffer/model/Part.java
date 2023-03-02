@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Jiri Skoda <jiri.skoda@student.upce.cz>
+ * Copyright (C) 2023 Jiri Skoda <jiri.skoda@uhk.cz>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * Class representing part of solid
- * @author Jiri Skoda <jiri.skoda@student.upce.cz>
+ * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
 public class Part implements Mutable
 {
@@ -39,26 +39,32 @@ public class Part implements Mutable
     private final List<Primitive> primitives;
     
     /**
+     * Type of primitive stored in list
+     */
+    private final PrimitiveType type;
+    
+    /**
      * Name of part
      */
     private final String name;
     
     /**
      * Creates new part
+     * @param type Type of primitives which creates part
      */
-    public Part()
+    public Part(PrimitiveType type)
     {
-        this.primitives = new ArrayList<>();
-        this.name = String.format("Cast_%03d", Part.COUNTER);
-        Part.COUNTER++;
+        this(type, String.format("Cast_%03d", Part.COUNTER));
     }
     
     /**
      * Creates new part
+     * @param type Type of primitives which creates part
      * @param name Name of part
      */
-    public Part(String name)
+    public Part(PrimitiveType type, String name)
     {
+        this.type = type;
         this.primitives = new ArrayList<>();
         this.name = name;
         Part.COUNTER++;
@@ -99,10 +105,28 @@ public class Part implements Mutable
         this.primitives.clear();
     }
     
+    /**
+     * Gets type of primitives stored in part
+     * @return Type of primitives stored in part
+     */
+    public PrimitiveType getPrimitiveType()
+    {
+        return this.type;
+    }
+    
+    /**
+     * Gets number of primitives which creates part
+     * @return Number of primitives
+     */
+    public int getPrimitivesCount()
+    {
+        return this.primitives.size();
+    }
+    
     @Override
     public String[] getProperties()
     {
-        return new String[]{"Název"};
+        return new String[]{"Název", "Typ"};
     }
 
     @Override
@@ -124,6 +148,13 @@ public class Part implements Mutable
         if (property.toLowerCase().trim().equals("název"))
         {
             reti = this.name;
+        }
+        else if (property.toLowerCase().trim().equals("typ"))
+        {
+            switch(this.type)
+            {
+                case TRIANGLE: reti = "Trojúhelníky"; break;
+            }
         }
         return reti;
     }

@@ -7,15 +7,23 @@
         "azimuth": 0,
         "zenith": 0
     },
+    "render": {
+        "camspace": {
+            "zn": 5,
+            "zf": 100,
+            "width": 800,
+            "height": 600
+        }
+    },
     "solids": [
         {
             "name": "Trojuhelnik_1",
             "parts": [
                 {
                     "name": "Cast_001",
+                    "type": "TRIANGLE",
                     "primitives": [
                         {
-                            "type": "TRIANGLE",
                             "name": "Trojuhelnik_001",
                             "vertices": [
                                 {
@@ -39,6 +47,29 @@
                             ]
                         }
                     ]
+                }
+            ],
+            "transformations": [
+                {
+                    "name": "Rotace_001",
+                    "type": "ROTATION",
+                    "alpha": 0,
+                    "beta": 0,
+                    "gamma": 0
+                },
+                {
+                    "name": "Meritko_001",
+                    "type": "SCALE",
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                {
+                    "name": "Posunuti_001",
+                    "type": "TRANSLATION",
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
                 }
             ]
         }

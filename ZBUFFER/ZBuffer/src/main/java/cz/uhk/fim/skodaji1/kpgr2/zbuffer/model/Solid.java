@@ -18,6 +18,7 @@
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 
 import cz.uhk.fim.kpgr2.transforms.Col;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,11 @@ public class Solid implements Mutable
     private final List<Part> parts;
     
     /**
+     * List of transformations performed on solid
+     */
+    private final List<Transformation> transformations;
+    
+    /**
      * Creates new solid
      * @param name Name of solid
      */
@@ -46,6 +52,7 @@ public class Solid implements Mutable
     {
         this.name = name;
         this.parts = new ArrayList<>();
+        this.transformations = new ArrayList<>();
     }
     
     /**
@@ -83,6 +90,41 @@ public class Solid implements Mutable
         return this.parts;
     }
 
+    /**
+     * Adds transformation to solid
+     * @param t Transformation which will be added
+     */
+    public void addTransformation(Transformation t)
+    {
+        this.transformations.add(t);
+    }
+    
+    /**
+     * Gets number of transformations performed on solid
+     * @return Number of transformations performed on solid
+     */
+    public int getTransformationsCount()
+    {
+        return this.transformations.size();
+    }
+    
+    /**
+     * Removes all transformations performed on solid
+     */
+    public void removeAllTransformations()
+    {
+        this.transformations.clear();
+    }
+    
+    /**
+     * Gets list of transformations performed on solid
+     * @return List of transformations performed on solid
+     */
+    public List<Transformation> getTransformations()
+    {
+        return this.transformations;
+    }
+    
     /**
      * Gets name of solid
      * @return Name of solid
