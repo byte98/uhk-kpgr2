@@ -1,6 +1,8 @@
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller;
 
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Scene;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.persistence.JsonLoader;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.render.Renderer;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.view.MainWindow;
 import java.io.File;
 
@@ -33,6 +35,16 @@ public class MainWindowController
      * Reference to main window of program
      */
     private final MainWindow mainWindow;
+    
+    /**
+     * Object which handles whole rendering process
+     */
+    private Renderer renderer;
+    
+    /**
+     * Scene which will be rendered
+     */
+    private Scene scene;
        
     /**
      * Creates new controller of main window
@@ -58,7 +70,11 @@ public class MainWindowController
     {
         JsonLoader loader = new JsonLoader(f.getAbsolutePath());
         loader.load();
-        this.mainWindow.setScene(loader.getResult());
-        this.mainWindow.setRenderer(loader.getRenderer());
+        this.scene = loader.getResult();
+        this.renderer = loader.getRenderer();
+        this.mainWindow.setScene(this.scene);
+        this.mainWindow.setRenderer(this.renderer);
+        this.renderer.setScene(this.scene);
+        this.renderer.run();
     }
 }

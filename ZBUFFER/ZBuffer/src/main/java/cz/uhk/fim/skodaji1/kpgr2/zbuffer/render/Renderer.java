@@ -17,12 +17,20 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.render;
 
+import cz.uhk.fim.kpgr2.transforms.Col;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.ObjectChangeCallback;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Scene;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Vertex;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.Raster;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.ZBuffer;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.view.Panel;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagLayout;
 import java.util.Objects;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 /**
  * Class representing renderer of the scene
@@ -36,9 +44,19 @@ public class Renderer
     private Panel output;
     
     /**
+     * Panel wrapping output
+     */
+    private final JPanel wrapper;
+    
+    /**
      * Camera space of renderer
      */
     private CameraSpace camSpace;
+    
+    /**
+     * World space
+     */
+    private WorldSpace worldSpace;
     
     /**
      * Scene which will be rendered
@@ -46,11 +64,18 @@ public class Renderer
     private Scene scene;
     
     /**
+     * Raster which handles final drawing
+     */
+    private ZBuffer raster;
+    
+    /**
      * Creates new renderer
      */
     public Renderer()
     {
-        // pass
+        this.wrapper = new JPanel();
+        this.wrapper.setLayout(new GridBagLayout());
+        this.wrapper.setOpaque(false);
     }
     
     /**
@@ -62,9 +87,23 @@ public class Renderer
     {
         this.scene = scene;
         this.camSpace = cs;
-        this.output = new Panel(this.camSpace.getWidth(), this.camSpace.getHeight());
+        this.wrapper = new JPanel();
+        this.wrapper.setLayout(new GridBagLayout());
+        this.wrapper.setOpaque(false);
+        this.initOutput();
     }
 
+    
+    /**
+     * Initializes output
+     */
+    private void initOutput()
+    {
+        this.wrapper.removeAll();
+        this.output = new Panel(this.camSpace.getWidth(), this.camSpace.getHeight());        
+        this.raster = new ZBuffer(this.output.getRaster());
+        this.wrapper.add(this.output);
+    }
     
     /**
      * Sets scene which will be rendered
@@ -73,6 +112,7 @@ public class Renderer
     public void setScene(Scene s)
     {
         this.scene = s;
+        this.worldSpace = new WorldSpace(s.getCamera());
     }
     
     /**
@@ -82,14 +122,19 @@ public class Renderer
     public void setCameraSpace(CameraSpace cs)
     {
         this.camSpace = cs;
-        if (Objects.isNull(this.output))
-        {
-            this.output = new Panel(this.camSpace.getWidth(), this.camSpace.getHeight());
-        }
-        else
-        {
-            this.output.setPreferredSize(new Dimension(this.camSpace.getWidth(), this.camSpace.getHeight()));
-        }
+        this.initOutput();
+        this.camSpace.addChangeCallback((ObjectChangeCallback) () -> {
+            this.cameraSpaceChanged();
+        });
+    }
+    
+    /**
+     * Handles change of camera space
+     */
+    private void cameraSpaceChanged()
+    {
+        this.initOutput();
+        this.run();
     }
     
     /**
@@ -105,8 +150,36 @@ public class Renderer
      * Gets object where output of renderer will be displayed
      * @return Graphical object containing output of renderer
      */
-    public Panel getOutput()
+    public JComponent getOutput()
     {
-        return this.output;
+        return this.wrapper;
+    }
+    
+    /**
+     * Redraws output
+     */
+    private void redraw()
+    {
+        this.wrapper.revalidate();
+        this.wrapper.repaint();
+        this.output.revalidate();
+        this.output.repaint();
+    }
+    
+    /**
+     * Runs renderer through whole rendering process
+     */
+    public void run()
+    {
+        this.raster.clear();
+        if (Objects.nonNull(this.scene))
+        {
+            this.scene.generateBuffers();
+            // Follows steps of rendering pipeline
+
+            Vertex[] vbuffer = this.worldSpace.apply(this.scene.getVertexBuffer()); // 2) Transformation to world space
+                     vbuffer = this.camSpace.apply(vbuffer);                        // 3) Transform to camera space
+        }        
+        this.redraw();
     }
 }

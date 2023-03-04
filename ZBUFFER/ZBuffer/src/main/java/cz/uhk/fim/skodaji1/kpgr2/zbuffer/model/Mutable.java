@@ -18,6 +18,7 @@
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 
 import cz.uhk.fim.kpgr2.transforms.Col;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.ObjectChangeCallback;
 
 /**
  * Interface abstracting mutable objects
@@ -74,6 +75,20 @@ public interface Mutable
     public abstract Col getColour(String property);
     
     /**
+     * Gets all allowed value for enumeration data type
+     * @param enumName Name of property which has enumeration data type
+     * @return Array with allowed values
+     */
+    public abstract String[] getAllowedValues(String enumName);
+    
+    /**
+     * Gets value of enumeration
+     * @param enumName Name of enumeration
+     * @return Value of enumeration
+     */
+    public abstract String getEnumValue(String enumName);
+    
+    /**
      * Sets value to property
      * @param property Name of property
      * @param value New value of property
@@ -100,4 +115,17 @@ public interface Mutable
      * @param value New value of property
      */
     public abstract void set(String property, Col value);
+    
+    /**
+     * Sets value for enumeration data type
+     * @param property Name of property which has enumeration data type
+     * @param value Value of enumeration
+     */
+    public abstract void setEnum(String property, String value);
+    
+    /**
+     * Adds function which will be called when mutable object has changed
+     * @param callback Callback which will be called when object has changed
+     */
+    public abstract void addChangeCallback(ObjectChangeCallback callback);
 }

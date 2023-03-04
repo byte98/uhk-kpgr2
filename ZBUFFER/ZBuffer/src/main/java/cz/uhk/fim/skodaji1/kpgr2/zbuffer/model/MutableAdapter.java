@@ -18,8 +18,10 @@
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 
 import cz.uhk.fim.kpgr2.transforms.Col;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.ObjectChangeCallback;
 import java.awt.Color;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class which represents default implementation of mutable object
@@ -27,6 +29,11 @@ import java.util.Map;
  */
 public class MutableAdapter implements Mutable
 {
+    /**
+     * List with all handlers of object change
+     */
+    protected final List<ObjectChangeCallback> handlers = new ArrayList<>();
+    
     @Override
     public String[] getProperties()
     {
@@ -73,5 +80,35 @@ public class MutableAdapter implements Mutable
     @Override public void set(String property, double value) {}
     @Override public void set(String property, int value)    {}
     @Override public void set(String property, Col value)    {}
+
+    @Override
+    public void addChangeCallback(ObjectChangeCallback callback)
+    {
+        this.handlers.add(callback);
+    }
+    
+    /**
+     * Informs all handlers about change of object
+     */
+    protected void informChange()
+    {
+        for (ObjectChangeCallback callback: this.handlers)
+        {
+            callback.objectChanged();
+        }
+    }
+
+    @Override
+    public String[] getAllowedValues(String enumName)
+    {
+        return new String[0];
+    }
+
+    @Override public String getEnumValue(String enumName)
+    {
+        return "";
+    }
+    
+    @Override public void setEnum(String property, String value){}
     
 }

@@ -43,25 +43,93 @@ public class Rotation extends MutableAdapter implements Transformation
     private double gamma;
     
     /**
-     * Creates new rotation transformation
+     * Name of rotation
      */
-    public Rotation()
+    private String name;
+    
+    /**
+     * Creates new rotation transformation
+     * @param name Name of rotation
+     */
+    public Rotation(String name)
     {
-        this(0, 0, 0);
+        this(name, 0, 0, 0);
     }
     
     /**
      * Creates new rotation transformation
+     * @param name Name of rotation
      * @param alpha Angle of rotation around X axis
      * @param beta Angle of rotation around Y axis
      * @param gamma Angle of rotation around Z axis
      */
-    public Rotation(double alpha, double beta, double gamma)
+    public Rotation(String name, double alpha, double beta, double gamma)
     {
+        this.name = name;
         this.alpha = alpha;
         this.beta = beta;
         this.gamma = gamma;
     }
+
+    //<editor-fold defaultstate="collapsed" desc="Getters & setters">
+    /**
+     * Gets angle of rotation around X axis
+     * @return Angle of rotation around X axis
+     */
+    public double getAlpha()
+    {
+        return alpha;
+    }
+
+    /**
+     * Sets angle of rotation around X axis
+     * @param alpha New angle of rotation around X axis
+     */
+    public void setAlpha(double alpha)
+    {
+        this.alpha = alpha;
+        this.informChange();
+    }
+
+    /**
+     * Gets angle of rotation around Y axis
+     * @return Angle of rotation around Y axis
+     */
+    public double getBeta()
+    {
+        return beta;
+    }
+
+    /**
+     * Sets angle of rotation around Y axis
+     * @param beta New angle of rotation around Y axis
+     */
+    public void setBeta(double beta)
+    {
+        this.beta = beta;
+        this.informChange();
+    }
+
+    /**
+     * Gets angle of rotation around Z axis
+     * @return Angle of rotation around Z axis
+     */
+    public double getGamma()
+    {
+        return gamma;
+    }
+
+    /**
+     * Sets angle of rotation around Z axis
+     * @param gamma New angle of rotation around Z axis
+     */
+    public void setGamma(double gamma)
+    {
+        this.gamma = gamma;
+        this.informChange();
+    }
+    //</editor-fold>
+    
     
     @Override
     public Vertex apply(Vertex v)
@@ -72,7 +140,7 @@ public class Rotation extends MutableAdapter implements Transformation
     @Override
     public String[] getProperties()
     {
-        return new String[]{"Alfa", "Beta", "Gama"};
+        return new String[]{"Název", "Alfa", "Beta", "Gama"};
     }
     
     @Override
@@ -82,15 +150,15 @@ public class Rotation extends MutableAdapter implements Transformation
         String propName = property.trim().toLowerCase();
         if (propName.equals("alfa"))
         {
-            reti = this.alpha;
+            reti = this.getAlpha();
         }
         else if (propName.equals("beta"))
         {
-            reti = this.beta;
+            reti = this.getBeta();
         }
         else if (propName.equals("gama"))
         {
-            reti = this.gamma;
+            reti = this.getGamma();
         }
         return reti;
     }
@@ -101,15 +169,78 @@ public class Rotation extends MutableAdapter implements Transformation
         String propName = property.trim().toLowerCase();
         if (propName.equals("alfa"))
         {
-            this.alpha = value;
+            this.setAlpha(value);
         }
         else if (propName.equals("beta"))
         {
-            this.beta = value;
+            this.setBeta(value);
         }
         else if (propName.equals("gama"))
         {
-            this.gamma = value;
+            this.setGamma(value);
         }
+    }
+
+    @Override
+    public void set(String property, String value)
+    {
+        if (property.trim().toLowerCase().equals("název"))
+        {
+            this.setName(value);
+        }
+    }
+
+    @Override
+    public String getString(String property)
+    {
+        String reti = super.getString(property);
+        if (property.trim().toLowerCase().equals("název"))
+        {
+            reti = this.getName();
+        }
+        return reti;
+    }
+
+    @Override
+    public boolean isMutable(String property)
+    {
+        return true;
+    }
+
+    @Override
+    public Class getType(String property)
+    {
+        Class reti = super.getType(property);
+        String propName = property.toLowerCase().trim();
+        if (propName.equals("alfa") || propName.equals("beta") || propName.equals("gama"))
+        {
+            reti = Double.class;
+        }
+        else if (propName.equals("název"))
+        {
+            reti = String.class;
+        }
+        return reti;
+    }
+    
+    
+
+    @Override
+    public TransformationType getTransformationType()
+    {
+        return TransformationType.ROTATION;
+    }
+
+    @Override
+    public String getName()
+    {
+        return this.name;
+    }
+
+    @Override
+    public void setName(String name)
+    {
+        this.name = name;
+        this.informChange();
     }
 }

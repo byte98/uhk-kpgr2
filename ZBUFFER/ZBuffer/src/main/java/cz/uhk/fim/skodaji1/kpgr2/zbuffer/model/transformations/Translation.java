@@ -21,59 +21,59 @@ import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableAdapter;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Vertex;
 
 /**
- * Class representing transformation of scale
+ * Class representing translation transformation
  * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
-public class Scale extends MutableAdapter implements Transformation
+public class Translation extends MutableAdapter implements Transformation
 {
     /**
-     * Scale on X axis
-     */
-    private double x;
-    
-    /**
-     * Scale on Y axis
-     */
-    private double y;
-    
-    /**
-     * Scale on Z axis
-     */
-    private double z;
-    
-    /**
-     * Name of scale transformation
+     * Name of translation
      */
     private String name;
     
     /**
-     * Creates new scale transformation
-     * @param name Name of scale transformation
-     * @param x Scale on X axis
-     * @param y Scale on Y axis
-     * @param z Scale on Z axis
+     * Delta of coordinates on X axis
      */
-    public Scale(String name, double x, double y, double z)
+    private double x;
+    
+    /**
+     * Delta of coordinates on Y axis
+     */
+    private double y;
+    
+    /**
+     * Delta of coordinates on Z axis
+     */
+    private double z;
+    
+    /**
+     * Creates new translation transformation
+     * @param name Name of translation
+     */
+    public Translation(String name)
+    {
+        this(name, 0, 0, 0);
+    }
+    
+    /**
+     * Creates new translation transformation
+     * @param name Name of translation
+     * @param x Delta of coordinates on X axis
+     * @param y Delta of coordinates on Y axis
+     * @param z Delta of coordinates on Z axis
+     */
+    public Translation(String name, double x, double y, double z)
     {
         this.name = name;
         this.x = x;
         this.y = y;
         this.z = z;
     }
-    
-    /**
-     * Creates new scale transformation
-     * @param name Name of scale transformation
-     */
-    public Scale(String name)
-    {
-        this(name, 0, 0, 0);
-    }
-    
+
     //<editor-fold defaultstate="collapsed" desc="Getters & setters">
     /**
-     * Gets scale factor on X axis
-     * @return Scale factor on X axis
+     * Gets delta of X coordinate
+     * @return Delta of X coordinate
      */
     public double getX()
     {
@@ -81,8 +81,8 @@ public class Scale extends MutableAdapter implements Transformation
     }
 
     /**
-     * Sets scale factor on X axis
-     * @param x New scale factor on X axis
+     * Sets delta of X coordinate
+     * @param x New delta of X coordinate
      */
     public void setX(double x)
     {
@@ -91,8 +91,8 @@ public class Scale extends MutableAdapter implements Transformation
     }
 
     /**
-     * Gets scale factor on Y axis
-     * @return Scale factor on Y axis
+     * Gets delta of Y coordinate
+     * @return Delta of Y coordinate
      */
     public double getY()
     {
@@ -100,8 +100,8 @@ public class Scale extends MutableAdapter implements Transformation
     }
 
     /**
-     * Sets scale factor on Y axis
-     * @param y New scale factor on Y axis
+     * Sets delta of Y coordinate
+     * @param y New delta of Y coordinate
      */
     public void setY(double y)
     {
@@ -110,8 +110,8 @@ public class Scale extends MutableAdapter implements Transformation
     }
 
     /**
-     * Gets scale factor on z axis
-     * @return Scale factor on Z axis
+     * Gets delta of Z coordinate
+     * @return Delta of Z coordinate
      */
     public double getZ()
     {
@@ -119,21 +119,22 @@ public class Scale extends MutableAdapter implements Transformation
     }
 
     /**
-     * Sets scale factor on Z axis
-     * @param z New scale factor on Z axis
+     * Sets delta of Z coordinate
+     * @param z New delta of Z coordinate
      */
     public void setZ(double z)
-    {    
+    {
         this.z = z;
         this.informChange();
     }
     //</editor-fold>
-    
+
     @Override
-    public Vertex apply(Vertex v) {
+    public Vertex apply(Vertex v)
+    {
         return null;
     }
-    
+
     @Override
     public String[] getProperties()
     {
@@ -220,12 +221,10 @@ public class Scale extends MutableAdapter implements Transformation
         return true;
     }
     
-    
-
     @Override
     public TransformationType getTransformationType()
     {
-        return TransformationType.SCALE;
+        return TransformationType.TRANSLATION;
     }
 
     @Override
@@ -240,4 +239,7 @@ public class Scale extends MutableAdapter implements Transformation
         this.name = name;
         this.informChange();
     }
+    
+    
+    
 }

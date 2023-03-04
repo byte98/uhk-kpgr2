@@ -29,6 +29,10 @@ import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.PrimitiveType;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Scene;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Solid;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Triangle;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Rotation;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Scale;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Translation;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.render.CameraSpace;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.render.Renderer;
 import java.io.IOException;
@@ -137,7 +141,9 @@ public class JsonLoader
         double zn = csObj.get("zn").getAsDouble();
         int w     = csObj.get("width").getAsInt();
         int h     = csObj.get("height").getAsInt();
-        return new CameraSpace(zn, zf, w, h);
+        CameraSpace reti = new CameraSpace(zn, zf, w, h, CameraSpace.CamSpaceType.fromString(csObj.get("type").getAsString()));
+        reti.setAlpha(csObj.get("alpha").getAsDouble());
+        return reti;
     }
     
     /**
@@ -171,6 +177,76 @@ public class JsonLoader
         {
             reti.addPart(this.loadPart(part));
         }
+        JsonArray transformations = solidObj.get("transformations").getAsJsonArray();
+        for(JsonElement transformation: transformations)
+        {
+            reti.addTransformation(this.loadTransformation(transformation));
+        }
+        return reti;
+    }
+    
+    /**
+     * Loads transformation from JSON element
+     * @param elem Element containing information about transformation
+     * @return Transformation loaded from JSON
+     */
+    private Transformation loadTransformation(JsonElement elem)
+    {
+        Transformation reti = null;
+        JsonObject transObj = elem.getAsJsonObject();
+        String transType = transObj.get("type").getAsString().trim().toLowerCase();
+        switch (transType)
+        {
+            case "rotation":    reti = this.loadRotation(elem);    break;
+            case "translation": reti = this.loadTranslation(elem); break;
+            case "scale":       reti = this.loadScale(elem);       break;
+        }
+        return reti;
+        
+    }
+    
+    /**
+     * Loads rotation from JSON element
+     * @param elem Element containing information about rotation
+     * @return Rotation loaded from JSON
+     */
+    private Rotation loadRotation(JsonElement elem)
+    {
+        JsonObject rotObj = elem.getAsJsonObject();
+        Rotation reti = new Rotation(rotObj.get("name").getAsString());
+        reti.setAlpha(rotObj.get("alpha").getAsDouble());
+        reti.setBeta(rotObj.get("beta").getAsDouble());
+        reti.setGamma(rotObj.get("gamma").getAsDouble());
+        return reti;
+    }
+    
+    /**
+     * Loads scale from JSON element
+     * @param elem Element containing information about scale
+     * @return Scale loaded from JSON
+     */
+    private Scale loadScale(JsonElement elem)
+    {
+        JsonObject scaleObj = elem.getAsJsonObject();
+        Scale reti = new Scale(scaleObj.get("name").getAsString());
+        reti.setX(scaleObj.get("x").getAsDouble());
+        reti.setY(scaleObj.get("y").getAsDouble());
+        reti.setZ(scaleObj.get("z").getAsDouble());
+        return reti;
+    }
+    
+    /**
+     * Loads translation from JSON element
+     * @param elem Element containing information about translation
+     * @return Translation loaded from JSON
+     */
+    private Translation loadTranslation(JsonElement elem)
+    {
+        JsonObject transObj = elem.getAsJsonObject();
+        Translation reti = new Translation(transObj.get("name").getAsString());
+        reti.setX(transObj.get("x").getAsDouble());
+        reti.setY(transObj.get("y").getAsDouble());
+        reti.setZ(transObj.get("z").getAsDouble());
         return reti;
     }
     

@@ -62,6 +62,11 @@ public interface Primitive extends Mutable
      */
     public abstract PrimitiveType getPrimitiveType();
     
+    /**
+     * Informs all registered handlers about object change
+     */
+    public abstract void informChange();
+    
     @Override
     default public String[] getProperties()
     {
@@ -71,7 +76,7 @@ public interface Primitive extends Mutable
     @Override
     default public boolean isMutable(String property)
     {
-        return false;
+        return property.toLowerCase().trim().equals("typ") == false;
     }
     
     @Override

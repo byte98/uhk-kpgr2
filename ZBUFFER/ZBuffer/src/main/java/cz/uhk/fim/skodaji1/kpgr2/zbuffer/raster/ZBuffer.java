@@ -18,6 +18,7 @@
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster;
 
 import cz.uhk.fim.kpgr2.transforms.Col;
+import java.awt.Color;
 
 /**
  * Class implementing ZBuffer for handling visibility
@@ -26,7 +27,7 @@ import cz.uhk.fim.kpgr2.transforms.Col;
  * @see <https://gitlab.com/jakub.benes/kpgr2-2023/-/blob/4d3a740571a20436a6f56369662e51058f199c0c/src/raster/ZBuffer.java>
  */
 public class ZBuffer implements Raster<Col>
-{
+{    
     /**
      * Buffer of image data
      */
@@ -36,6 +37,11 @@ public class ZBuffer implements Raster<Col>
      * Buffer of depth data
      */
     private final DepthBuffer depthBuffer;
+    
+    /**
+     * Default clear colour of image buffer
+     */
+    private static final Col CLEAR_COLOUR = new Col(Color.BLACK.getRGB());
 
     /**
      * Creates new ZBuffer
@@ -44,13 +50,17 @@ public class ZBuffer implements Raster<Col>
     public ZBuffer(ImageBuffer imageBuffer)
     {
         this.imageBuffer = imageBuffer;
+        this.imageBuffer.setClearElement(ZBuffer.CLEAR_COLOUR);
+        this.imageBuffer.clear();
         this.depthBuffer = new DepthBuffer(imageBuffer.getWidth(), imageBuffer.getHeight());
+        this.depthBuffer.clear();
     }
 
     @Override
     public void clear()
     {
         this.imageBuffer.clear();
+        this.depthBuffer.clear();
     }
 
     @Override

@@ -54,5 +54,23 @@ public interface Transformation extends Mutable
      */
     public abstract Vertex apply(Vertex v);
     
+    /**
+     * Gets type of transformation
+     * @return Type of transformation
+     */
+    public abstract TransformationType getTransformationType();
+    
+    /**
+     * Gets name of transformation
+     * @return 
+     */
+    public abstract String getName();
+    
+    /**
+     * Sets name of transformation
+     * @param name New name of transformation
+     */
+    public abstract void setName(String name);
+    
     
 }

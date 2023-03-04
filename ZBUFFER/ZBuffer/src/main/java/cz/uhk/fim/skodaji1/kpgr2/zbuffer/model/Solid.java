@@ -27,7 +27,7 @@ import java.util.List;
  * Class representing solid
  * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
-public class Solid implements Mutable
+public class Solid extends MutableAdapter
 {
     /**
      * Name of solid
@@ -141,6 +141,7 @@ public class Solid implements Mutable
     public void setName(String name)
     {
         this.name = name;
+        this.informChange();
     }
     
     @Override
@@ -154,13 +155,7 @@ public class Solid implements Mutable
     {
         return true;
     }
-
-    @Override
-    public Class getType(String property)
-    {
-        return String.class;
-    }
-
+    
     @Override
     public String getString(String property) 
     {
@@ -173,47 +168,11 @@ public class Solid implements Mutable
     }
 
     @Override
-    public double getDouble(String property)
-    {
-        return Double.NaN;
-    }
-
-    @Override
-    public int getInt(String property)
-    {
-        return Integer.MIN_VALUE;
-    }
-
-    @Override
-    public Col getColour(String property)
-    {
-        return new Col(Color.WHITE.getRGB());
-    }
-
-    @Override
     public void set(String property, String value)
     {
         if (property.toLowerCase().trim().equals("název"))
         {
-            this.name = value;
+            this.setName(value);
         }
-    }
-
-    @Override
-    public void set(String property, double value)
-    {
-        // pass
-    }
-
-    @Override
-    public void set(String property, int value)
-    {
-        // pass
-    }
-
-    @Override
-    public void set(String property, Col value)
-    {
-        // pass
     }
 }

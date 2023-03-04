@@ -197,6 +197,41 @@ public class Icon
     public static final Icon TREE_HEIGHT = new Icon("tree_height.png");
     
     /**
+     * Icon of transformation used in tree view
+     */
+    public static final Icon TREE_TRANSFORMATION = new Icon("tree_transformations.png");
+    
+    /**
+     * Icon of translation used in tree view
+     */
+    public static final Icon TREE_TRANSLATION = new Icon("tree_translation.png");
+    
+    /**
+     * Icon of rotation used in tree view
+     */
+    public static final Icon TREE_ROTATION = new Icon("tree_rotation.png");
+    
+    /**
+     * Icon of scale used in tree view
+     */
+    public static final Icon TREE_SCALE = new Icon("tree_scale.png");
+    
+    /**
+     * Icon of rotation around X axis used in tree view
+     */
+    public static final Icon TREE_ROTX = new Icon("tree_rotate_x.png");
+    
+    /**
+     * Icon of rotation around Y axis used in tree view
+     */
+    public static final Icon TREE_ROTY = new Icon("tree_rotate_y.png");
+    
+    /**
+     * Icon of rotation around Z axis used in tree view
+     */
+    public static final Icon TREE_ROTZ = new Icon("tree_rotate_z.png");
+    
+    /**
      * Name of file containing icon
      */
     private final String file;

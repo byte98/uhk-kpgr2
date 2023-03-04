@@ -26,7 +26,7 @@ import java.util.List;
  * Class representing part of solid
  * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
-public class Part implements Mutable
+public class Part extends MutableAdapter
 {
     /**
      * Counter of created parts
@@ -95,6 +95,7 @@ public class Part implements Mutable
     public void addPrimitive(Primitive p)
     {
         this.primitives.add(p);
+        this.informChange();
     }
     
     /**
@@ -130,12 +131,6 @@ public class Part implements Mutable
     }
 
     @Override
-    public boolean isMutable(String property)
-    {
-        return false;
-    }
-
-    @Override
     public Class getType(String property)
     {
         return String.class;
@@ -158,47 +153,4 @@ public class Part implements Mutable
         }
         return reti;
     }
-
-    @Override
-    public double getDouble(String property)
-    {
-        return Double.NaN;
-    }
-
-    @Override
-    public int getInt(String property)
-    {
-        return Integer.MIN_VALUE;
-    }
-
-    @Override
-    public Col getColour(String property)
-    {
-        return new Col(Color.WHITE.getRGB());
-    }
-
-    @Override
-    public void set(String property, String value)
-    {
-        // pass
-    }
-
-    @Override
-    public void set(String property, double value)
-    {
-        // pass
-    }
-
-    @Override
-    public void set(String property, int value)
-    {
-        // pass
-    }
-
-    @Override
-    public void set(String property, Col value)
-    {
-        // pass
-    }
-    
 }

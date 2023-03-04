@@ -29,7 +29,7 @@ import java.util.function.Predicate;
  * Class representing whole scene
  * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
-public class Scene implements Mutable
+public class Scene extends MutableAdapter
 {
     //<editor-fold defaultstate="collapsed" desc="Part buffer item">
     /**
@@ -159,6 +159,7 @@ public class Scene implements Mutable
     public void setCamera(MutableCamera camera)
     {
         this.camera = camera;
+        this.informChange();
     }
     
     /**
@@ -176,6 +177,7 @@ public class Scene implements Mutable
     public void removeAllSolids()
     {
         this.solids.clear();
+        this.informChange();
     }
     
     /**
@@ -194,6 +196,7 @@ public class Scene implements Mutable
     public void addSolid(Solid s)
     {
         this.solids.add(s);
+        this.informChange();
     }
     
     /**
@@ -369,47 +372,12 @@ public class Scene implements Mutable
     }
 
     @Override
-    public double getDouble(String property)
-    {
-        return Double.NaN;
-    }
-
-    @Override
-    public int getInt(String property)
-    {
-        return Integer.MIN_VALUE;
-    }
-    
-    @Override
-    public Col getColour(String property)
-    {
-        return new Col(Color.WHITE.getRGB());
-    }
-
-    @Override
     public void set(String property, String value)
     {
         if (property.toLowerCase().equals("název"))
         {
             this.name = value;
+            this.informChange();
         }
-    }
-
-    @Override
-    public void set(String property, double value)
-    {
-        // pass
-    }
-
-    @Override
-    public void set(String property, int value)
-    {
-        // pass
-    }
-    
-    @Override
-    public void set(String property, Col value)
-    {
-        // pass
     }
 }

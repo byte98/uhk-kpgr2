@@ -53,6 +53,8 @@ public class DepthBuffer implements Raster<Double>
     public DepthBuffer(int width, int height)
     {
         this.data = new double[height][width];
+        this.width = width;
+        this.height = height;
         this.clearElement = 1;
     }
 

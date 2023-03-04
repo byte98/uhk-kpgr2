@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Jiri Skoda <jiri.skoda@student.upce.cz>
+ * Copyright (C) 2023 Jiri Skoda <jiri.skoda@uhk.cz>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,14 +19,22 @@ package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 
 import cz.uhk.fim.kpgr2.transforms.Col;
 import cz.uhk.fim.kpgr2.transforms.Point3D;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.ObjectChangeCallback;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class representing mutable version of vertex
- * @author Jiri Skoda <jiri.skoda@student.upce.cz>
+ * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
 public class MutableVertex extends Vertex implements Mutable
 {
+    /**
+     * List with all handlers of object change
+     */
+    private final List<ObjectChangeCallback> handlers;
+    
     /**
      * Name of vertex
      */
@@ -43,6 +51,7 @@ public class MutableVertex extends Vertex implements Mutable
     {
         super(x, y, z);
         this.name =  name;
+        this.handlers = new ArrayList<>();
     }
 
     /**
@@ -122,14 +131,17 @@ public class MutableVertex extends Vertex implements Mutable
         if (property.toLowerCase().trim().equals("x"))
         {
             this.position.x = value;
+            this.informChange();
         }
         else if (property.toLowerCase().trim().equals("y"))
         {
             this.position.y = value;
+            this.informChange();
         }
         else if (property.toLowerCase().trim().equals("z"))
         {
             this.position.z = value;
+            this.informChange();
         }
     }
 
@@ -138,5 +150,40 @@ public class MutableVertex extends Vertex implements Mutable
 
     @Override
     public void set(String property, Col value) {}
+
+    @Override
+    public void addChangeCallback(ObjectChangeCallback callback)
+    {
+        this.handlers.add(callback);
+    }
     
+    /**
+     * Informs all handlers about change of object
+     */
+    protected void informChange()
+    {
+        for (ObjectChangeCallback callback: this.handlers)
+        {
+            callback.objectChanged();
+        }
+    }
+    
+    @Override
+    public String[] getAllowedValues(String enumName)
+    {
+        return new String[0];
+    }
+
+    @Override public String getEnumValue(String enumName)
+    {
+        return "";
+    }
+    
+    @Override public void setEnum(String property, String value){}
+    
+    @Override
+    public String toString()
+    {
+        return String.format("%s %s", this.name, super.toString());
+    }
 }

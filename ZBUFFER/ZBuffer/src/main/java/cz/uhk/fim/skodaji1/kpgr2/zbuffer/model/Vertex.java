@@ -18,6 +18,7 @@
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 
 import cz.uhk.fim.kpgr2.transforms.Col;
+import cz.uhk.fim.kpgr2.transforms.Mat4;
 import cz.uhk.fim.kpgr2.transforms.Point3D;
 import cz.uhk.fim.kpgr2.transforms.Vec3D;
 
@@ -101,5 +102,22 @@ public class Vertex
         return reti;
     }
     
+    /**
+     * Multiplies vertex by matrix
+     * @param mat4 Matrix by which will be vertex multiplied
+     * @return Vertex multiplied by matrix
+     */
+    public Vertex mul(Mat4 mat4)
+    {
+        Vertex reti = new Vertex(this.position.x, this.position.y, this.position.z, this.fill.clone());
+        reti.setPosition(reti.getPosition().mul(mat4));
+        return reti;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return String.format("[%f, %f, %f, %f]", this.position.x, this.position.y, this.position.z, this.position.w);
+    }
     
 }

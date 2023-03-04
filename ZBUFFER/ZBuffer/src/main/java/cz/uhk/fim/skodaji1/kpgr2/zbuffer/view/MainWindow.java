@@ -25,6 +25,7 @@ import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Part;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Primitive;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Scene;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Solid;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.render.Renderer;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -50,6 +51,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -151,7 +153,7 @@ public class MainWindow extends JFrame
         super.setLayout(new BorderLayout());
         super.setSize(new Dimension(MainWindow.WINDOW_WIDTH, MainWindow.WINDOW_HEIGHT));
         super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        super.setResizable(false);
+        super.setResizable(true);
         this.controller = controller;
         this.initializeComponents();
     }
@@ -163,9 +165,9 @@ public class MainWindow extends JFrame
     {
         this.initializeToolBar();
         this.initializeDetailsPanel();
-        this.renderPanel = new JPanel(new GridBagLayout());
-        this.renderPanel.setBackground(Color.BLACK);
-        this.contentSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.renderPanel, this.detailsPanel);
+        this.renderPanel = new JPanel(new BorderLayout());
+        this.renderPanel.setBackground(new Color(20, 20, 30));
+        this.contentSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(this.renderPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS), this.detailsPanel);
         this.getContentPane().add(this.contentSplit, BorderLayout.CENTER);
         this.contentSplit.setDividerLocation(1000);
     }
@@ -177,7 +179,7 @@ public class MainWindow extends JFrame
     {
         this.detailsPanel = new JPanel();
         this.detailsPanel.setLayout(new BorderLayout());
-        this.detailsPanel.setBorder(new MatteBorder(8, 0, 0, 0, Icon.DETAILS_BORDER.toImageIcon()));
+        this.detailsPanel.setBorder(new MatteBorder(16, 0, 0, 0, Icon.DETAILS_BORDER.toImageIcon()));
         JLabel detailsHeader = new JLabel("Detaily");
         detailsHeader.setFont(detailsHeader.getFont().deriveFont(Font.BOLD));
         JPanel header = new JPanel(new FlowLayout(FlowLayout.LEADING, MainWindow.H_GAP, MainWindow.V_GAP));
@@ -263,7 +265,9 @@ public class MainWindow extends JFrame
         root.add(render);
         model.reload();
         this.renderPanel.removeAll();
-        this.renderPanel.add(renderer.getOutput());
+        this.renderPanel.add(renderer.getOutput(), BorderLayout.CENTER);
+        this.renderPanel.revalidate();
+        this.renderPanel.repaint();
     }
     
     /**
@@ -299,6 +303,25 @@ public class MainWindow extends JFrame
             }
             solid.add(parts);
             solids.add(solid);
+            TreeNode trans = new TreeNode(Icon.TREE_TRANSFORMATION, "Transformace (" + s.getTransformationsCount() + ")", null);
+            for(Transformation t: s.getTransformations())
+            {
+                Icon icon = Icon.TREE_TRANSFORMATION;
+                if (t.getTransformationType() == Transformation.TransformationType.ROTATION)
+                {
+                    icon = Icon.TREE_ROTATION;
+                }
+                else if (t.getTransformationType() == Transformation.TransformationType.TRANSLATION)
+                {
+                    icon = Icon.TREE_TRANSLATION;
+                }
+                else if (t.getTransformationType() == Transformation.TransformationType.SCALE)
+                {
+                    icon = Icon.TREE_SCALE;
+                }
+                trans.add(new TreeNode(icon, t.getName(), t));
+            }
+            solid.add(trans);
         }
         newRoot.add(camera);
         newRoot.add(solids);
@@ -327,12 +350,15 @@ public class MainWindow extends JFrame
                 case "x" -> propName = MainWindow.createIconLabel(Icon.TREE_X, prop);
                 case "y" -> propName = MainWindow.createIconLabel(Icon.TREE_Y, prop);
                 case "z" -> propName = MainWindow.createIconLabel(Icon.TREE_Z, prop);
-                case "zenit", "azimut" -> propName = MainWindow.createIconLabel(Icon.TREE_ANGLE, prop);
+                case "zenit", "azimut", "zorný úhel" -> propName = MainWindow.createIconLabel(Icon.TREE_ANGLE, prop);
                 case "typ", "druh" -> propName = MainWindow.createIconLabel(Icon.TREE_TYPE, prop);
                 case "zn" -> propName = MainWindow.createIconLabel(Icon.TREE_ZNEAR, prop);
                 case "zf" -> propName = MainWindow.createIconLabel(Icon.TREE_ZFAR, prop);
                 case "výška" -> propName = MainWindow.createIconLabel(Icon.TREE_HEIGHT, prop);
                 case "šířka" -> propName = MainWindow.createIconLabel(Icon.TREE_WIDTH, prop);
+                case "alfa" -> propName = MainWindow.createIconLabel(Icon.TREE_ROTX, prop);
+                case "beta" -> propName = MainWindow.createIconLabel(Icon.TREE_ROTY, prop);
+                case "gama" -> propName = MainWindow.createIconLabel(Icon.TREE_ROTZ, prop);
                 default -> propName.add(new JLabel(prop));
             }
             JComponent propVal = null;
@@ -387,6 +413,20 @@ public class MainWindow extends JFrame
                 }
                 propVal = spinner;
             }            
+            else if (obj.getType(prop) == Enum.class)
+            {
+                JComboBox comboBox = new JComboBox(obj.getAllowedValues(prop));
+                comboBox.setSelectedItem(obj.getEnumValue(prop));
+                
+                comboBox.addActionListener(new ActionListener(){
+                    @Override
+                    public void actionPerformed(ActionEvent ae)
+                    {
+                        obj.setEnum(prop, (String)comboBox.getSelectedItem());
+                    }                    
+                });
+                propVal = comboBox;
+            }
             String propType = "<neznámý>";
             Class propTypeVal = obj.getType(prop);
             if (propTypeVal == Integer.class)
@@ -404,6 +444,10 @@ public class MainWindow extends JFrame
             else if (propTypeVal == Col.class)
             {
                 propType = "barva";
+            }
+            else if (propTypeVal == Enum.class)
+            {
+                propType = "výběr z možností";
             }
             propVal.setToolTipText(prop + " (" + propType + ")");
             JPanel propRow = new JPanel();

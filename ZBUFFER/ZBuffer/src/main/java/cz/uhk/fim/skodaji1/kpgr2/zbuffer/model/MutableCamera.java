@@ -19,6 +19,7 @@ package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 
 import cz.uhk.fim.kpgr2.transforms.Camera;
 import cz.uhk.fim.kpgr2.transforms.Col;
+import cz.uhk.fim.kpgr2.transforms.Point3D;
 import cz.uhk.fim.kpgr2.transforms.Vec3D;
 import java.awt.Color;
 
@@ -26,7 +27,7 @@ import java.awt.Color;
  * Class representing camera with mutable properties
  * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
-public class MutableCamera implements Mutable
+public class MutableCamera extends MutableAdapter
 {
     /**
      * Position of camera on X axis
@@ -96,6 +97,33 @@ public class MutableCamera implements Mutable
         this.camera.setPosition(new Vec3D(this.x, this.y, this.z));
     }
     
+    /**
+     * Gets azimuth of camera
+     * @return Azimuth of camera
+     */
+    public double getAzimuth()
+    {
+        return this.azimuth;
+    }
+    
+    /**
+     * Gets zenith of camera
+     * @return Zenith of camera
+     */
+    public double getZenith()
+    {
+        return this.zenith;
+    }
+    
+    /**
+     * Gets position of camera
+     * @return Position of camera
+     */
+    public Point3D getPosition()
+    {
+        return new Point3D(this.x, this.y, this.z);
+    }
+    
     @Override
     public String[] getProperties()
     {
@@ -115,12 +143,6 @@ public class MutableCamera implements Mutable
     }
 
     @Override
-    public String getString(String property)
-    {
-        return null;
-    }
-
-    @Override
     public double getDouble(String property)
     {
         double reti = Double.NaN;
@@ -137,24 +159,6 @@ public class MutableCamera implements Mutable
     }
 
     @Override
-    public int getInt(String property)
-    {
-        return Integer.MIN_VALUE;
-    }
-    
-    @Override
-    public Col getColour(String property)
-    {
-        return new Col(Color.WHITE.getRGB());
-    }
-
-    @Override
-    public void set(String property, String value)
-    {
-        // pass
-    }
-
-    @Override
     public void set(String property, double value)
     {
         switch (property.toLowerCase().trim())
@@ -166,17 +170,7 @@ public class MutableCamera implements Mutable
             case "zenit": this.zenith = value; break;
         }
         this.updateCamera();
+        this.informChange();
     }
 
-    @Override
-    public void set(String property, int value)
-    {
-        // pass
-    }
-    
-    @Override
-    public void set(String property, Col value)
-    {
-        // pass
-    }
 }

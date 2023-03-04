@@ -17,6 +17,7 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.ObjectChangeCallback;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,9 +33,14 @@ public class Triangle implements Primitive
     private static long COUNTER = 0;
     
     /**
+     * List with all handlers of object change
+     */
+    private final List<ObjectChangeCallback> handlers;
+    
+    /**
      * Name of triangle
      */
-    private final String name;
+    private String name;
     
     /**
      * List of vertices which creates primitive
@@ -58,6 +64,7 @@ public class Triangle implements Primitive
         this.name = name;
         Triangle.COUNTER = Triangle.COUNTER + 1;
         this.vertices = new ArrayList<>();
+        this.handlers = new ArrayList<>();
     }
     
     
@@ -72,7 +79,7 @@ public class Triangle implements Primitive
     {
         return this.name;
     }
-
+    
     @Override
     public PrimitiveType getPrimitiveType()
     {
@@ -95,6 +102,33 @@ public class Triangle implements Primitive
     public int getVerticesCount()
     {
         return this.vertices.size();
+    }   
+    
+    @Override
+    public void addChangeCallback(ObjectChangeCallback callback)
+    {
+        this.handlers.add(callback);
     }
     
+    @Override
+    public void informChange()
+    {
+        for (ObjectChangeCallback callback: this.handlers)
+        {
+            callback.objectChanged();
+        }
+    }
+    
+    @Override
+    public String[] getAllowedValues(String enumName)
+    {
+        return new String[0];
+    }
+    
+    @Override public String getEnumValue(String enumName)
+    {
+        return "";
+    }
+
+    @Override public void setEnum(String property, String value){}
 }
