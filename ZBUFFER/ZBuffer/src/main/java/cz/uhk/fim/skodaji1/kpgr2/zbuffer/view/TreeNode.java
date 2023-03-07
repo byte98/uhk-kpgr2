@@ -41,6 +41,12 @@ public class TreeNode extends DefaultMutableTreeNode
      */
     private final Mutable object;
     
+    /**
+     * Creates new node in tree view
+     * @param icon Icon of node
+     * @param text Text description of node
+     * @param object Object which represents node
+     */
     public TreeNode(Icon icon, String text, Mutable object)
     {
         this.icon = icon;

@@ -130,9 +130,9 @@ public class Translation extends MutableAdapter implements Transformation
     //</editor-fold>
 
     @Override
-    public Vertex apply(Vertex v)
+    public void apply(Vertex v)
     {
-        return null;
+        
     }
 
     @Override

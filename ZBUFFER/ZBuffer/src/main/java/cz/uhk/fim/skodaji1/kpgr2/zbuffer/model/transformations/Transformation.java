@@ -50,9 +50,8 @@ public interface Transformation extends Mutable
     /**
      * Applies transformation to vertex
      * @param v Vertex to which transformation will be applied
-     * @return Vertex with transformation applied
      */
-    public abstract Vertex apply(Vertex v);
+    public abstract void apply(Vertex v);
     
     /**
      * Gets type of transformation

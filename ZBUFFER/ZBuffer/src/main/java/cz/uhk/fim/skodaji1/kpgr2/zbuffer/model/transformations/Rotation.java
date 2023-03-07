@@ -132,9 +132,9 @@ public class Rotation extends MutableAdapter implements Transformation
     
     
     @Override
-    public Vertex apply(Vertex v)
+    public void apply(Vertex v)
     {
-        return null;
+        
     }
     
     @Override

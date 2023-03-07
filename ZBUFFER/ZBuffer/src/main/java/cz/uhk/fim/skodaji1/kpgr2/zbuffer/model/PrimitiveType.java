@@ -59,6 +59,20 @@ public enum PrimitiveType
         return reti;
     }
     
+    /**
+     * Gets number of vertices which creates primitive
+     * @return Number of vertices needed to create primitive
+     */
+    public int getVerticesCount()
+    {
+        int reti = 0;
+        switch(this)
+        {
+            case TRIANGLE: reti = 3; break;
+        }
+        return reti;
+    }
+    
     @Override
     public String toString()
     {

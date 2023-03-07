@@ -130,8 +130,8 @@ public class Scale extends MutableAdapter implements Transformation
     //</editor-fold>
     
     @Override
-    public Vertex apply(Vertex v) {
-        return null;
+    public void apply(Vertex v) {
+        
     }
     
     @Override

@@ -259,7 +259,7 @@ public class MainWindow extends JFrame
     {
         DefaultTreeModel model = (DefaultTreeModel)this.structure.getModel();
         TreeNode root = (TreeNode)model.getRoot();
-        TreeNode render = new TreeNode(Icon.TREE_RENDER, "Renderování", null);
+        TreeNode render = new TreeNode(Icon.TREE_RENDER, "Renderování", renderer);
         TreeNode camSpace = new TreeNode(Icon.TREE_CAMSPACE, "Zobrazovací objem", renderer.getCameraSpace());
         render.add(camSpace);
         root.add(render);

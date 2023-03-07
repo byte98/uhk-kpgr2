@@ -278,7 +278,6 @@ public class CameraSpace extends MutableAdapter
         for (int i = 0; i < vertexBuffer.length; i++)
         {
             reti[i] = vertexBuffer[i].mul(this.getMatrix());
-            System.out.println(reti[i]);
         }
         return reti;
     }

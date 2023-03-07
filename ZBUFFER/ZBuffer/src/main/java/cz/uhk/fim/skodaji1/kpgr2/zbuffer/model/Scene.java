@@ -50,7 +50,7 @@ public class Scene extends MutableAdapter
         /**
          * Number of primitives stored in buffer
          */
-        private final int count;
+        private int count;
 
         /**
          * Creates new item of part buffer
@@ -71,7 +71,7 @@ public class Scene extends MutableAdapter
          */
         public PrimitiveType getType()
         {
-            return type;
+            return this.type;
         }
 
         /**
@@ -80,7 +80,7 @@ public class Scene extends MutableAdapter
          */
         public int getIndex()
         {
-            return index;
+            return this.index;
         }
 
         /**
@@ -89,8 +89,17 @@ public class Scene extends MutableAdapter
          */
         public int getCount()
         {
-            return count;
+            return this.count;
         }        
+        
+        /**
+         * Sets number of primitives stored in buffer
+         * @param count New number of primitives stored in buffer
+         */
+        public void setCount(int count)
+        {
+            this.count = count;
+        }
     }
     //</editor-fold>
     

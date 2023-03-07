@@ -28,7 +28,7 @@ import cz.uhk.fim.kpgr2.transforms.Vec3D;
  * @author Jakub Benes <jakub.benes@uhk.cz> & Jiri Skoda <jiri.skoda@uhk.cz>
  * @see <https://gitlab.com/jakub.benes/kpgr2-2023/-/blob/4d3a740571a20436a6f56369662e51058f199c0c/src/model/Vertex.java>
  */
-public class Vertex
+public class Vertex implements Cloneable
 {
     protected static final Col DEFAULT_COLOR = new Col(0xffffff);
     
@@ -111,6 +111,40 @@ public class Vertex
     {
         Vertex reti = new Vertex(this.position.x, this.position.y, this.position.z, this.fill.clone());
         reti.setPosition(reti.getPosition().mul(mat4));
+        return reti;
+    }
+    
+    /**
+     * Multiplies vertex by real number
+     * @param val Number by which will be vertex multiplied
+     * @return Vertex multiplied by real number
+     */
+    public Vertex mul(double val)
+    {
+        Vertex reti = new Vertex(this.position.x, this.position.y, this.position.z, this.fill.clone());
+        double x = this.position.x * val;
+        double y = this.position.y * val;
+        double z = this.position.z * val;
+        double w = this.position.w * val;
+        reti.setPosition(new Point3D(x, y, z, w));
+        return reti;
+    }
+    
+    /**
+     * Dehomogenisates vertex
+     * @return Dehomogenisated vertex
+     */
+    public Vertex dehomog()
+    {
+        Vec3D dehomogVec = this.getPosition().dehomog();
+        return new Vertex(dehomogVec.x, dehomogVec.y, dehomogVec.z, this.fill.clone());    
+    }
+    
+    @Override
+    public Vertex clone()
+    {
+        Vertex reti = new Vertex(this.position.x, this.position.y, this.position.z, this.fill.clone());
+        reti.setPosition(new Point3D(this.position.x, this.position.y, this.position.z, this.position.w));
         return reti;
     }
     

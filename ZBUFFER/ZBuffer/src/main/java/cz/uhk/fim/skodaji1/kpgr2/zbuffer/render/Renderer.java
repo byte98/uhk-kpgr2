@@ -19,8 +19,14 @@ package cz.uhk.fim.skodaji1.kpgr2.zbuffer.render;
 
 import cz.uhk.fim.kpgr2.transforms.Col;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.ObjectChangeCallback;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableAdapter;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableVertex;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Part;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Primitive;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Scene;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Solid;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Vertex;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.Raster;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.ZBuffer;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.view.Panel;
@@ -36,8 +42,24 @@ import javax.swing.JPanel;
  * Class representing renderer of the scene
  * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
-public class Renderer
+public class Renderer extends MutableAdapter
 {
+    /**
+     * Enumeration of all available rendering types
+     */
+    public enum RenderType
+    {
+        /**
+         * Render just mesh
+         */
+        MESH,
+        
+        /**
+         * Normal rendering
+         */
+        NORMAL
+    }
+    
     /**
      * Object where output of renderer will be visible
      */
@@ -59,6 +81,11 @@ public class Renderer
     private WorldSpace worldSpace;
     
     /**
+     * Dehomogeniser of vertices
+     */
+    private final Dehomogeniser dehomogeniser;
+    
+    /**
      * Scene which will be rendered
      */
     private Scene scene;
@@ -69,6 +96,41 @@ public class Renderer
     private ZBuffer raster;
     
     /**
+     * Vertex buffer which will be rendered
+     */
+    private Vertex[] vertexBuffer;
+    
+    /**
+     * Index buffer holding pointers to vertex buffer
+     */
+    private int[] indexBuffer;
+    
+    /**
+     * Buffer of parts which will be rendered
+     */
+    private Scene.PartBufferItem[] partBuffer;
+    
+    /**
+     * Object which can perform object clipping
+     */
+    private final Clipper clipper;
+    
+    /**
+     * Object which can perform projection into 2D space
+     */
+    private final Projector projector;
+    
+    /**
+     * Object which can perform transformation into window
+     */
+    private Viewport viewport;
+    
+    /**
+     * Type of rendering output
+     */
+    private RenderType renderType;
+    
+    /**
      * Creates new renderer
      */
     public Renderer()
@@ -76,6 +138,11 @@ public class Renderer
         this.wrapper = new JPanel();
         this.wrapper.setLayout(new GridBagLayout());
         this.wrapper.setOpaque(false);
+        this.dehomogeniser = new Dehomogeniser();
+        this.clipper = new Clipper();
+        this.projector = new Projector();
+        this.renderType = RenderType.NORMAL;
+        this.viewport = new Viewport(0, 0);
     }
     
     /**
@@ -91,6 +158,12 @@ public class Renderer
         this.wrapper.setLayout(new GridBagLayout());
         this.wrapper.setOpaque(false);
         this.initOutput();
+        this.dehomogeniser = new Dehomogeniser();
+        this.clipper = new Clipper();
+        this.projector = new Projector();
+        this.renderType = RenderType.NORMAL;
+        this.viewport = new Viewport(cs.getWidth(), cs.getHeight());
+        this.registerVertexChangers();
     }
 
     
@@ -102,6 +175,7 @@ public class Renderer
         this.wrapper.removeAll();
         this.output = new Panel(this.camSpace.getWidth(), this.camSpace.getHeight());        
         this.raster = new ZBuffer(this.output.getRaster());
+        this.viewport = new Viewport(this.camSpace.getWidth(), this.camSpace.getHeight());
         this.wrapper.add(this.output);
     }
     
@@ -113,6 +187,7 @@ public class Renderer
     {
         this.scene = s;
         this.worldSpace = new WorldSpace(s.getCamera());
+        this.registerVertexChangers();
     }
     
     /**
@@ -167,6 +242,35 @@ public class Renderer
     }
     
     /**
+     * Registers change listeners to vertices
+     */
+    private void registerVertexChangers()
+    {
+        if(Objects.nonNull(this.scene))
+        {
+            for(Solid solid: this.scene.getSolids())
+            {
+                for (Part part: solid.getParts())
+                {
+                    for (Primitive primitive: part.getPrimitives())
+                    {
+                        for (Vertex vertex: primitive.getVertices())
+                        {
+                            if (vertex instanceof MutableVertex)
+                            {
+                                MutableVertex mutableVertex = (MutableVertex)vertex;
+                                mutableVertex.addChangeCallback(() -> {
+                                    Renderer.this.run();
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
      * Runs renderer through whole rendering process
      */
     public void run()
@@ -174,12 +278,119 @@ public class Renderer
         this.raster.clear();
         if (Objects.nonNull(this.scene))
         {
-            this.scene.generateBuffers();
             // Follows steps of rendering pipeline
-
-            Vertex[] vbuffer = this.worldSpace.apply(this.scene.getVertexBuffer()); // 2) Transformation to world space
-                     vbuffer = this.camSpace.apply(vbuffer);                        // 3) Transform to camera space
-        }        
-        this.redraw();
+            for (Solid solid: this.scene.getSolids())                                     // 1) Apply transformations
+            {                                                                             //    in model space
+                for(Transformation transformation: solid.getTransformations())            //
+                {                                                                         //
+                    for(Part part: solid.getParts())                                      //
+                    {                                                                     //
+                        for(Primitive primitive: part.getPrimitives())                    //
+                        {                                                                 //
+                            for (Vertex vertex: primitive.getVertices())                  //
+                            {                                                             //
+                                transformation.apply(vertex);                             //
+                            }                                                             //
+                        }                                                                 //
+                    }                                                                     //
+                }                                                                         //
+            }                                                                             //
+            this.scene.generateBuffers();                                                 //
+            this.indexBuffer = this.scene.getIndexBuffer();                               //
+            this.partBuffer = this.scene.getPartBuffer();                                 //
+            this.vertexBuffer = this.scene.getVertexBuffer();                             //
+            this.vertexBuffer = this.worldSpace.apply(this.vertexBuffer);                 // 2) Transformation to world space
+            this.vertexBuffer = this.camSpace.apply(this.vertexBuffer);                   // 3) Transformation to camera space
+            this.clipper.setInputs(this.vertexBuffer, this.indexBuffer, this.partBuffer); // 4) Clipping 
+            this.clipper.run();                                                           //    (strict but simple)
+            this.vertexBuffer = this.clipper.getVertexBuffer();                           // 
+            this.indexBuffer = this.clipper.getIndexBuffer();                             //
+            this.partBuffer = this.clipper.getPartBuffer();                               //
+            this.vertexBuffer = this.dehomogeniser.apply(this.vertexBuffer);              // 5) Dehomogenisation
+            this.vertexBuffer = this.projector.apply(this.vertexBuffer);                  // 6) Projection into 2D space
+            this.vertexBuffer = this.viewport.apply(this.vertexBuffer);                   // 7) Transformation into window
+            for(Vertex v: this.vertexBuffer)
+            {
+                this.raster.setElement((int)v.getPosition().x, (int)v.getPosition().y, v.getPosition().z, new Col(Color.YELLOW.getRGB()));
+            }
+            this.redraw();
+        }
     }
+
+    /**
+     * Gets type of rendering output
+     * @return Type of rendering output
+     */
+    public RenderType getRenderType()
+    {
+        return this.renderType;
+    }
+    
+    /**
+     * Sets type of rendering output
+     * @param type New type of rendering output
+     */
+    public void setRenderType(RenderType type)
+    {
+        this.renderType = type;
+        this.informChange();
+    }
+    
+    @Override
+    public void setEnum(String property, String value)
+    {
+        if (property.trim().toLowerCase().equals("typ"))
+        {
+            switch(value.trim().toLowerCase())
+            {
+                case "drátový model": this.setRenderType(RenderType.MESH); break;
+                case "normální": this.setRenderType(RenderType.NORMAL); break;
+            }
+        }
+    }
+
+    @Override
+    public String getEnumValue(String enumName)
+    {
+        String reti = super.getEnumValue(enumName);
+        if (enumName.trim().toLowerCase().equals("typ"))
+        {
+            switch(this.renderType)
+            {
+                case MESH: reti = "Drátový model"; break;
+                case NORMAL: reti = "Normální"; break;
+            }
+        }
+        return reti;
+    }
+
+    @Override
+    public String[] getAllowedValues(String enumName)
+    {
+        String[] reti = super.getAllowedValues(enumName);
+        if (enumName.trim().toLowerCase().equals("typ"))
+        {
+            reti = new String[]{"Normální", "Drátový model"};
+        }
+        return reti;
+    }
+
+    @Override
+    public Class getType(String property)
+    {
+        Class reti = super.getType(property);
+        if (property.trim().toLowerCase().equals("typ"))
+        {
+            reti = Enum.class;
+        }
+        return reti;
+    }
+
+    @Override
+    public String[] getProperties()
+    {
+        return new String[]{"Typ"};
+    }
+    
+    
 }
