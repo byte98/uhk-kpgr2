@@ -37,7 +37,7 @@ public interface Transformation extends Mutable
         ROTATION,
         
         /**
-         * Scale transformation
+         * Transformation transformation
          */
         SCALE,
         
@@ -50,8 +50,9 @@ public interface Transformation extends Mutable
     /**
      * Applies transformation to vertex
      * @param v Vertex to which transformation will be applied
+     * @return Vertex with applied transformation
      */
-    public abstract void apply(Vertex v);
+    public abstract Vertex apply(Vertex v);
     
     /**
      * Gets type of transformation

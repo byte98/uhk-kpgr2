@@ -25,7 +25,6 @@ import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Part;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Primitive;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Scene;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Solid;
-import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.render.Renderer;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -74,6 +73,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.*;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
 
 /**
  * Class representing main window of application
@@ -292,6 +292,8 @@ public class MainWindow extends JFrame
                 for(Primitive pm: p.getPrimitives())
                 {
                     TreeNode primitive = new TreeNode(Icon.TREE_PRIMITIVE, pm.getName(), pm);
+                    TreeNode fill = new TreeNode(Icon.TREE_VERTEX_TEX, "Výplň", pm.getFill());
+                    primitive.add(fill);
                     for(MutableVertex v: pm.getVertices())
                     {
                         TreeNode vertex = new TreeNode(Icon.TREE_VERTEX, v.getName(), v);
@@ -382,7 +384,7 @@ public class MainWindow extends JFrame
             else if (obj.getType(prop) == Integer.class)
             {
                 JSpinner spinner = new JSpinner();
-                spinner.setModel(new SpinnerNumberModel(obj.getInt(prop), 0, Integer.MAX_VALUE, 1));
+                spinner.setModel(new SpinnerNumberModel(obj.getInt(prop), Integer.MIN_VALUE, Integer.MAX_VALUE, 1));
                 spinner.addChangeListener(new ChangeListener(){
                     @Override
                     public void stateChanged(ChangeEvent e)
@@ -399,7 +401,7 @@ public class MainWindow extends JFrame
             else if (obj.getType(prop) == Double.class)
             {
                 JSpinner spinner = new JSpinner();
-                spinner.setModel(new SpinnerNumberModel(obj.getDouble(prop), 0, Double.MAX_VALUE, 0.1));
+                spinner.setModel(new SpinnerNumberModel(obj.getDouble(prop), -Double.MAX_VALUE, Double.MAX_VALUE, 0.1));
                 spinner.addChangeListener(new ChangeListener(){
                     @Override
                     public void stateChanged(ChangeEvent e)
@@ -426,6 +428,18 @@ public class MainWindow extends JFrame
                     }                    
                 });
                 propVal = comboBox;
+            }
+            else if (obj.getType(prop) == Col.class)
+            {
+                ColorField colorField = new ColorField(obj.getColour(prop));
+                colorField.addActionListener(new ActionListener(){
+                    @Override
+                    public void actionPerformed(ActionEvent ae)
+                    {
+                        obj.set(prop, colorField.getColour());
+                    }                
+                });
+                propVal = colorField;
             }
             String propType = "<neznámý>";
             Class propTypeVal = obj.getType(prop);

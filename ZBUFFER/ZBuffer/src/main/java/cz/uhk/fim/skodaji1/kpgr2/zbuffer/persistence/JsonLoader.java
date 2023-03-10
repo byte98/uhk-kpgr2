@@ -21,6 +21,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import cz.uhk.fim.kpgr2.transforms.Col;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Fill;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableCamera;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableVertex;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Part;
@@ -29,9 +31,9 @@ import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.PrimitiveType;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Scene;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Solid;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Triangle;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Vertex;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Rotation;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Scale;
-import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Translation;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.render.CameraSpace;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.render.Renderer;
@@ -40,6 +42,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
 
 /**
  * Class representing loader of data from JSON file
@@ -223,9 +227,9 @@ public class JsonLoader
     /**
      * Loads scale from JSON element
      * @param elem Element containing information about scale
-     * @return Scale loaded from JSON
+     * @return Transformation loaded from JSON
      */
-    private Scale loadScale(JsonElement elem)
+    private Transformation loadScale(JsonElement elem)
     {
         JsonObject scaleObj = elem.getAsJsonObject();
         Scale reti = new Scale(scaleObj.get("name").getAsString());
@@ -281,8 +285,26 @@ public class JsonLoader
         {
             reti = this.loadTriangle(elem);
         }
+        Fill fill = this.loadFill(elem.getAsJsonObject().get("fill"));
+        reti.setFill(fill);
         return reti;
-        
+    }
+    
+    /**
+     * Loads fill from JSON element
+     * @param elem Element containing information about fill
+     * @return Fill loaded from JSON
+     */
+    private Fill loadFill(JsonElement elem)
+    {
+        JsonObject fillObj = elem.getAsJsonObject();
+        String fillType = fillObj.get("type").getAsString().trim().toLowerCase();
+        Fill reti = null;
+        if (fillType.equals("colour"))
+        {
+            reti = new Fill(new Col(Integer.parseInt(fillObj.get("value").getAsString(), 16)));
+        }
+        return reti;
     }
     
     /**

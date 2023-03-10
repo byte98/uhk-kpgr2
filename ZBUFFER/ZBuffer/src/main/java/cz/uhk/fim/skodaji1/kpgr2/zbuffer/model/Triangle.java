@@ -48,6 +48,11 @@ public class Triangle implements Primitive
     private final List<MutableVertex> vertices;
     
     /**
+     * Fill of triangle
+     */
+    private Fill fill;
+    
+    /**
      * Creates new triangle
      */
     public Triangle()
@@ -131,4 +136,20 @@ public class Triangle implements Primitive
     }
 
     @Override public void setEnum(String property, String value){}
+
+    @Override
+    public void setFill(Fill fill)
+    {
+        this.fill = fill;
+        for(Vertex v: this.getVertices())
+        {
+            v.setFill(fill);
+        }
+    }
+
+    @Override
+    public Fill getFill()
+    {
+        return this.fill;
+    }
 }

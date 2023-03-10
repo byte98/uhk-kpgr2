@@ -17,8 +17,14 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations;
 
+import cz.uhk.fim.kpgr2.transforms.Mat4;
+import cz.uhk.fim.kpgr2.transforms.Mat4RotX;
+import cz.uhk.fim.kpgr2.transforms.Mat4RotY;
+import cz.uhk.fim.kpgr2.transforms.Mat4RotZ;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableAdapter;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Vertex;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class representing rotation transformation
@@ -132,9 +138,30 @@ public class Rotation extends MutableAdapter implements Transformation
     
     
     @Override
-    public void apply(Vertex v)
+    public Vertex apply(Vertex v)
     {
-        
+        // First step: prepare list of matrices needed to be performed
+        // to make complete entered rotation
+        List<Mat4> matrices = new ArrayList<>();
+        if (this.alpha != 0)
+        {
+            matrices.add(new Mat4RotX(this.alpha));
+        }
+        if (this.beta != 0)
+        {
+            matrices.add(new Mat4RotY(this.beta));
+        }
+        if (this.gamma != 0)
+        {
+            matrices.add(new Mat4RotZ(this.gamma));
+        }
+        // Then multiply veretex with all matrices
+        Vertex reti = v.clone();
+        for(Mat4 matrix: matrices)
+        {
+            reti = reti.mul(matrix);
+        }
+        return reti;
     }
     
     @Override

@@ -63,6 +63,18 @@ public interface Primitive extends Mutable
     public abstract PrimitiveType getPrimitiveType();
     
     /**
+     * Sets fill of primitive
+     * @param fill New fill of primitive
+     */
+    public abstract void setFill(Fill fill);
+    
+    /**
+     * Gets fill of primitive
+     * @return Fill of primitive
+     */
+    public abstract Fill getFill();
+    
+    /**
      * Informs all registered handlers about object change
      */
     public abstract void informChange();

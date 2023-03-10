@@ -55,7 +55,7 @@ public class ZBuffer implements Raster<Col>
         this.depthBuffer = new DepthBuffer(imageBuffer.getWidth(), imageBuffer.getHeight());
         this.depthBuffer.clear();
     }
-
+    
     @Override
     public void clear()
     {

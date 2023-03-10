@@ -26,7 +26,6 @@ import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Primitive;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Scene;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Solid;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Vertex;
-import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.Raster;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.ZBuffer;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.view.Panel;
@@ -37,6 +36,8 @@ import java.awt.GridBagLayout;
 import java.util.Objects;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.LineRasterizer;
 
 /**
  * Class representing renderer of the scene
@@ -50,9 +51,9 @@ public class Renderer extends MutableAdapter
     public enum RenderType
     {
         /**
-         * Render just mesh
+         * Render just wire frame
          */
-        MESH,
+        WIREFRAME,
         
         /**
          * Normal rendering
@@ -126,6 +127,11 @@ public class Renderer extends MutableAdapter
     private Viewport viewport;
     
     /**
+     * Object which can rasterize all object in scene
+     */
+    private final Rasterizer rasterizer;
+    
+    /**
      * Type of rendering output
      */
     private RenderType renderType;
@@ -143,6 +149,7 @@ public class Renderer extends MutableAdapter
         this.projector = new Projector();
         this.renderType = RenderType.NORMAL;
         this.viewport = new Viewport(0, 0);
+        this.rasterizer = new Rasterizer();
     }
     
     /**
@@ -163,6 +170,7 @@ public class Renderer extends MutableAdapter
         this.projector = new Projector();
         this.renderType = RenderType.NORMAL;
         this.viewport = new Viewport(cs.getWidth(), cs.getHeight());
+        this.rasterizer = new Rasterizer();
         this.registerVertexChangers();
     }
 
@@ -264,8 +272,41 @@ public class Renderer extends MutableAdapter
                                 });
                             }
                         }
+                        primitive.getFill().addChangeCallback(() -> {
+                            Renderer.this.run();
+                        });
                     }
                 }
+                for (Transformation transformation: solid.getTransformations())
+                {
+                    transformation.addChangeCallback(() -> {
+                        Renderer.this.run();
+                    });
+                }
+            }
+            this.scene.getCamera().addChangeCallback(() -> {
+                Renderer.this.run();
+            });
+            this.addChangeCallback(() -> {
+                Renderer.this.run();
+            });
+        }
+    }
+    
+    /**
+     * Replaces vertex in vertex buffer
+     * @param v Vertex which will be replaced
+     * @param r Replacement
+     */
+    private void replaceVertex(Vertex v, Vertex r)
+    {
+        for (int i = 0; i < this.vertexBuffer.length; i++)
+        {
+            Vertex vf = this.vertexBuffer[i];
+            if (vf.getX() == v.getX() && vf.getY() == v.getY() && vf.getZ() == v.getZ())
+            {
+                this.vertexBuffer[i] = r;
+                break;
             }
         }
     }
@@ -279,40 +320,41 @@ public class Renderer extends MutableAdapter
         if (Objects.nonNull(this.scene))
         {
             // Follows steps of rendering pipeline
-            for (Solid solid: this.scene.getSolids())                                     // 1) Apply transformations
-            {                                                                             //    in model space
-                for(Transformation transformation: solid.getTransformations())            //
-                {                                                                         //
-                    for(Part part: solid.getParts())                                      //
-                    {                                                                     //
-                        for(Primitive primitive: part.getPrimitives())                    //
-                        {                                                                 //
-                            for (Vertex vertex: primitive.getVertices())                  //
-                            {                                                             //
-                                transformation.apply(vertex);                             //
-                            }                                                             //
-                        }                                                                 //
-                    }                                                                     //
-                }                                                                         //
-            }                                                                             //
-            this.scene.generateBuffers();                                                 //
-            this.indexBuffer = this.scene.getIndexBuffer();                               //
-            this.partBuffer = this.scene.getPartBuffer();                                 //
-            this.vertexBuffer = this.scene.getVertexBuffer();                             //
-            this.vertexBuffer = this.worldSpace.apply(this.vertexBuffer);                 // 2) Transformation to world space
-            this.vertexBuffer = this.camSpace.apply(this.vertexBuffer);                   // 3) Transformation to camera space
-            this.clipper.setInputs(this.vertexBuffer, this.indexBuffer, this.partBuffer); // 4) Clipping 
-            this.clipper.run();                                                           //    (strict but simple)
-            this.vertexBuffer = this.clipper.getVertexBuffer();                           // 
-            this.indexBuffer = this.clipper.getIndexBuffer();                             //
-            this.partBuffer = this.clipper.getPartBuffer();                               //
-            this.vertexBuffer = this.dehomogeniser.apply(this.vertexBuffer);              // 5) Dehomogenisation
-            this.vertexBuffer = this.projector.apply(this.vertexBuffer);                  // 6) Projection into 2D space
-            this.vertexBuffer = this.viewport.apply(this.vertexBuffer);                   // 7) Transformation into window
-            for(Vertex v: this.vertexBuffer)
-            {
-                this.raster.setElement((int)v.getPosition().x, (int)v.getPosition().y, v.getPosition().z, new Col(Color.YELLOW.getRGB()));
-            }
+            this.scene.generateBuffers();                                                    // 0) Initialization
+            this.indexBuffer = this.scene.getIndexBuffer();                                  //    (generating buffers)
+            this.partBuffer = this.scene.getPartBuffer();                                    //
+            this.vertexBuffer = this.scene.getVertexBuffer();                                //
+                                                                                             //
+            for (Solid solid: this.scene.getSolids())                                        // 1) Apply transformations
+            {                                                                                //    in model space
+                for(Transformation transformation: solid.getTransformations())               //
+                {                                                                            //
+                    for(Part part: solid.getParts())                                         //
+                    {                                                                        //
+                        for(Primitive primitive: part.getPrimitives())                       //
+                        {                                                                    //
+                            for (Vertex vertex: primitive.getVertices())                     //
+                            {                                                                //
+                                this.replaceVertex(vertex, transformation.apply(vertex));    //
+                            }                                                                //
+                        }                                                                    //
+                    }                                                                        //
+                }                                                                            //
+            }                                                                                //
+            this.vertexBuffer = this.worldSpace.apply(this.vertexBuffer);                    // 2) Transformation to world space
+            this.vertexBuffer = this.camSpace.apply(this.vertexBuffer);                      // 3) Transformation to camera space
+            this.clipper.setInputs(this.vertexBuffer, this.indexBuffer, this.partBuffer);    // 4) Clipping 
+            this.clipper.run();                                                              //    (strict but simple)
+            this.vertexBuffer = this.clipper.getVertexBuffer();                              // 
+            this.indexBuffer = this.clipper.getIndexBuffer();                                //
+            this.partBuffer = this.clipper.getPartBuffer();                                  //
+            this.vertexBuffer = this.dehomogeniser.apply(this.vertexBuffer);                 // 5) Dehomogenisation
+            this.vertexBuffer = this.projector.apply(this.vertexBuffer);                     // 6) Projection into 2D space
+            this.vertexBuffer = this.viewport.apply(this.vertexBuffer);                      // 7) Transformation into window
+            this.rasterizer.setRaster(this.raster);                                          // 8) Rasterization
+            this.rasterizer.setRenderType(this.renderType);                                  //
+            this.rasterizer.setInputs(this.vertexBuffer, this.indexBuffer, this.partBuffer); //
+            this.rasterizer.rasterize();                                                     //
             this.redraw();
         }
     }
@@ -343,7 +385,7 @@ public class Renderer extends MutableAdapter
         {
             switch(value.trim().toLowerCase())
             {
-                case "drátový model": this.setRenderType(RenderType.MESH); break;
+                case "drátový model": this.setRenderType(RenderType.WIREFRAME); break;
                 case "normální": this.setRenderType(RenderType.NORMAL); break;
             }
         }
@@ -357,7 +399,7 @@ public class Renderer extends MutableAdapter
         {
             switch(this.renderType)
             {
-                case MESH: reti = "Drátový model"; break;
+                case WIREFRAME: reti = "Drátový model"; break;
                 case NORMAL: reti = "Normální"; break;
             }
         }

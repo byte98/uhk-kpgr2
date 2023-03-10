@@ -17,6 +17,7 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations;
 
+import cz.uhk.fim.kpgr2.transforms.Mat4Scale;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableAdapter;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Vertex;
 
@@ -130,8 +131,11 @@ public class Scale extends MutableAdapter implements Transformation
     //</editor-fold>
     
     @Override
-    public void apply(Vertex v) {
-        
+    public Vertex apply(Vertex v)
+    {
+        Vertex reti = v.clone();
+        reti = reti.mul(new Mat4Scale(this.x, this.y, this.z));
+        return reti;
     }
     
     @Override

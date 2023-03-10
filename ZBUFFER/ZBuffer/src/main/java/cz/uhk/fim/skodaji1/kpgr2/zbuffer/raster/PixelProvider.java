@@ -15,28 +15,22 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package cz.uhk.fim.skodaji1.kpgr2.zbuffer.render;
+package cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster;
 
-import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Vertex;
+import cz.uhk.fim.kpgr2.transforms.Col;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Mutable;
 
 /**
- * Class which represents dehomogonisation of vertices
+ * Interface abstracting providers of pixels to fill shapes
  * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
-public class Dehomogeniser
+public interface PixelProvider extends Mutable
 {
     /**
-     * Dehomogenisates vertices
-     * @param vertexBuffer Buffer of vertices which will be dehomogenisated
-     * @return 
+     * Gets pixel on specified location
+     * @param x Coordinate on X axis
+     * @param y Coordinate on Y axis
+     * @return Colour of pixel
      */
-    public Vertex[] apply(Vertex[] vertexBuffer)
-    {
-        Vertex[] reti = new Vertex[vertexBuffer.length];
-        for(int i = 0; i < vertexBuffer.length; i++)
-        {
-            reti[i] = vertexBuffer[i].dehomog();
-        }
-        return reti;
-    }
+    public abstract Col getPixel(int x, int y);
 }

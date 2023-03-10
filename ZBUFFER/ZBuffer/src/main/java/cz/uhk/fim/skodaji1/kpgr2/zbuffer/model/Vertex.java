@@ -67,6 +67,24 @@ public class Vertex implements Cloneable
     }
     
     /**
+     * Gets fill of vertex
+     * @return Fill of vertex
+     */
+    public Fill getFill()
+    {
+        return this.fill;
+    }
+    
+    /**
+     * Sets fill of vertex
+     * @param fill New fill of vertex
+     */
+    public void setFill(Fill fill)
+    {
+        this.fill = fill;
+    }
+    
+    /**
      * Sets new position of vertex
      * @param p New position of vertex
      */
@@ -82,6 +100,33 @@ public class Vertex implements Cloneable
     public Point3D getPosition()
     {
         return this.position;
+    }
+    
+    /**
+     * Gets coordinate of vertex on X axis
+     * @return Coordinate of vertex on X axis
+     */
+    public int getX()
+    {
+        return (int) Math.round(this.position.x);
+    }
+    
+    /**
+     * Gets coordinate of vertex on Y axis
+     * @return Coordinate of vertex on Y axis
+     */
+    public int getY()
+    {
+        return (int) Math.round(this.position.y);
+    }
+    
+    /**
+     * Gets coordinate of vertex on Z axis
+     * @return Coordinate of vertex on Z axis
+     */
+    public double getZ()
+    {
+        return this.position.z;
     }
     
     /**

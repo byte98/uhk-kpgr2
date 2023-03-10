@@ -18,22 +18,35 @@
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 
 import cz.uhk.fim.kpgr2.transforms.Col;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.ObjectChangeCallback;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.ColourPixelProvider;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.PixelProvider;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Class representing fill of vertices
  * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
-public class Fill implements Cloneable
+public class Fill implements Cloneable, Mutable
 {
+    /**
+     * List with all handlers of object change
+     */
+    private final List<ObjectChangeCallback> handlers = new ArrayList<>();
+    
     /**
      * Type of fill
      */
     private final FillType type;
-    
+        
     /**
-     * Colour of fill
+     * Provider of pixels used to fill objects
      */
-    private final Col colour;       
+    private final PixelProvider pixelProvider;
     
     /**
      * Creates new fill of vertex
@@ -42,7 +55,18 @@ public class Fill implements Cloneable
     public Fill(Col colour)
     {
         this.type = FillType.COLOR;
-        this.colour = colour;
+        this.pixelProvider = new ColourPixelProvider(colour);
+    }
+    
+    /**
+     * Creates new fill of vertex
+     * @param type Type of fill
+     * @param pixelProvider Provider of pixels fill
+     */
+    private Fill(FillType type, PixelProvider pixelProvider)
+    {
+        this.type = type;
+        this.pixelProvider = pixelProvider;
     }
     
     /**
@@ -55,12 +79,12 @@ public class Fill implements Cloneable
     }
     
     /**
-     * Gets colour of fill
-     * @return Colour of fill
+     * Gets provider of pixels which represents fill
+     * @return Provider of pixels
      */
-    public Col getColour()
+    public PixelProvider getPixelProvider()
     {
-        return this.colour;
+        return this.pixelProvider;
     }
     
     /**
@@ -69,12 +93,144 @@ public class Fill implements Cloneable
      */
     public Fill clone()
     {
-        Fill reti = null;
-        switch(this.type)
+        return new Fill(this.type, this.pixelProvider);
+    }
+
+    @Override
+    public String[] getProperties()
+    {
+        String[] ppProps = this.pixelProvider.getProperties();
+        String[] reti = new String[ppProps.length + 1];
+        reti[0] = "Typ";
+        for (int i = 0; i < ppProps.length; i++)
         {
-            case COLOR: reti = new Fill(new Col(this.colour)); break;
-            default: reti = null;
+            reti[i + 1] = ppProps[i];
         }
         return reti;
     }
+
+    @Override
+    public boolean isMutable(String property)
+    {
+        boolean reti = this.pixelProvider.isMutable(property);
+        if (property.trim().toLowerCase().equals("typ"))
+        {
+            reti = false;
+        }
+        return reti;
+    }
+
+    @Override
+    public Class getType(String property)
+    {
+        Class reti = this.pixelProvider.getType(property);
+        if (property.trim().toLowerCase().equals("typ"))
+        {
+            reti = Enum.class;
+        }
+        return reti;
+    }
+
+    @Override
+    public String getString(String property) 
+    {
+        return this.pixelProvider.getString(property);
+    }
+
+    @Override
+    public double getDouble(String property)
+    {
+        return this.pixelProvider.getDouble(property);
+    }
+
+    @Override
+    public int getInt(String property)
+    {
+        return this.pixelProvider.getInt(property);
+    }
+
+    @Override
+    public Col getColour(String property)
+    {
+        return this.pixelProvider.getColour(property);
+    }
+
+    @Override
+    public String[] getAllowedValues(String enumName)
+    {
+        String[] reti = this.pixelProvider.getAllowedValues(enumName);
+        if (enumName.toLowerCase().trim().equals("typ"))
+        {
+            reti = new String[]{"Barva"};
+        }
+        return reti;
+    }
+
+    @Override
+    public String getEnumValue(String enumName)
+    {
+        String reti = this.pixelProvider.getEnumValue(enumName);
+        if (enumName.toLowerCase().trim().equals("typ"))
+        {
+            switch (this.type)
+            {
+                case COLOR: reti = "Barva"; break;
+            }
+        }
+        return reti;
+    }
+
+    @Override
+    public void set(String property, String value)
+    {
+        this.pixelProvider.set(property, value);
+        this.informChange();
+    }
+
+    @Override
+    public void set(String property, double value)
+    {
+        this.pixelProvider.set(property, value);
+        this.informChange();
+    }
+
+    @Override
+    public void set(String property, int value)
+    {
+        this.pixelProvider.set(property, value);
+        this.informChange();
+    }
+
+    @Override
+    public void set(String property, Col value)
+    {
+        this.pixelProvider.set(property, value);
+        this.informChange();
+    }
+
+    @Override
+    public void setEnum(String property, String value)
+    {
+        this.pixelProvider.set(property, value);
+        this.informChange();
+    }
+
+    @Override
+    public void addChangeCallback(ObjectChangeCallback callback)
+    {
+        this.handlers.add(callback);
+    }
+    
+    /**
+     * Informs all handlers about change of object
+     */
+    private void informChange()
+    {
+        for (ObjectChangeCallback callback: this.handlers)
+        {
+            callback.objectChanged();
+        }
+    }
+    
+    
 }

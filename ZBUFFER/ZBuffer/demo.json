@@ -10,7 +10,7 @@
     "render": {
         "camspace": {
             "zn": 0.01,
-            "zf": 100.0,
+            "zf": 256.59,
             "width": 800,
             "height": 600,
             "alpha": 0.78539816339,
@@ -27,6 +27,10 @@
                     "primitives": [
                         {
                             "name": "Trojuhelnik_001",
+                            "fill": {
+                                "type": "COLOUR",
+                                "value": "ffff00"
+                            },
                             "vertices": [
                                 {
                                     "name": "Vrchol_001",
