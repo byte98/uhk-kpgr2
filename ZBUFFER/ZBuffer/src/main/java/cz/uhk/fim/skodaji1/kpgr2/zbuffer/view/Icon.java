@@ -57,6 +57,16 @@ public class Icon
     public static final Icon LOAD = new Icon("load.png");
     
     /**
+     * Icon of interactive mode
+     */
+    public static final Icon INTERACTIVE = new Icon("interactive.png");
+    
+    /**
+     * Icon of help
+     */
+    public static final Icon HELP = new Icon("help.png");
+    
+    /**
      * Icon of Z buffer
      */
     public static final Icon Z_BUFFER = new Icon("zbuffer.png");

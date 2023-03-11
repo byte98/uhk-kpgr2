@@ -473,7 +473,7 @@ public class MainWindow extends JFrame
     private void initializeToolBar()
     {
         JToolBar toolBar = new JToolBar();
-        toolBar.setBorder(new MatteBorder(0, 0, 8, 0, Icon.TOOLBAR_BORDER.toImageIcon()));
+        toolBar.setBorder(new MatteBorder(0, 0, 12, 0, Icon.TOOLBAR_BORDER.toImageIcon()));
         toolBar.setLayout(new FlowLayout(FlowLayout.LEADING, MainWindow.H_GAP, MainWindow.V_GAP));
         toolBar.setFloatable(false);
         toolBar.add(MainWindow.createButton(Icon.LOAD, "Načíst", new ActionListener(){
@@ -530,6 +530,24 @@ public class MainWindow extends JFrame
             }
         });
         toolBar.add(detailsButton);
+        JToggleButton interactiveButton = MainWindow.createToggleButton(Icon.INTERACTIVE, "Interaktivní režim");
+        interactiveButton.setSelected(false);
+        toolBar.add(interactiveButton);
+        JToggleButton helpButton = MainWindow.createToggleButton(Icon.HELP, "Rychlá nápověda");
+        helpButton.setEnabled(false);
+        helpButton.setSelected(false);
+        toolBar.add(helpButton);
+        interactiveButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent ae)
+            {
+                helpButton.setEnabled(interactiveButton.isSelected());
+                if (interactiveButton.isSelected() == false)
+                {
+                    helpButton.setSelected(false);
+                }
+            }        
+        });
         this.getContentPane().add(toolBar, BorderLayout.NORTH);
     }
     
