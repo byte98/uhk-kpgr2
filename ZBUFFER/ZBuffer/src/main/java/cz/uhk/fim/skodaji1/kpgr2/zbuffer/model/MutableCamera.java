@@ -18,10 +18,8 @@
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 
 import cz.uhk.fim.kpgr2.transforms.Camera;
-import cz.uhk.fim.kpgr2.transforms.Col;
 import cz.uhk.fim.kpgr2.transforms.Point3D;
 import cz.uhk.fim.kpgr2.transforms.Vec3D;
-import java.awt.Color;
 
 /**
  * Class representing camera with mutable properties

@@ -31,7 +31,6 @@ import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.PrimitiveType;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Scene;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Solid;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Triangle;
-import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Vertex;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Rotation;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Scale;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Translation;
@@ -42,7 +41,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
 
 /**

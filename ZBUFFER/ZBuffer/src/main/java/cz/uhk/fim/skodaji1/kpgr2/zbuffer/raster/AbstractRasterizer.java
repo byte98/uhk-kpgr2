@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Jiri Skoda <jiri.skoda@student.upce.cz>
+ * Copyright (C) 2023 Jiri Skoda <jiri.skoda@uhk.cz>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,7 +19,7 @@ package cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster;
 
 /**
  * Class which abstracts all rasterizers
- * @author Jiri Skoda <jiri.skoda@student.upce.cz>
+ * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
 public abstract class AbstractRasterizer
 {

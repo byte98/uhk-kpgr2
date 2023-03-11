@@ -17,8 +17,6 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 
-import cz.uhk.fim.kpgr2.transforms.Col;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Jiri Skoda <jiri.skoda@student.upce.cz>
+ * Copyright (C) 2023 Jiri Skoda <jiri.skoda@uhk.cz>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,17 +17,13 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster;
 
-import cz.uhk.fim.kpgr2.transforms.Col;
 import cz.uhk.fim.kpgr2.transforms.Point3D;
-import java.awt.Color;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Function;
 
 /**
  * Class which has ability to rasterize triangles
- * @author Jiri Skoda <jiri.skoda@student.upce.cz>
+ * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
 public class TriangleRasterizer extends AbstractRasterizer
 {

@@ -17,7 +17,6 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.render;
 
-import cz.uhk.fim.kpgr2.transforms.Col;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.ObjectChangeCallback;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableAdapter;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableVertex;
@@ -26,18 +25,13 @@ import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Primitive;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Scene;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Solid;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Vertex;
-import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.Raster;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.ZBuffer;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.view.Panel;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.util.Objects;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
-import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.LineRasterizer;
 
 /**
  * Class representing renderer of the scene

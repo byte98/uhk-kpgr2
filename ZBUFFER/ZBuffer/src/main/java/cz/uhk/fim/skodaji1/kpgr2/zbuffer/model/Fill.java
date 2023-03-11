@@ -21,11 +21,8 @@ import cz.uhk.fim.kpgr2.transforms.Col;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.ObjectChangeCallback;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.ColourPixelProvider;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.PixelProvider;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Class representing fill of vertices
