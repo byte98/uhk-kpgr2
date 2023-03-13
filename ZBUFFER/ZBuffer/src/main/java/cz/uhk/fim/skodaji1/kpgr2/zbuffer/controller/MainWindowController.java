@@ -154,4 +154,12 @@ public class MainWindowController
         if (alpha < 0)       alpha = 0;
         this.renderer.getCameraSpace().setAlpha(alpha);
     }
+    
+    /**
+     * Moves camera forward
+     */
+    public void moveForward()
+    {
+        
+    }
 }

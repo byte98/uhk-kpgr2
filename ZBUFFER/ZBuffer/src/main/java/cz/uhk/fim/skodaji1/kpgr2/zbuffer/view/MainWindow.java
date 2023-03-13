@@ -73,6 +73,8 @@ import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.Robot;
 import java.awt.Toolkit;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -82,6 +84,11 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.KeyStroke;
+import javax.swing.Timer;
 
 /**
  * Class representing main window of application
@@ -162,9 +169,65 @@ public class MainWindow extends JFrame
             {
                 this.controller.mouseWheeled(e.getWheelRotation());
             }
+        }        
+    }
+    /**
+     * Class which handles key actions when in interactive mode
+     * {@link https://stackoverflow.com/questions/10544956/java-swing-do-something-while-the-key-is-being-pressed }
+     */
+    private static class InteractiveKeyHandler extends AbstractAction
+    {
+        private static final String UP_KEY_PRESSED = "up key pressed";
+        private static final String UP_KEY_RELEASED = "up key released";
+        private static final int UP_TIMER_DELAY = 200;
+        private Timer upTimer;
+        public static void init(JComponent target)
+        {
+            int condition = JComponent.WHEN_IN_FOCUSED_WINDOW;
+            InputMap inputMap = target.getInputMap(condition);
+            ActionMap actionMap = target.getActionMap();
+            KeyStroke upKeyPressed = KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false);
+            KeyStroke upKeyReleased = KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, true);
+            inputMap.put(upKeyPressed, UP_KEY_PRESSED);
+            inputMap.put(upKeyReleased, UP_KEY_RELEASED);
+
+            actionMap.put(UP_KEY_PRESSED, new InteractiveKeyHandler(true));
+            actionMap.put(UP_KEY_RELEASED, new InteractiveKeyHandler(false));
         }
         
-        
+        private boolean onKeyRelease;
+
+        private InteractiveKeyHandler(boolean onKeyRelease)
+        {
+           this.onKeyRelease = onKeyRelease;
+        }
+
+      @Override
+      public void actionPerformed(ActionEvent evt) {
+         if (!onKeyRelease)
+         {
+            if (upTimer != null && upTimer.isRunning()) {
+               return;
+            }
+            System.out.println("key pressed");
+            upTimer = new Timer(UP_TIMER_DELAY, new ActionListener() {
+
+               @Override
+               public void actionPerformed(ActionEvent e) {
+                   System.out.println("key pressed");
+               }
+            });
+            upTimer.start();
+         }
+         else
+         {
+            System.out.println("key released");
+            if (upTimer != null && upTimer.isRunning()) {
+               upTimer.stop();
+               upTimer = null;
+            }
+         }
+      }
     }
     
     /**
@@ -371,6 +434,7 @@ public class MainWindow extends JFrame
         output.addMouseMotionListener(mouseHandler);
         output.addMouseListener(mouseHandler);
         output.addMouseWheelListener(mouseHandler);
+        InteractiveKeyHandler.init(output);
     }
     
     /**
