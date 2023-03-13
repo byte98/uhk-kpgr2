@@ -30,6 +30,11 @@ import java.util.List;
 public class MutableVertex extends Vertex implements Mutable
 {
     /**
+     * Counter of created vertices
+     */
+    private static long COUNTER = 0;
+    
+    /**
      * List with all handlers of object change
      */
     private final List<ObjectChangeCallback> handlers;
@@ -38,6 +43,17 @@ public class MutableVertex extends Vertex implements Mutable
      * Name of vertex
      */
     private final String name;
+    
+    /**
+     * Creates new vertex
+     * @param x Position on X axis
+     * @param y Position on Y axis
+     * @param z Position on Z axis
+     */
+    public MutableVertex(double x, double y, double z)
+    {
+        this(String.format("Vrchol_%03d", MutableVertex.COUNTER), x, y, z);
+    }
     
     /**
      * Creates new vertex
@@ -51,6 +67,16 @@ public class MutableVertex extends Vertex implements Mutable
         super(x, y, z);
         this.name =  name;
         this.handlers = new ArrayList<>();
+        MutableVertex.COUNTER++;
+    }
+    
+    /**
+     * Creates new vertex
+     * @param v Vertex from which data will be copied
+     */
+    public MutableVertex(Vertex v)
+    {
+        this(v.getX(), v.getY(), v.getZ());
     }
 
     /**
@@ -184,5 +210,25 @@ public class MutableVertex extends Vertex implements Mutable
     public String toString()
     {
         return String.format("%s %s", this.name, super.toString());
+    }
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        boolean reti = false;
+        if (obj instanceof MutableVertex)
+        {
+            MutableVertex vertex = (MutableVertex) obj;
+            reti = this.id == vertex.id;
+        }
+        return reti;
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 71 * hash + (int) (this.id ^ (this.id >>> 32));
+        return hash;
     }
 }

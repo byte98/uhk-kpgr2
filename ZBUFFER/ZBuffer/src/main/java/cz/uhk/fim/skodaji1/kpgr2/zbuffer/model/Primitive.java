@@ -110,6 +110,7 @@ public interface Primitive extends Mutable
             switch(this.getPrimitiveType())
             {
                 case TRIANGLE: reti = "Trojúhelník"; break;
+                case LINE: reti = "Úsečka"; break;
             }
         }
         return reti;

@@ -105,12 +105,34 @@ public class MutableCamera extends MutableAdapter
     }
     
     /**
+     * Sets azimuth of camera
+     * @param azimuth New azimuth of camera
+     */
+    public void setAzimuth(double azimuth)
+    {
+        this.azimuth = azimuth;
+        this.updateCamera();
+        this.informChange();
+    }
+    
+    /**
      * Gets zenith of camera
      * @return Zenith of camera
      */
     public double getZenith()
     {
         return this.zenith;
+    }
+    
+    /**
+     * Sets zenith of camera
+     * @param zenith New zenith of camera
+     */
+    public void setZenith(double zenith)
+    {
+        this.zenith = zenith;
+        this.updateCamera();
+        this.informChange();
     }
     
     /**
@@ -164,11 +186,9 @@ public class MutableCamera extends MutableAdapter
             case "x": this.x = value; break;
             case "y": this.y = value; break;
             case "z": this.z = value; break;
-            case "azimut": this.azimuth = value; break;
-            case "zenit": this.zenith = value; break;
+            case "azimut": this.setAzimuth(value); break;
+            case "zenit": this.setZenith(value); break;
         }
-        this.updateCamera();
-        this.informChange();
     }
 
 }

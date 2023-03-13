@@ -28,6 +28,11 @@ import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
 public class Solid extends MutableAdapter
 {
     /**
+     * Counter of created solids
+     */
+    private static long COUNTER = 0;
+    
+    /**
      * Name of solid
      */
     private String name;
@@ -43,6 +48,14 @@ public class Solid extends MutableAdapter
     private final List<Transformation> transformations;
     
     /**
+     * Crates new solid
+     */
+    public Solid()
+    {
+        this(String.format("Teleso_%03d", Solid.COUNTER));
+    }
+    
+    /**
      * Creates new solid
      * @param name Name of solid
      */
@@ -51,6 +64,7 @@ public class Solid extends MutableAdapter
         this.name = name;
         this.parts = new ArrayList<>();
         this.transformations = new ArrayList<>();
+        Solid.COUNTER++;
     }
     
     /**

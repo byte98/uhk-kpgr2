@@ -30,6 +30,10 @@ import java.io.File;
  */
 public class MainWindowController
 {
+    /**
+     * Speed of view angle change
+     */
+    private static final double VIEW_SPEED = 0.01;
     
     /**
      * Reference to main window of program
@@ -45,6 +49,11 @@ public class MainWindowController
      * Scene which will be rendered
      */
     private Scene scene;
+    
+    /**
+     * Flag, whether application is in interactive mode
+     */
+    private boolean interactive;
        
     /**
      * Creates new controller of main window
@@ -52,6 +61,7 @@ public class MainWindowController
     public MainWindowController()
     {
         this.mainWindow = new MainWindow(this);
+        this.interactive = false;
     }
     
     /**
@@ -76,5 +86,55 @@ public class MainWindowController
         this.mainWindow.setRenderer(this.renderer);
         this.renderer.setScene(this.scene);
         this.renderer.run();
+    }
+
+    /**
+     * Handles toggle of axis button
+     * @param selected Flag, whether axis button is selected or not
+     */
+    public void axisToggled(boolean selected)
+    {
+        if (selected == true)
+        {
+            this.renderer.showAxis();
+        }
+        else if (selected == false)
+        {
+            this.renderer.hideAxis();
+        }
+        this.renderer.run();
+    }
+    
+    /**
+     * Checks, whether application is in interactive mode
+     * @return TRUE, if application is in interactive mode, FALSE otherwise
+     */
+    public boolean isInteractive()
+    {
+        return this.interactive;
+    }
+    
+    /**
+     * Handles toggle of interactive mode button
+     * @param interactive Flag, whether interactive button is selected or not
+     */
+    public void toggleInteractive(boolean interactive)
+    {
+        this.interactive = interactive;
+    }
+    
+    /**
+     * Handles move of mouse
+     * @param dx Delta on X axis
+     * @param dy Delta on Y axis
+     */
+    public void mouseMoved(int dx, int dy)
+    {
+        double azimuth = (this.scene.getCamera().getAzimuth() + (double)dx * MainWindowController.VIEW_SPEED) % (2 * Math.PI);
+        double zenith = (this.scene.getCamera().getZenith() + (double)dy * MainWindowController.VIEW_SPEED);
+        if (zenith > Math.PI) zenith = Math.PI;
+        if (zenith < 0)       zenith = 0;
+        this.scene.getCamera().setAzimuth(azimuth);
+        this.scene.getCamera().setZenith(zenith);
     }
 }

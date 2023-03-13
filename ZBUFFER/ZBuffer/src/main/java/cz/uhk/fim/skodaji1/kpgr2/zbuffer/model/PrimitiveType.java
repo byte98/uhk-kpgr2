@@ -26,7 +26,12 @@ public enum PrimitiveType
     /**
      * Primitive is triangle
      */
-    TRIANGLE("TRIANGLE");
+    TRIANGLE("TRIANGLE"),
+    
+    /**
+     * Primitive is line
+     */
+    LINE("LINE");
     
     /**
      * String representation of fill type
@@ -54,6 +59,7 @@ public enum PrimitiveType
         switch(str.toUpperCase())
         {
             case "TRIANGLE": reti  = PrimitiveType.TRIANGLE; break;
+            case "LINE":     reti  = PrimitiveType.LINE;     break; 
             default: reti = null;
         }
         return reti;
@@ -69,6 +75,7 @@ public enum PrimitiveType
         switch(this)
         {
             case TRIANGLE: reti = 3; break;
+            case LINE:     reti = 2; break;
         }
         return reti;
     }

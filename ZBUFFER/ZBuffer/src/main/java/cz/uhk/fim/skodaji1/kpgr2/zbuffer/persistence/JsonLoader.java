@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import cz.uhk.fim.kpgr2.transforms.Col;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Fill;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Line;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableCamera;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableVertex;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Part;
@@ -283,8 +284,28 @@ public class JsonLoader
         {
             reti = this.loadTriangle(elem);
         }
+        else if (type == PrimitiveType.LINE)
+        {
+            reti = this.loadLine(elem);
+        }
         Fill fill = this.loadFill(elem.getAsJsonObject().get("fill"));
         reti.setFill(fill);
+        return reti;
+    }
+    
+    /**
+     * Loads line from JSON element
+     * @param elem Element containing information about line
+     * @return Line loaded from JSON
+     */
+    private Line loadLine(JsonElement elem)
+    {
+        JsonObject lineObj = elem.getAsJsonObject();
+        Line reti = new Line(lineObj.get("name").getAsString());
+        for(JsonElement vertex: lineObj.get("vertices").getAsJsonArray())
+        {
+            reti.addVertex(this.loadVertex(vertex));
+        }
         return reti;
     }
     

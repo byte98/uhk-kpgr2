@@ -67,6 +67,11 @@ public class Icon
     public static final Icon HELP = new Icon("help.png");
     
     /**
+     * Icon of axis
+     */
+    public static final Icon AXIS = new Icon("axis.png");
+    
+    /**
      * Icon of Z buffer
      */
     public static final Icon Z_BUFFER = new Icon("zbuffer.png");

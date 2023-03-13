@@ -139,6 +139,20 @@ public class Rasterizer
                         );
                     }
                 }
+                else if (part.getType() == PrimitiveType.LINE)
+                {
+                    for (int i = 0; i < part.getCount(); i++)
+                    {
+                        int index = part.getIndex() + (i * part.getType().getVerticesCount());
+                        Vertex v1 = this.vertexBuffer[this.indexBuffer[index]];
+                        Vertex v2 = this.vertexBuffer[this.indexBuffer[index + 1]];
+                        this.lineRasterizer.setColour(v1.getFill().getPixelProvider());
+                        this.lineRasterizer.rasterize(
+                                v1.getX(), v1.getY(), v1.getZ(),
+                                v2.getX(), v2.getY(), v2.getZ()
+                        );
+                    }
+                }                
             }
         }
     }

@@ -74,6 +74,16 @@ public class ColorField extends JPanel implements ActionListener
     }
     
     /**
+     * Sets actually displayed colour
+     * @param colour New colour which will be displayed
+     */
+    public void setColour(Col colour)
+    {
+        this.colour = colour;
+        this.initializeValues();
+    }
+    
+    /**
      * Gets actual colour set to colour field
      * @return Actual colour
      */

@@ -9,17 +9,17 @@
     },
     "render": {
         "camspace": {
-            "zn": 0.01,
-            "zf": 256.59,
+            "zn": 0.0,
+            "zf": 1024,
             "width": 800,
             "height": 600,
-            "alpha": 0.78539816339,
+            "alpha": 1.57079632679,
             "type": "PERSPECTIVE"
         }
     },
     "solids": [
         {
-            "name": "Trojuhelnik_1",
+            "name": "Teleso_1",
             "parts": [
                 {
                     "name": "Cast_001",
@@ -46,6 +46,33 @@
                                 },
                                 {
                                     "name": "Vrchol_003",
+                                    "x": 18.95,
+                                    "y": 5.85,
+                                    "z": 5.6
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Cast_002",
+                    "type": "LINE",
+                    "primitives": [
+                        {
+                            "name": "Usecka_001",
+                            "fill": {
+                                "type": "COLOUR",
+                                "value": "ff00ff"
+                            },
+                            "vertices": [
+                                {
+                                    "name": "Vrchol_004",
+                                    "x": 85,
+                                    "y": 25,
+                                    "z": 32
+                                },
+                                {
+                                    "name": "Vrchol_005",
                                     "x": 18.95,
                                     "y": 5.85,
                                     "z": 5.6

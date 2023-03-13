@@ -20,6 +20,7 @@ package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 import cz.uhk.fim.kpgr2.transforms.Point3D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -43,12 +44,17 @@ public class Scene extends MutableAdapter
         /**
          * Starting index in index buffer
          */
-        private final int index;
+        private int index;
         
         /**
          * Number of primitives stored in buffer
          */
         private int count;
+        
+        /**
+         * Original number of primitives stored in buffer before clipping
+         */
+        private final int originalCount;
 
         /**
          * Creates new item of part buffer
@@ -61,6 +67,7 @@ public class Scene extends MutableAdapter
             this.type = type;
             this.index = index;
             this.count = count;
+            this.originalCount = count;
         }
 
         /**
@@ -98,6 +105,24 @@ public class Scene extends MutableAdapter
         {
             this.count = count;
         }
+        
+        /**
+         * Sets starting index of part in index buffer
+         * @param index Starting index of part in index buffer
+         */
+        public void setIndex(int index)
+        {
+            this.index = index;
+        }
+        
+        /**
+         * Gets number of removed primitives
+         * @return Number of removed primitives
+         */
+        public int getRemovedCount()
+        {
+            return this.originalCount - this.count;
+        }
     }
     //</editor-fold>
     
@@ -130,6 +155,16 @@ public class Scene extends MutableAdapter
      * Buffer of indexes of vertices
      */
     private int[] indexBuffer;
+    
+    /**
+     * Solid representing axis
+     */
+    private Solid axisSolid;
+    
+    /**
+     * Flag, whether axis should be visible or not
+     */
+    private boolean showAxis = false;
     
     /**
      * Creates new scene
@@ -211,6 +246,14 @@ public class Scene extends MutableAdapter
      */
     public void generateBuffers()
     {
+        if (this.showAxis == true && Objects.nonNull(this.axisSolid))
+        {
+            this.solids.add(this.axisSolid);
+        }
+        else if (this.showAxis == false && Objects.nonNull(this.axisSolid))
+        {
+            this.solids.remove(this.axisSolid);
+        }
         this.generateVertexBuffer();
         this.generatePartBuffer();
     }
@@ -248,28 +291,7 @@ public class Scene extends MutableAdapter
     private void generateVertexBuffer()
     {
         List<Vertex> tmp = new ArrayList<>();
-        Predicate<Vertex> isInTmp = (t) ->
-        {
-            BiPredicate<Point3D, Point3D> eq = (p1, p2) -> {
-                return (
-                        p1.x == p2.x &&
-                        p1.y == p2.y &&
-                        p1.z == p2.z &&
-                        p1.w == p2.w
-                );
-            };
-            boolean reti = false;
-            for(Vertex v: tmp)
-            {
-                if (eq.test(t.getPosition(), v.getPosition()))
-                {
-                    reti = true;
-                    break;
-                }
-            }
-            return reti;
-        };
-        for(Solid solid: this.solids)
+                for(Solid solid: this.solids)
         {
             for(Part part: solid.getParts())
             {
@@ -277,7 +299,7 @@ public class Scene extends MutableAdapter
                 {
                     for (Vertex vertex: primitive.getVertices())
                     {
-                        if (tmp.contains(vertex) == false && isInTmp.test(vertex) == false)
+                        if (tmp.contains(vertex) == false)
                         {
                             tmp.add(vertex);
                         }
@@ -335,10 +357,7 @@ public class Scene extends MutableAdapter
         int reti = -1;
         for (int i = 0; i < this.vertexBuffer.length; i++)
         {
-            if (this.vertexBuffer[i].getPosition().x == v.getPosition().x &&
-                this.vertexBuffer[i].getPosition().y == v.getPosition().y &&
-                this.vertexBuffer[i].getPosition().z == v.getPosition().z && 
-                this.vertexBuffer[i].getPosition().w == v.getPosition().w)
+            if (this.vertexBuffer[i].equals(v))
             {
                 reti = i;
                 break;
@@ -347,7 +366,34 @@ public class Scene extends MutableAdapter
         return reti;
     }
     
+    /**
+     * Sets solid which represents axis
+     * @param axis Solid representation of axis
+     */
+    public void setAxis(Solid axis)
+    {
+        if (Objects.nonNull(this.axisSolid) && this.solids.contains(this.axisSolid))
+        {
+            this.solids.remove(this.axisSolid);
+        }
+        this.axisSolid = axis;
+    }
     
+    /**
+     * Shows axis
+     */
+    public void showAxis()
+    {
+        this.showAxis = true;
+    }
+    
+    /**
+     * Hides axis
+     */
+    public void hideAxis()
+    {
+        this.showAxis = false;
+    }
     
     @Override
     public String[] getProperties()

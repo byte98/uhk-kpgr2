@@ -147,6 +147,7 @@ public class Part extends MutableAdapter
             switch(this.type)
             {
                 case TRIANGLE: reti = "Trojúhelníky"; break;
+                case LINE: reti = "Úsečky"; break;
             }
         }
         return reti;

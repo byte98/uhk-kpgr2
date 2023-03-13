@@ -85,6 +85,7 @@ public class Clipper
      */
     private static boolean testVertices(Vertex[] vertices)
     {
+        return true;/*
         boolean reti = true;
         for(Vertex v: vertices)
         {
@@ -94,7 +95,7 @@ public class Clipper
                 break;
             }
         }
-        return reti;
+        return reti;*/
     }
     
     /**
@@ -124,6 +125,7 @@ public class Clipper
      */
     private void removeSubpart(Scene.PartBufferItem part, int subpart)
     {
+        subpart = subpart - part.getRemovedCount();
         int[] newIndexBuffer = new int[this.indexBuffer.length - part.getType().getVerticesCount()];
         int start = part.getIndex() + (subpart * part.getType().getVerticesCount());
         int end = start + part.getType().getVerticesCount();
@@ -140,6 +142,13 @@ public class Clipper
             }
         }
         this.indexBuffer = newIndexBuffer;
+        for (Scene.PartBufferItem p: this.partBuffer)
+        {
+            if (p.getIndex() > start)
+            {
+                p.setIndex(p.getIndex() - delta);
+            }
+        }
     }
     
     /**

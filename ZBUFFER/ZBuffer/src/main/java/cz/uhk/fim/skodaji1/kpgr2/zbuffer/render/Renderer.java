@@ -17,11 +17,15 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.render;
 
+import cz.uhk.fim.kpgr2.transforms.Col;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.ObjectChangeCallback;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Fill;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Line;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableAdapter;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableVertex;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Part;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Primitive;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.PrimitiveType;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Scene;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Solid;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Vertex;
@@ -39,6 +43,26 @@ import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
  */
 public class Renderer extends MutableAdapter
 {
+    /**
+     * Size of rendered axis
+     */
+    private static final int AXIS_SIZE = 100;
+    
+    /**
+     * Fill of X axis
+     */
+    private static final Fill X_FILL = new Fill(new Col(0xff0000));
+    
+    /**
+     * Fill of Y axis
+     */
+    private static final Fill Y_FILL = new Fill(new Col(0x00ff00));
+    
+    /**
+     * Fill of Z axis
+     */
+    private static final Fill Z_FILL = new Fill(new Col(0x0000ff));
+    
     /**
      * Enumeration of all available rendering types
      */
@@ -131,6 +155,11 @@ public class Renderer extends MutableAdapter
     private RenderType renderType;
     
     /**
+     * Flag, whether axis should be visible or not
+     */
+    private boolean axisVisible;
+    
+    /**
      * Creates new renderer
      */
     public Renderer()
@@ -144,6 +173,7 @@ public class Renderer extends MutableAdapter
         this.renderType = RenderType.NORMAL;
         this.viewport = new Viewport(0, 0);
         this.rasterizer = new Rasterizer();
+        this.axisVisible = false;
     }
     
     /**
@@ -166,6 +196,7 @@ public class Renderer extends MutableAdapter
         this.viewport = new Viewport(cs.getWidth(), cs.getHeight());
         this.rasterizer = new Rasterizer();
         this.registerVertexChangers();
+        this.axisVisible = false;
     }
 
     
@@ -286,7 +317,7 @@ public class Renderer extends MutableAdapter
             });
         }
     }
-    
+        
     /**
      * Replaces vertex in vertex buffer
      * @param v Vertex which will be replaced
@@ -313,6 +344,15 @@ public class Renderer extends MutableAdapter
         this.raster.clear();
         if (Objects.nonNull(this.scene))
         {
+            if (this.axisVisible == true)
+            {
+                this.scene.setAxis(this.generateAxis());
+                this.scene.showAxis();
+            }
+            else
+            {
+                this.scene.hideAxis();
+            }
             // Follows steps of rendering pipeline
             this.scene.generateBuffers();                                                    // 0) Initialization
             this.indexBuffer = this.scene.getIndexBuffer();                                  //    (generating buffers)
@@ -354,6 +394,32 @@ public class Renderer extends MutableAdapter
     }
 
     /**
+     * Generates solid representing axis
+     */
+    private Solid generateAxis()
+    {
+        Part part = new Part(PrimitiveType.LINE);
+        Line x = new Line();
+        x.addVertex(new MutableVertex(0, 0, 0));
+        x.addVertex(new MutableVertex(Renderer.AXIS_SIZE, 0, 0));
+        x.setFill(Renderer.X_FILL);
+        Line y = new Line();
+        y.addVertex(new MutableVertex(0, 0, 0));
+        y.addVertex(new MutableVertex(0, Renderer.AXIS_SIZE, 0));
+        y.setFill(Renderer.Y_FILL);
+        Line z = new Line();
+        z.addVertex(new MutableVertex(0, 0, 0));
+        z.addVertex(new MutableVertex(0, 0, Renderer.AXIS_SIZE));
+        z.setFill(Renderer.Z_FILL);
+        part.addPrimitive(x);
+        part.addPrimitive(y);
+        part.addPrimitive(z);
+        Solid reti = new Solid();
+        reti.addPart(part);
+        return reti;
+    }
+    
+    /**
      * Gets type of rendering output
      * @return Type of rendering output
      */
@@ -370,6 +436,22 @@ public class Renderer extends MutableAdapter
     {
         this.renderType = type;
         this.informChange();
+    }
+    
+    /**
+     * Shows axis
+     */
+    public void showAxis()
+    {
+        this.axisVisible = true;
+    }
+    
+    /**
+     * Hides axis
+     */
+    public void hideAxis()
+    {
+        this.axisVisible = false;
     }
     
     @Override

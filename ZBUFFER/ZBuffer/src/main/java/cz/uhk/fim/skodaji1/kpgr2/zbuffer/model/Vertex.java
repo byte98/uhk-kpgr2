@@ -30,7 +30,15 @@ import cz.uhk.fim.kpgr2.transforms.Vec3D;
  */
 public class Vertex implements Cloneable
 {
+    /**
+     * Default colour of fill of vertex
+     */
     protected static final Col DEFAULT_COLOR = new Col(0xffffff);
+    
+    /**
+     * Counter of created vertices
+     */
+    protected static long COUNTER = 0;
     
     /**
      * Position of vertex
@@ -41,6 +49,11 @@ public class Vertex implements Cloneable
      * Fill of vertex
      */
     protected Fill fill;
+    
+    /**
+     * Identifier of vertex
+     */
+    protected final long id;
     
     /**
      * Creates new vertex
@@ -64,6 +77,8 @@ public class Vertex implements Cloneable
     {
         this.position = new Point3D(x, y, z);
         this.fill = fill;
+        this.id = Vertex.COUNTER;
+        Vertex.COUNTER++;
     }
     
     /**
@@ -198,5 +213,26 @@ public class Vertex implements Cloneable
     {
         return String.format("[%f, %f, %f, %f]", this.position.x, this.position.y, this.position.z, this.position.w);
     }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        boolean reti = false;
+        if (obj instanceof Vertex)
+        {
+            Vertex vertex = (Vertex) obj;
+            reti = this.id == vertex.id;
+        }
+        return reti;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 71 * hash + (int) (this.id ^ (this.id >>> 32));
+        return hash;
+    }
+    
     
 }

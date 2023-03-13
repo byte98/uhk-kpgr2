@@ -19,6 +19,7 @@ package cz.uhk.fim.skodaji1.kpgr2.zbuffer.view;
 
 import cz.uhk.fim.kpgr2.transforms.Col;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.MainWindowController;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.ObjectChangeCallback;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Mutable;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableVertex;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Part;
@@ -67,6 +68,19 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.*;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
+import java.awt.AWTException;
+import java.awt.Cursor;
+import java.awt.Point;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class representing main window of application
@@ -74,6 +88,74 @@ import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
  */
 public class MainWindow extends JFrame
 {
+    /**
+     * Class which handles mouse move when in interactive mode
+     */
+    private class InteractiveMouseHandler extends MouseAdapter implements MouseMotionListener
+    {
+
+        /**
+         * Original X position
+         */
+        private int x;
+        
+        /**
+         * Original Y position
+         */
+        private int y;
+        
+        /**
+         * Controller of behaviour of main window
+         */
+        private final MainWindowController controller;
+        
+        /**
+         * Creates new handler of mouse movement in interactive mode
+         * @param controller Controller of behaviour of main window
+         */
+        public InteractiveMouseHandler(MainWindowController controller)
+        {
+            this.controller = controller;
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e)
+        {
+            MainWindow.this.getContentPane().setCursor(Cursor.getDefaultCursor());
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e)
+        {
+            if (SwingUtilities.isRightMouseButton(e) && this.controller.isInteractive())
+            {
+                BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+                Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+                    cursorImg, new Point(0, 0), "blank cursor");
+                MainWindow.this.getContentPane().setCursor(blankCursor);
+                this.x = e.getX();
+                this.y = e.getY();
+            }
+        }
+        
+        @Override
+        public void mouseMoved(MouseEvent me){}
+        
+        @Override
+        public void mouseDragged(MouseEvent me)
+        {
+            if (SwingUtilities.isRightMouseButton(me) && this.controller.isInteractive())
+            {
+                int dx = me.getX() - this.x;
+                int dy = me.getY() - this.y;
+                this.x = me.getX();
+                this.y = me.getY();
+                this.controller.mouseMoved(dx, dy);
+            }
+        }
+        
+    }
+    
     /**
      * Default width of window
      */
@@ -134,6 +216,16 @@ public class MainWindow extends JFrame
      * Panel containing properties
      */
     private JPanel propertiesPanel;
+    
+    /**
+     * Button which shows or hides axis
+     */
+    private JToggleButton axisButton;
+    
+    /**
+     * Button which enables interactive mode
+     */
+    private JToggleButton interactiveButton;
     
     /**
      * Creates new main window
@@ -257,10 +349,16 @@ public class MainWindow extends JFrame
         render.add(camSpace);
         root.add(render);
         model.reload();
+        JComponent output = renderer.getOutput();
         this.renderPanel.removeAll();
-        this.renderPanel.add(renderer.getOutput(), BorderLayout.CENTER);
+        this.renderPanel.add(output, BorderLayout.CENTER);
         this.renderPanel.revalidate();
         this.renderPanel.repaint();
+        this.axisButton.setEnabled(true);
+        this.interactiveButton.setEnabled(true);
+        MainWindow.InteractiveMouseHandler mouseHandler = new MainWindow.InteractiveMouseHandler(this.controller);
+        output.addMouseMotionListener(mouseHandler);
+        output.addMouseListener(mouseHandler);
     }
     
     /**
@@ -373,6 +471,13 @@ public class MainWindow extends JFrame
                     tf.setEditable(false);
                 }
                 propVal = tf;
+                obj.addChangeCallback(new ObjectChangeCallback(){
+                    @Override
+                    public void objectChanged()
+                    {
+                        tf.setText(obj.getString(prop));
+                    }
+                });
             }
             else if (obj.getType(prop) == Integer.class)
             {
@@ -390,6 +495,13 @@ public class MainWindow extends JFrame
                     ((DefaultEditor) spinner.getEditor()).getTextField().setEditable(false);
                 }
                 propVal = spinner;
+                obj.addChangeCallback(new ObjectChangeCallback(){
+                    @Override
+                    public void objectChanged()
+                    {
+                        spinner.setValue(obj.getInt(prop));
+                    }
+                });
             }
             else if (obj.getType(prop) == Double.class)
             {
@@ -407,6 +519,13 @@ public class MainWindow extends JFrame
                     ((DefaultEditor) spinner.getEditor()).getTextField().setEditable(false);
                 }
                 propVal = spinner;
+                obj.addChangeCallback(new ObjectChangeCallback(){
+                    @Override
+                    public void objectChanged()
+                    {
+                        spinner.setValue(obj.getDouble(prop));
+                    }
+                });
             }            
             else if (obj.getType(prop) == Enum.class)
             {
@@ -421,6 +540,13 @@ public class MainWindow extends JFrame
                     }                    
                 });
                 propVal = comboBox;
+                obj.addChangeCallback(new ObjectChangeCallback(){
+                    @Override
+                    public void objectChanged()
+                    {
+                        comboBox.setSelectedItem(obj.getEnumValue(prop));
+                    }
+                });
             }
             else if (obj.getType(prop) == Col.class)
             {
@@ -433,6 +559,13 @@ public class MainWindow extends JFrame
                     }                
                 });
                 propVal = colorField;
+                obj.addChangeCallback(new ObjectChangeCallback(){
+                    @Override
+                    public void objectChanged()
+                    {
+                        colorField.setColour(obj.getColour(prop));
+                    }
+                });
             }
             String propType = "<neznámý>";
             Class propTypeVal = obj.getType(prop);
@@ -530,8 +663,16 @@ public class MainWindow extends JFrame
             }
         });
         toolBar.add(detailsButton);
-        JToggleButton interactiveButton = MainWindow.createToggleButton(Icon.INTERACTIVE, "Interaktivní režim");
-        interactiveButton.setSelected(false);
+        this.interactiveButton = MainWindow.createToggleButton(Icon.INTERACTIVE, "Interaktivní režim");
+        this.interactiveButton.setSelected(false);
+        this.interactiveButton.setEnabled(false);
+        this.interactiveButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent ae)
+            {
+                MainWindow.this.controller.toggleInteractive(MainWindow.this.interactiveButton.isSelected());
+            }
+        });
         toolBar.add(interactiveButton);
         JToggleButton helpButton = MainWindow.createToggleButton(Icon.HELP, "Rychlá nápověda");
         helpButton.setEnabled(false);
@@ -548,6 +689,17 @@ public class MainWindow extends JFrame
                 }
             }        
         });
+        this.axisButton = MainWindow.createToggleButton(Icon.AXIS, "Zobrazení os");
+        this.axisButton.setSelected(false);
+        this.axisButton.setEnabled(false);
+        this.axisButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent ae)
+            {
+                MainWindow.this.controller.axisToggled(MainWindow.this.axisButton.isSelected());
+            }        
+        });
+        toolBar.add(this.axisButton);
         this.getContentPane().add(toolBar, BorderLayout.NORTH);
     }
     
