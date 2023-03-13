@@ -36,6 +36,11 @@ public class MainWindowController
     private static final double VIEW_SPEED = 0.01;
     
     /**
+     * Speed of FOV change
+     */
+    private static final double FOV_SPEED = 0.1;
+    
+    /**
      * Reference to main window of program
      */
     private final MainWindow mainWindow;
@@ -136,5 +141,17 @@ public class MainWindowController
         if (zenith < 0)       zenith = 0;
         this.scene.getCamera().setAzimuth(azimuth);
         this.scene.getCamera().setZenith(zenith);
+    }
+    
+    /**
+     * Handles mouse wheel rotation
+     * @param amount Amount of mouse wheel rotation
+     */
+    public void mouseWheeled(int amount)
+    {
+        double alpha = this.renderer.getCameraSpace().getAlpha() + ((double)amount * MainWindowController.FOV_SPEED);
+        if (alpha > Math.PI) alpha = Math.PI;
+        if (alpha < 0)       alpha = 0;
+        this.renderer.getCameraSpace().setAlpha(alpha);
     }
 }

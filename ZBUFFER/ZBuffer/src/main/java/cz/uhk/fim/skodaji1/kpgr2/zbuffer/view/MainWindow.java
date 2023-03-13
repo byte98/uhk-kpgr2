@@ -78,6 +78,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -153,6 +154,16 @@ public class MainWindow extends JFrame
                 this.controller.mouseMoved(dx, dy);
             }
         }
+
+        @Override
+        public void mouseWheelMoved(MouseWheelEvent e)
+        {
+            if (this.controller.isInteractive())
+            {
+                this.controller.mouseWheeled(e.getWheelRotation());
+            }
+        }
+        
         
     }
     
@@ -359,6 +370,7 @@ public class MainWindow extends JFrame
         MainWindow.InteractiveMouseHandler mouseHandler = new MainWindow.InteractiveMouseHandler(this.controller);
         output.addMouseMotionListener(mouseHandler);
         output.addMouseListener(mouseHandler);
+        output.addMouseWheelListener(mouseHandler);
     }
     
     /**
