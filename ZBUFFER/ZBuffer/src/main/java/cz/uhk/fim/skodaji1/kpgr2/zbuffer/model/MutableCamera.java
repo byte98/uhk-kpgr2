@@ -96,6 +96,19 @@ public class MutableCamera extends MutableAdapter
     }
     
     /**
+     * Gets view vector
+     * @return View vector of camera
+     */
+    public Vec3D getViewVector()
+    {
+        return new Vec3D(
+                Math.cos(this.azimuth) * Math.cos(this.zenith),
+                Math.sin(this.azimuth) * Math.cos(this.zenith),
+                Math.sin(this.zenith)
+        );
+    }
+    
+    /**
      * Gets azimuth of camera
      * @return Azimuth of camera
      */
@@ -131,6 +144,66 @@ public class MutableCamera extends MutableAdapter
     public void setZenith(double zenith)
     {
         this.zenith = zenith;
+        this.updateCamera();
+        this.informChange();
+    }
+    
+    /**
+     * Gets X coordinate of camera
+     * @return X coordinate of camera
+     */
+    public double getX()
+    {
+        return this.x;
+    }
+    
+    /**
+     * Sets X coordinate of camera
+     * @param x New X coordinate of camera
+     */
+    public void setX(double x)
+    {
+        this.x = x;
+        this.updateCamera();
+        this.informChange();
+    }
+    
+    /**
+     * Gets Y coordinate of camera
+     * @return Y coordinate of camera
+     */
+    public double getY()
+    {
+        return this.y;
+    }
+    
+    /**
+     * Sets Y coordinate of camera
+     * @param y New Y coordinate of camera
+     */
+    public void setY(double y)
+    {
+        this.y = y;
+        this.updateCamera();
+        this.informChange();
+    }
+    
+    /**
+     * Get Z coordinate of camera
+     * @return Z coordinate of camera
+     */
+    public double getZ()
+    {
+        return this.z;
+    }
+    
+    /**
+     * Sets Z coordinate of camera
+     * @param z New Z coordinate of camera
+     */
+    public void setZ(double z)
+    {
+        this.z = z;
         this.updateCamera();
         this.informChange();
     }
@@ -183,9 +256,9 @@ public class MutableCamera extends MutableAdapter
     {
         switch (property.toLowerCase().trim())
         {
-            case "x": this.x = value; break;
-            case "y": this.y = value; break;
-            case "z": this.z = value; break;
+            case "x": this.setX(value); break;
+            case "y": this.setY(value); break;
+            case "z": this.setZ(value); break;
             case "azimut": this.setAzimuth(value); break;
             case "zenit": this.setZenith(value); break;
         }

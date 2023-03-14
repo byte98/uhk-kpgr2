@@ -1,5 +1,6 @@
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller;
 
+import cz.uhk.fim.kpgr2.transforms.Vec3D;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Scene;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.persistence.JsonLoader;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.render.Renderer;
@@ -39,6 +40,11 @@ public class MainWindowController
      * Speed of FOV change
      */
     private static final double FOV_SPEED = 0.1;
+    
+    /**
+     * Speed of movement of camera
+     */
+    private static final double MOVE_SPEED = 1;
     
     /**
      * Reference to main window of program
@@ -160,6 +166,42 @@ public class MainWindowController
      */
     public void moveForward()
     {
-        
+        Vec3D eye = this.scene.getCamera().getViewVector();
+        double x = this.scene.getCamera().getX() + (MainWindowController.MOVE_SPEED * eye.x);
+        double y = this.scene.getCamera().getY() + (MainWindowController.MOVE_SPEED * eye.y);
+        double z = this.scene.getCamera().getZ() + (MainWindowController.MOVE_SPEED * eye.z);
+        this.scene.getCamera().setX(x);
+        this.scene.getCamera().setY(y);
+        this.scene.getCamera().setZ(z);
+    }
+    
+    /**
+     * Moves camera backward
+     */
+    public void moveBackward()
+    {
+        Vec3D eye = this.scene.getCamera().getViewVector();
+        double x = this.scene.getCamera().getX() - (MainWindowController.MOVE_SPEED * eye.x);
+        double y = this.scene.getCamera().getY() - (MainWindowController.MOVE_SPEED * eye.y);
+        double z = this.scene.getCamera().getZ() - (MainWindowController.MOVE_SPEED * eye.z);
+        this.scene.getCamera().setX(x);
+        this.scene.getCamera().setY(y);
+        this.scene.getCamera().setZ(z);
+    }
+    
+    /**
+     * Moves camera left
+     */
+    public void moveLeft()
+    {
+        System.out.println("LEFT");
+    }
+    
+    /**
+     * Moves camera right
+     */
+    public void moveRight()
+    {
+        System.out.println("RIGHT");
     }
 }

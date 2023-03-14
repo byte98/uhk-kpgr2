@@ -85,6 +85,7 @@ import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.KeyStroke;
@@ -171,63 +172,149 @@ public class MainWindow extends JFrame
             }
         }        
     }
+    
     /**
      * Class which handles key actions when in interactive mode
-     * {@link https://stackoverflow.com/questions/10544956/java-swing-do-something-while-the-key-is-being-pressed }
      */
-    private static class InteractiveKeyHandler extends AbstractAction
+    private class InteractiveKeyHandler implements ActionListener
     {
-        private static final String UP_KEY_PRESSED = "up key pressed";
-        private static final String UP_KEY_RELEASED = "up key released";
-        private static final int UP_TIMER_DELAY = 200;
-        private Timer upTimer;
-        public static void init(JComponent target)
+        /**
+         * Interval of sampling of pressed keys
+         */
+        private static final int INTERVAL = 100;
+        
+        /**
+         * Flag, whether handler is enabled
+         */
+        private boolean enabled;
+        
+        /**
+         * Timer of sampling of pressed keys
+         */
+        private final Timer timer;
+        
+        /**
+         * Controller of behaviour of main window
+         */
+        private final MainWindowController controller;
+        
+        /**
+         * Actually pressed key
+         */
+        private char key = 0;
+        
+        /**
+         * Creates new handler of key actions in interactive mode
+         * @param controller Controller of behaviour of main window
+         */
+        public InteractiveKeyHandler(MainWindowController controller)
         {
-            int condition = JComponent.WHEN_IN_FOCUSED_WINDOW;
-            InputMap inputMap = target.getInputMap(condition);
-            ActionMap actionMap = target.getActionMap();
-            KeyStroke upKeyPressed = KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false);
-            KeyStroke upKeyReleased = KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, true);
-            inputMap.put(upKeyPressed, UP_KEY_PRESSED);
-            inputMap.put(upKeyReleased, UP_KEY_RELEASED);
-
-            actionMap.put(UP_KEY_PRESSED, new InteractiveKeyHandler(true));
-            actionMap.put(UP_KEY_RELEASED, new InteractiveKeyHandler(false));
+            this.controller = controller;
+            this.timer = new Timer(MainWindow.InteractiveKeyHandler.INTERVAL, this);
         }
         
-        private boolean onKeyRelease;
-
-        private InteractiveKeyHandler(boolean onKeyRelease)
+        /**
+         * Enables key actions handler
+         */
+        public void enable()
         {
-           this.onKeyRelease = onKeyRelease;
+            this.enabled = true;
+            this.timer.start();
+        }
+        
+        /**
+         * Disables key actions handler
+         */
+        public void disable()
+        {
+            this.enabled = false;
+            this.timer.stop();
         }
 
-      @Override
-      public void actionPerformed(ActionEvent evt) {
-         if (!onKeyRelease)
-         {
-            if (upTimer != null && upTimer.isRunning()) {
-               return;
-            }
-            System.out.println("key pressed");
-            upTimer = new Timer(UP_TIMER_DELAY, new ActionListener() {
-
-               @Override
-               public void actionPerformed(ActionEvent e) {
-                   System.out.println("key pressed");
-               }
+        /**
+         * Initializes 
+         * @param component 
+         */
+        public void init(JComponent component)
+        {
+            int cond = JComponent.WHEN_IN_FOCUSED_WINDOW;
+            InputMap inputMap = component.getInputMap(cond);
+            ActionMap actionMap = component.getActionMap();
+            
+            inputMap.put(KeyStroke.getKeyStroke("W"), "pressW");
+            inputMap.put(KeyStroke.getKeyStroke("S"), "pressS");
+            inputMap.put(KeyStroke.getKeyStroke("A"), "pressA");
+            inputMap.put(KeyStroke.getKeyStroke("D"), "pressD");
+            inputMap.put(KeyStroke.getKeyStroke("released W"), "release");
+            inputMap.put(KeyStroke.getKeyStroke("released S"), "release");
+            inputMap.put(KeyStroke.getKeyStroke("released A"), "release");
+            inputMap.put(KeyStroke.getKeyStroke("released D"), "release");
+            
+            actionMap.put("pressW", new AbstractAction(){
+                @Override
+                public void actionPerformed(ActionEvent ae)
+                {
+                    MainWindow.InteractiveKeyHandler.this.key = 'W';
+                    BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+                    Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+                    cursorImg, new Point(0, 0), "blank cursor");
+                    MainWindow.this.getContentPane().setCursor(blankCursor);
+                }
             });
-            upTimer.start();
-         }
-         else
-         {
-            System.out.println("key released");
-            if (upTimer != null && upTimer.isRunning()) {
-               upTimer.stop();
-               upTimer = null;
+            actionMap.put("pressS", new AbstractAction(){
+                @Override
+                public void actionPerformed(ActionEvent ae)
+                {
+                    MainWindow.InteractiveKeyHandler.this.key = 'S';
+                    BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+                    Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+                    cursorImg, new Point(0, 0), "blank cursor");
+                    MainWindow.this.getContentPane().setCursor(blankCursor);
+                }
+            });
+            actionMap.put("pressA", new AbstractAction(){
+                @Override
+                public void actionPerformed(ActionEvent ae)
+                {
+                    MainWindow.InteractiveKeyHandler.this.key = 'A';
+                    BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+                    Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+                    cursorImg, new Point(0, 0), "blank cursor");
+                    MainWindow.this.getContentPane().setCursor(blankCursor);
+                }
+            });
+            actionMap.put("pressD", new AbstractAction(){
+                @Override
+                public void actionPerformed(ActionEvent ae)
+                {
+                    MainWindow.InteractiveKeyHandler.this.key = 'D';
+                    BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+                    Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+                    cursorImg, new Point(0, 0), "blank cursor");
+                    MainWindow.this.getContentPane().setCursor(blankCursor);
+                }
+            });
+            actionMap.put("release", new AbstractAction(){
+                @Override
+                public void actionPerformed(ActionEvent ae)
+                {
+                    MainWindow.InteractiveKeyHandler.this.key = 0;
+                    MainWindow.this.getContentPane().setCursor(Cursor.getDefaultCursor());
+                }
+            });
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent ae)
+        {
+            if (this.enabled == true && this.controller.isInteractive() && this.key != 0)
+            {
+                if      (this.key == 'W') this.controller.moveForward();
+                else if (this.key == 'S') this.controller.moveBackward();
+                else if (this.key == 'A') this.controller.moveLeft();
+                else if (this.key == 'D') this.controller.moveRight();
             }
-         }
-      }
+        }
     }
     
     /**
@@ -302,6 +389,11 @@ public class MainWindow extends JFrame
     private JToggleButton interactiveButton;
     
     /**
+     * Handler of keyboard actions when in interactive mode
+     */
+    private final MainWindow.InteractiveKeyHandler keyHandler;
+    
+    /**
      * Creates new main window
      * @param controller Controller of window
      */
@@ -314,6 +406,7 @@ public class MainWindow extends JFrame
         super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         super.setResizable(true);
         this.controller = controller;
+        this.keyHandler = new MainWindow.InteractiveKeyHandler(this.controller);
         this.initializeComponents();
     }
     
@@ -434,7 +527,8 @@ public class MainWindow extends JFrame
         output.addMouseMotionListener(mouseHandler);
         output.addMouseListener(mouseHandler);
         output.addMouseWheelListener(mouseHandler);
-        InteractiveKeyHandler.init(output);
+        this.keyHandler.init(output);
+        
     }
     
     /**
@@ -762,6 +856,11 @@ public class MainWindow extends JFrame
                 if (interactiveButton.isSelected() == false)
                 {
                     helpButton.setSelected(false);
+                    MainWindow.this.keyHandler.disable();
+                }
+                else
+                {
+                    MainWindow.this.keyHandler.enable();
                 }
             }        
         });
