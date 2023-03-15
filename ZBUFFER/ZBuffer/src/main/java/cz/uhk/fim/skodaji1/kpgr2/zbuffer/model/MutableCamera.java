@@ -96,16 +96,60 @@ public class MutableCamera extends MutableAdapter
     }
     
     /**
-     * Gets view vector
-     * @return View vector of camera
+     * Moves camera forward
+     * @param speed Speed of camera movement
      */
-    public Vec3D getViewVector()
+    public void forward(double speed)
     {
-        return new Vec3D(
-                Math.cos(this.azimuth) * Math.cos(this.zenith),
-                Math.sin(this.azimuth) * Math.cos(this.zenith),
-                Math.sin(this.zenith)
-        );
+        this.updateCamera();
+        this.camera.forward(speed);
+        this.move();
+        
+    }
+    
+    /**
+     * Moves camera backward
+     * @param speed Speed of camera movement
+     */
+    public void backward(double speed)
+    {
+        this.updateCamera();
+        this.camera.backward(speed);
+        this.move();
+    }
+    
+    /**
+     * Moves camera left
+     * @param speed Speed of camera movement
+     */
+    public void left(double speed)
+    {
+        this.updateCamera();
+        this.camera.left(speed);
+        this.move();
+    }
+    
+    /**
+     * Moves camera right
+     * @param speed Speed of camera movement
+     */
+    public void right(double speed)
+    {
+        this.updateCamera();
+        this.camera.right(speed);
+        this.move();
+    }
+    
+    /**
+     * Moves camera
+     */
+    private void move()
+    {
+        this.x = this.camera.getPosition().x;
+        this.y = this.camera.getPosition().y;
+        this.z = this.camera.getPosition().z;
+        this.updateCamera();
+        this.informChange();
     }
     
     /**

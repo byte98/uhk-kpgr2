@@ -166,13 +166,7 @@ public class MainWindowController
      */
     public void moveForward()
     {
-        Vec3D eye = this.scene.getCamera().getViewVector();
-        double x = this.scene.getCamera().getX() + (MainWindowController.MOVE_SPEED * eye.x);
-        double y = this.scene.getCamera().getY() + (MainWindowController.MOVE_SPEED * eye.y);
-        double z = this.scene.getCamera().getZ() + (MainWindowController.MOVE_SPEED * eye.z);
-        this.scene.getCamera().setX(x);
-        this.scene.getCamera().setY(y);
-        this.scene.getCamera().setZ(z);
+        this.scene.getCamera().forward(MainWindowController.MOVE_SPEED);
     }
     
     /**
@@ -180,13 +174,7 @@ public class MainWindowController
      */
     public void moveBackward()
     {
-        Vec3D eye = this.scene.getCamera().getViewVector();
-        double x = this.scene.getCamera().getX() - (MainWindowController.MOVE_SPEED * eye.x);
-        double y = this.scene.getCamera().getY() - (MainWindowController.MOVE_SPEED * eye.y);
-        double z = this.scene.getCamera().getZ() - (MainWindowController.MOVE_SPEED * eye.z);
-        this.scene.getCamera().setX(x);
-        this.scene.getCamera().setY(y);
-        this.scene.getCamera().setZ(z);
+        this.scene.getCamera().backward(MainWindowController.MOVE_SPEED);
     }
     
     /**
@@ -194,7 +182,7 @@ public class MainWindowController
      */
     public void moveLeft()
     {
-        System.out.println("LEFT");
+        this.scene.getCamera().left(MainWindowController.MOVE_SPEED);
     }
     
     /**
@@ -202,6 +190,6 @@ public class MainWindowController
      */
     public void moveRight()
     {
-        System.out.println("RIGHT");
+        this.scene.getCamera().right(MainWindowController.MOVE_SPEED);
     }
 }
