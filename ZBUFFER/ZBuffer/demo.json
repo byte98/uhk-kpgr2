@@ -14,68 +14,156 @@
             "width": 800,
             "height": 600,
             "alpha": 1.57079632679,
-            "type": "PERSPECTIVE"
+            "type": "ORTHOGONAL"
         }
     },
     "solids": [
         {
-            "name": "Teleso_1",
+            "name": "Jehlan_s_paprskem",
             "parts": [
                 {
-                    "name": "Cast_001",
+                    "name": "Podstava",
                     "type": "TRIANGLE",
-                    "primitives": [
+                    "primitives":[
                         {
-                            "name": "Trojuhelnik_001",
+                            "name": "Trojuhelnik_podstavy",
                             "fill": {
                                 "type": "COLOUR",
-                                "value": "ffff00"
+                                "value": "ffffff"
                             },
                             "vertices": [
                                 {
-                                    "name": "Vrchol_001",
-                                    "x": 64.2,
-                                    "y": 19.5,
-                                    "z": 24.5
+                                    "name": "Vrchol_podstava_0_0_0",
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
                                 },
                                 {
-                                    "name": "Vrchol_002",
-                                    "x": 2.5,
-                                    "y": 0.6,
-                                    "z": 0.2
+                                    "name": "Vrchol_podstava_0_100_150",
+                                    "x": 0.0,
+                                    "y": 100.0,
+                                    "z": 150.0
                                 },
                                 {
-                                    "name": "Vrchol_003",
-                                    "x": 18.95,
-                                    "y": 5.85,
-                                    "z": 5.6
+                                    "name": "Vrchol_podstava_0_200_50",
+                                    "x": 0.0,
+                                    "y": 200.0,
+                                    "z": 50.0
                                 }
                             ]
                         }
                     ]
                 },
                 {
-                    "name": "Cast_002",
-                    "type": "LINE",
-                    "primitives": [
+                    "name": "Steny",
+                    "type": "TRIANGLE",
+                    "primitives":[
                         {
-                            "name": "Usecka_001",
+                            "name": "Stena_1",
                             "fill": {
                                 "type": "COLOUR",
-                                "value": "ff00ff"
+                                "value": "ff0000"
                             },
                             "vertices": [
                                 {
-                                    "name": "Vrchol_004",
-                                    "x": 85,
-                                    "y": 25,
-                                    "z": 32
+                                    "name": "Vrchol_stena1_0_0_0",
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
                                 },
                                 {
-                                    "name": "Vrchol_005",
-                                    "x": 18.95,
-                                    "y": 5.85,
-                                    "z": 5.6
+                                    "name": "Vrchol_stena1_0_100_150",
+                                    "x": 0.0,
+                                    "y": 100.0,
+                                    "z": 150.0
+                                },
+                                {
+                                    "name": "Vrchol_stena1_200_200_200",
+                                    "x": 200.0,
+                                    "y": 200.0,
+                                    "z": 200.0
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Stena_2",
+                            "fill": {
+                                "type": "COLOUR",
+                                "value": "00ff00"
+                            },
+                            "vertices": [
+                                {
+                                    "name": "Vrchol_stena2_0_0_0",
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                {
+                                    "name": "Vrchol_stena2_200_200_200",
+                                    "x": 200.0,
+                                    "y": 200.0,
+                                    "z": 200.0
+                                },
+                                {
+                                    "name": "Vrchol_stena2_0_200_50",
+                                    "x": 0.0,
+                                    "y": 200.0,
+                                    "z": 50.0
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Stena_3",
+                            "fill": {
+                                "type": "COLOUR",
+                                "value": "0000ff"
+                            },
+                            "vertices": [
+                                {
+                                    "name": "Vrchol_stena3_200_200_200",
+                                    "x": 200.0,
+                                    "y": 200.0,
+                                    "z": 200.0
+                                },
+                                {
+                                    "name": "Vrchol_stena3_0_100_150",
+                                    "x": 0.0,
+                                    "y": 100.0,
+                                    "z": 150.0
+                                },
+                                {
+                                    "name": "Vrchol_stena_3_0_200_50",
+                                    "x": 0.0,
+                                    "y": 200.0,
+                                    "z": 50.0
+                                }
+                            ]
+                        }
+                        
+                    ]
+                },
+                {
+                    "name": "Paprsek",
+                    "type": "LINE",
+                    "primitives":[
+                        {
+                            "name": "Usecka_paprsku",
+                            "fill": {
+                                "type": "COLOUR",
+                                "value": "ffff00"
+                            },
+                            "vertices":[
+                                {
+                                    "name": "Vrchol_paprsek_jehlan",
+                                    "x": 200.0,
+                                    "y": 200.0,
+                                    "z": 200.0
+                                },
+                                {
+                                    "name": "Vrchol_paprsek_prostor",
+                                    "x": 400.0,
+                                    "y": 400.0,
+                                    "z": 400.0
                                 }
                             ]
                         }
@@ -84,21 +172,21 @@
             ],
             "transformations": [
                 {
-                    "name": "Rotace_001",
+                    "name": "Prazdna_rotace",
                     "type": "ROTATION",
                     "alpha": 0.0,
                     "beta":  0.0,
                     "gamma": 0.0
                 },
                 {
-                    "name": "Meritko_001",
+                    "name": "Konstantni_meritko",
                     "type": "SCALE",
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0
                 },
                 {
-                    "name": "Posunuti_001",
+                    "name": "Zadne_posunuti",
                     "type": "TRANSLATION",
                     "x": 0.0,
                     "y": 0.0,

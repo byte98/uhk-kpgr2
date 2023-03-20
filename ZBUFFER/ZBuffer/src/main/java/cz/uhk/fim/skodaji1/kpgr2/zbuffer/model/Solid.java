@@ -165,7 +165,7 @@ public class Solid extends MutableAdapter
     @Override
     public boolean isMutable(String property)
     {
-        return true;
+        return false;
     }
     
     @Override

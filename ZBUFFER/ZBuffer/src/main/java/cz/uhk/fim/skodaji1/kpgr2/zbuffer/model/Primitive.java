@@ -19,6 +19,8 @@ package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 
 import cz.uhk.fim.kpgr2.transforms.Col;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -82,19 +84,40 @@ public interface Primitive extends Mutable
     @Override
     default public String[] getProperties()
     {
-        return new String[]{"Název", "Typ"};
+        List<String> list = new ArrayList<>();
+        list.add("Název");
+        list.add("Typ");
+        list.addAll(Arrays.asList(this.getFill().getProperties()));
+        String[] reti = new String[list.size()];
+        for(int i = 0; i < list.size(); i++)
+        {
+            reti[i] = list.get(i);
+        }
+        return reti;
     }
     
     @Override
     default public boolean isMutable(String property)
     {
-        return property.toLowerCase().trim().equals("typ") == false;
+        boolean reti = false;
+        if (property.trim().toLowerCase().equals("název") == false && 
+            property.trim().toLowerCase().equals("typ") == false)
+        {
+            reti = this.getFill().isMutable(property);
+        }
+        return reti;
     }
     
     @Override
     default public Class getType(String property)
     {
-        return String.class;
+        Class reti = String.class;
+        if (property.trim().toLowerCase().equals("název") == false && 
+            property.trim().toLowerCase().equals("typ") == false)
+        {
+            reti = this.getFill().getType(property);
+        }
+        return reti;
     }
     
     @Override
@@ -113,29 +136,72 @@ public interface Primitive extends Mutable
                 case LINE: reti = "Úsečka"; break;
             }
         }
+        else
+        {
+            reti = this.getFill().getString(property);
+        }
         return reti;
     }
     
     @Override
     default public int getInt(String property)
     {
-        return Integer.MIN_VALUE;
+        return this.getFill().getInt(property);
     }
     
     @Override
     default public double getDouble(String property)
     {
-        return Double.NaN;
+        return this.getFill().getDouble(property);
     }
     
     @Override
     default public Col getColour(String property)
     {
-        return new Col(Color.WHITE.getRGB());
+        return this.getFill().getColour(property);
     }
     
-    @Override default public void set(String property, int value){}
-    @Override default public void set(String property, double value){}
-    @Override default public void set(String property, String value){}
-    @Override default public void set(String property, Col value){}
+    @Override
+    default public void set(String property, int value)
+    {
+        this.getFill().set(property, value);
+    }
+    
+    @Override
+    default public void set(String property, double value)
+    {
+        this.getFill().set(property, value);
+    }
+    
+    @Override 
+    default public void set(String property, String value)
+    {
+        this.getFill().set(property, value);
+    }
+    
+    @Override
+    default public void set(String property, Col value)
+    {
+        this.getFill().set(property, value);
+    }    
+
+    @Override
+    default public void setEnum(String property, String value)
+    {
+        this.getFill().setEnum(property, value);
+    }
+
+    @Override
+    default public String getEnumValue(String enumName)
+    {
+        return this.getFill().getEnumValue(enumName);
+    }
+
+    @Override
+    default public String[] getAllowedValues(String enumName)
+    {
+        return this.getFill().getAllowedValues(enumName);
+    }
+    
+    
 }

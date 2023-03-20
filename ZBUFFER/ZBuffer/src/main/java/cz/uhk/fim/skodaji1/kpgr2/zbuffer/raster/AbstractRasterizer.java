@@ -17,6 +17,8 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster;
 
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.render.Renderer;
+
 /**
  * Class which abstracts all rasterizers
  * @author Jiri Skoda <jiri.skoda@uhk.cz>
@@ -34,6 +36,11 @@ public abstract class AbstractRasterizer
     protected PixelProvider colour;
     
     /**
+     * Renderer mode of rasterizer
+     */
+    protected Renderer.RenderType mode = Renderer.RenderType.NORMAL;
+    
+    /**
      * Sets raster to which line will be rasterized
      * @param raster Raster to which line will be rasterized
      */
@@ -49,5 +56,14 @@ public abstract class AbstractRasterizer
     public void setColour(PixelProvider colour)
     {
         this.colour = colour;
+    }
+    
+    /**
+     * Sets mode of rasterizer
+     * @param mode New mode of rasterizer
+     */
+    public void setMode(Renderer.RenderType mode)
+    {
+        this.mode = mode;
     }
 }

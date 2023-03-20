@@ -304,7 +304,7 @@ public class JsonLoader
         Line reti = new Line(lineObj.get("name").getAsString());
         for(JsonElement vertex: lineObj.get("vertices").getAsJsonArray())
         {
-            reti.addVertex(this.loadVertex(vertex));
+            reti.addVertex(this.loadVertex(vertex, reti));
         }
         return reti;
     }
@@ -337,7 +337,7 @@ public class JsonLoader
         Triangle reti = new Triangle(triangleObj.get("name").getAsString());
         for(JsonElement vertex: triangleObj.get("vertices").getAsJsonArray())
         {
-            reti.addVertex(this.loadVertex(vertex));
+            reti.addVertex(this.loadVertex(vertex, reti));
         }
         return reti;
     }
@@ -345,16 +345,18 @@ public class JsonLoader
     /**
      * Loads vertex from JSON element
      * @param elem Element containing information about vertex
+     * @param primitive Primitive to which vertex belongs to
      * @return Vertex loaded from JSON
      */
-    private MutableVertex loadVertex(JsonElement elem)
+    private MutableVertex loadVertex(JsonElement elem, Primitive primitive)
     {
         JsonObject vObj = elem.getAsJsonObject();
         MutableVertex reti = new MutableVertex(
                 vObj.get("name").getAsString(),
                 vObj.get("x").getAsDouble(),
                 vObj.get("y").getAsDouble(),
-                vObj.get("z").getAsDouble()
+                vObj.get("z").getAsDouble(),
+                primitive
         );
         return reti;
     }

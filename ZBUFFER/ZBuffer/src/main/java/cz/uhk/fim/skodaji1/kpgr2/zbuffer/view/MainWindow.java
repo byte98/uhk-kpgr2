@@ -68,24 +68,15 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.*;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
-import java.awt.AWTException;
 import java.awt.Cursor;
 import java.awt.Point;
-import java.awt.Robot;
 import java.awt.Toolkit;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.KeyStroke;
@@ -553,8 +544,6 @@ public class MainWindow extends JFrame
                 for(Primitive pm: p.getPrimitives())
                 {
                     TreeNode primitive = new TreeNode(Icon.TREE_PRIMITIVE, pm.getName(), pm);
-                    TreeNode fill = new TreeNode(Icon.TREE_VERTEX_TEX, "Výplň", pm.getFill());
-                    primitive.add(fill);
                     for(MutableVertex v: pm.getVertices())
                     {
                         TreeNode vertex = new TreeNode(Icon.TREE_VERTEX, v.getName(), v);

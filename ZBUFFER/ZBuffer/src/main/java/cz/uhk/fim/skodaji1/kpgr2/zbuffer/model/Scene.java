@@ -17,12 +17,9 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 
-import cz.uhk.fim.kpgr2.transforms.Point3D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 /**
  * Class representing whole scene
@@ -291,7 +288,7 @@ public class Scene extends MutableAdapter
     private void generateVertexBuffer()
     {
         List<Vertex> tmp = new ArrayList<>();
-                for(Solid solid: this.solids)
+        for(Solid solid: this.solids)
         {
             for(Part part: solid.getParts())
             {

@@ -221,7 +221,7 @@ public class Scale extends MutableAdapter implements Transformation
     @Override
     public boolean isMutable(String property)
     {
-        return true;
+        return (property.toLowerCase().trim().equals("název") == false);
     }
     
     

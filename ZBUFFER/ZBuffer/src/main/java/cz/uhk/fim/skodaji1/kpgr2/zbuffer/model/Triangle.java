@@ -123,33 +123,22 @@ public class Triangle implements Primitive
             callback.objectChanged();
         }
     }
-    
-    @Override
-    public String[] getAllowedValues(String enumName)
-    {
-        return new String[0];
-    }
-    
-    @Override public String getEnumValue(String enumName)
-    {
-        return "";
-    }
-
-    @Override public void setEnum(String property, String value){}
 
     @Override
     public void setFill(Fill fill)
     {
         this.fill = fill;
-        for(Vertex v: this.getVertices())
-        {
-            v.setFill(fill);
-        }
     }
 
     @Override
     public Fill getFill()
     {
         return this.fill;
+    }
+    
+    @Override 
+    public String toString()
+    {
+        return "TRIANGLE (" + this.vertices.get(0).toString() + ", " + this.vertices.get(1).toString() + "," + this.vertices.get(2).toString() + ")";
     }
 }
