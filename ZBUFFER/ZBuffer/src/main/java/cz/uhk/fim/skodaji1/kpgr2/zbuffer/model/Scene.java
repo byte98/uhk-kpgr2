@@ -399,12 +399,6 @@ public class Scene extends MutableAdapter
     }
 
     @Override
-    public boolean isMutable(String property)
-    {
-        return true;
-    }
-
-    @Override
     public Class getType(String property)
     {
         return String.class;

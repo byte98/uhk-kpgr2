@@ -148,6 +148,7 @@ public class Part extends MutableAdapter
             {
                 case TRIANGLE: reti = "Trojúhelníky"; break;
                 case LINE: reti = "Úsečky"; break;
+                case BICUBICS: reti = "Bikubické plochy"; break;
             }
         }
         return reti;

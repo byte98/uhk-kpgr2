@@ -22,6 +22,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import cz.uhk.fim.kpgr2.transforms.Col;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Bicubics;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Fill;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Line;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableCamera;
@@ -288,8 +289,32 @@ public class JsonLoader
         {
             reti = this.loadLine(elem);
         }
+        else if (type == PrimitiveType.BICUBICS)
+        {
+            reti = this.loadBicubics(elem);
+        }
         Fill fill = this.loadFill(elem.getAsJsonObject().get("fill"));
         reti.setFill(fill);
+        return reti;
+    }
+    
+    /**
+     * Loads bicubics from JSON element
+     * @param elem Element containing information about bicubics
+     * @return Bicubics loaded from JSON
+     */
+    private Bicubics loadBicubics(JsonElement elem)
+    {
+        JsonObject biObj = elem.getAsJsonObject();
+        Bicubics.BicubicsType bType = Bicubics.BicubicsType.fromString(biObj.get("type").getAsString());
+        Bicubics reti = new Bicubics(
+                Bicubics.BicubicsType.fromString(biObj.get("type").getAsString()),
+                biObj.get("name").getAsString()
+        );
+        for(JsonElement vertex: biObj.get("vertices").getAsJsonArray())
+        {
+            reti.addVertex(this.loadVertex(vertex, reti));
+        }
         return reti;
     }
     

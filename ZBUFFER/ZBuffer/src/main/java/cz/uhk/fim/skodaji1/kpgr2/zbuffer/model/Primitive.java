@@ -134,6 +134,7 @@ public interface Primitive extends Mutable
             {
                 case TRIANGLE: reti = "Trojúhelník"; break;
                 case LINE: reti = "Úsečka"; break;
+                case BICUBICS: reti = "Bikubika"; break;
             }
         }
         else
