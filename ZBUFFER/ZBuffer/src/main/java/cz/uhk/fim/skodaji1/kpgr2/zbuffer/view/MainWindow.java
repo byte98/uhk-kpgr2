@@ -783,20 +783,6 @@ public class MainWindow extends JFrame
                 }
             }        
         }));        
-        toolBar.add(MainWindow.createButton(Icon.SAVE, "Uložit", new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                
-            }        
-        }));
-        toolBar.add(MainWindow.createButton(Icon.SAVE_AS, "Uložit jako", new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                
-            }        
-        }));    
         JToggleButton detailsButton = MainWindow.createToggleButton(Icon.PANEL, "Detaily");
         detailsButton.addActionListener(new ActionListener(){
             @Override
@@ -833,26 +819,6 @@ public class MainWindow extends JFrame
             }
         });
         toolBar.add(interactiveButton);
-        JToggleButton helpButton = MainWindow.createToggleButton(Icon.HELP, "Rychlá nápověda");
-        helpButton.setEnabled(false);
-        helpButton.setSelected(false);
-        toolBar.add(helpButton);
-        interactiveButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent ae)
-            {
-                helpButton.setEnabled(interactiveButton.isSelected());
-                if (interactiveButton.isSelected() == false)
-                {
-                    helpButton.setSelected(false);
-                    MainWindow.this.keyHandler.disable();
-                }
-                else
-                {
-                    MainWindow.this.keyHandler.enable();
-                }
-            }        
-        });
         this.axisButton = MainWindow.createToggleButton(Icon.AXIS, "Zobrazení os");
         this.axisButton.setSelected(false);
         this.axisButton.setEnabled(false);
