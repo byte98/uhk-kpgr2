@@ -309,6 +309,7 @@ public class JsonLoader
         Bicubics.BicubicsType bType = Bicubics.BicubicsType.fromString(biObj.get("type").getAsString());
         Bicubics reti = new Bicubics(
                 Bicubics.BicubicsType.fromString(biObj.get("type").getAsString()),
+                biObj.get("precision").getAsInt(),
                 biObj.get("name").getAsString()
         );
         for(JsonElement vertex: biObj.get("vertices").getAsJsonArray())

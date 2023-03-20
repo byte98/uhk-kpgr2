@@ -300,6 +300,9 @@ public class Renderer extends MutableAdapter
                         primitive.getFill().addChangeCallback(() -> {
                             Renderer.this.run();
                         });
+                        primitive.addChangeCallback(() -> {
+                            Renderer.this.run();
+                        });
                     }
                 }
                 for (Transformation transformation: solid.getTransformations())
@@ -344,6 +347,7 @@ public class Renderer extends MutableAdapter
         this.raster.clear();
         if (Objects.nonNull(this.scene))
         {
+            this.scene.replaceBicubics();
             if (this.axisVisible == true)
             {
                 this.scene.setAxis(this.generateAxis());

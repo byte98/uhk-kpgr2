@@ -82,6 +82,7 @@ public enum PrimitiveType
         {
             case TRIANGLE: reti = 3; break;
             case LINE:     reti = 2; break;
+            case BICUBICS: reti = 4; break;
         }
         return reti;
     }

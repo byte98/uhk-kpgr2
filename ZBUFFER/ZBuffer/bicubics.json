@@ -1,0 +1,141 @@
+{
+    "name": "Demonstrace bikubicke plochy",
+    "camera": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "azimuth": 0,
+        "zenith": 0
+    },
+    "render": {
+        "camspace": {
+            "zn": 0.0,
+            "zf": 1024,
+            "width": 800,
+            "height": 600,
+            "alpha": 1.57079632679,
+            "type": "ORTHOGONAL"
+        }
+    },
+    "solids": [
+        {
+            "name": "Bikubika",
+            "parts": [
+                {
+                    "name": "Obsah_bikubiky",
+                    "type": "BICUBICS",
+                    "primitives": [
+                        {
+                            "name": "Bikubicke_primitivum",
+                            "type": "BEZIER",
+                            "precision": 10,
+                            "fill": {
+                                "type": "COLOUR",
+                                "value": "cccccc"
+                            },
+                            "vertices":[
+                                {
+                                    "name": "Ridici_bod_bikubiky_1_1",
+                                    "x": 100.0,
+                                    "y": 20.0,
+                                    "z": 50.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_1_2",
+                                    "x": 100.0,
+                                    "y": 40.0,
+                                    "z": 100.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_1_3",
+                                    "x": 100.0,
+                                    "y": 60.0,
+                                    "z": 150.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_1_4",
+                                    "x": 100.0,
+                                    "y": 80.0,
+                                    "z": 200.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_2_1",
+                                    "x": 300.0,
+                                    "y": 100.0,
+                                    "z": 200.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_2_2",
+                                    "x": 300.0,
+                                    "y": 150.0,
+                                    "z": 250.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_2_3",
+                                    "x": 300.0,
+                                    "y": 200.0,
+                                    "z": 300.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_2_4",
+                                    "x": 300.0,
+                                    "y": 250.0,
+                                    "z": 350.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_3_1",
+                                    "x": 80.0,
+                                    "y": 400.0,
+                                    "z": 100.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_3_2",
+                                    "x": 80.0,
+                                    "y": 425.0,
+                                    "z": 150.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_3_3",
+                                    "x": 80.0,
+                                    "y": 450.0,
+                                    "z": 200.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_3_4",
+                                    "x": 80.0,
+                                    "y": 475.0,
+                                    "z": 250.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_4_1",
+                                    "x": 20.0,
+                                    "y": 300.0,
+                                    "z": 200.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_4_2",
+                                    "x": 20.0,
+                                    "y": 325.0,
+                                    "z": 225.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_4_3",
+                                    "x": 20.0,
+                                    "y": 350.0,
+                                    "z": 250.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_4_4",
+                                    "x": 20.0,
+                                    "y": 375.0,
+                                    "z": 275.0
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "transformations": []
+        }
+    ]
+}

@@ -20,6 +20,8 @@ package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.ObjectChangeCallback;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class representing one triangle
@@ -141,4 +143,5 @@ public class Triangle implements Primitive
     {
         return "TRIANGLE (" + this.vertices.get(0).toString() + ", " + this.vertices.get(1).toString() + "," + this.vertices.get(2).toString() + ")";
     }
+    
 }

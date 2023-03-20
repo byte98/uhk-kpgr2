@@ -48,6 +48,11 @@ public class Solid extends MutableAdapter
     private final List<Transformation> transformations;
     
     /**
+     * Flag, whether solid is dirty and should be removed
+     */
+    private boolean dirty = false;
+    
+    /**
      * Crates new solid
      */
     public Solid()
@@ -65,6 +70,24 @@ public class Solid extends MutableAdapter
         this.parts = new ArrayList<>();
         this.transformations = new ArrayList<>();
         Solid.COUNTER++;
+    }
+    
+    /**
+     * Sets flag, whether solid is dirty and should be removed
+     * @param dirty TRUE if solid is dirty and should be removed, FALSE otherwise
+     */
+    public void setDirty(boolean dirty)
+    {
+        this.dirty = dirty;
+    }
+    
+    /**
+     * Checks, whether solid is dirty and should be removed
+     * @return TRUE if solid is dirty and should be removed, FALSE otherwise
+     */
+    public boolean isDirty()
+    {
+        return this.dirty;
     }
     
     /**
@@ -100,6 +123,15 @@ public class Solid extends MutableAdapter
     public List<Part> getParts()
     {
         return this.parts;
+    }
+    
+    /**
+     * Removes part from solid
+     * @param p Part which will be removed
+     */
+    public void removePart(Part p)
+    {
+        this.parts.remove(p);
     }
 
     /**

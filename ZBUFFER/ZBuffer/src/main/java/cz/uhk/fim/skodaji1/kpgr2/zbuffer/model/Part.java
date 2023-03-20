@@ -67,7 +67,7 @@ public class Part extends MutableAdapter
         this.name = name;
         Part.COUNTER++;
     }
-    
+     
     /**
      * Gets name of part
      * @return Name of part
@@ -102,6 +102,15 @@ public class Part extends MutableAdapter
     public void removeAllPrimitives()
     {
         this.primitives.clear();
+    }
+    
+    /**
+     * Removes primitive from part
+     * @param p Primitive which will be removed
+     */
+    public void removePrimitive(Primitive p)
+    {
+        this.primitives.remove(p);
     }
     
     /**
