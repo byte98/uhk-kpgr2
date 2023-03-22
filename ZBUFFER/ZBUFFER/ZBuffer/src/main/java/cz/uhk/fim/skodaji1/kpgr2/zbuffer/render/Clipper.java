@@ -85,6 +85,7 @@ public class Clipper
      */
     private static boolean testVertices(Vertex[] vertices)
     {
+        //return true;
         boolean reti = true;
         for(Vertex v: vertices)
         {
@@ -110,12 +111,11 @@ public class Clipper
         double z = v.getPosition().z;
         double w = v.getPosition().w;
         double mw = (-1) * w;
-        /*return(
+        return(
                 mw <= x && x <= w &&
                 mw <= y && y <= w &&
                 0 <= z && z <= w
-        );*/
-        return true;
+        );
     }
     
     /**

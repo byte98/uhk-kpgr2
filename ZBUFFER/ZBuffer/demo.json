@@ -14,68 +14,68 @@
             "width": 800,
             "height": 600,
             "alpha": 1.57079632679,
-            "type": "PERSPECTIVE"
+            "type": "ORTHOGONAL"
         }
     },
     "solids": [
         {
-            "name": "Teleso_1",
+            "name": "Trojboky_jehlan",
             "parts": [
                 {
-                    "name": "Cast_001",
+                    "name": "Steny",
                     "type": "TRIANGLE",
                     "primitives": [
                         {
-                            "name": "Trojuhelnik_001",
+                            "name": "Podstava",
                             "fill": {
                                 "type": "COLOUR",
-                                "value": "ffff00"
+                                "value": "ffffff"
                             },
                             "vertices": [
                                 {
-                                    "name": "Vrchol_001",
-                                    "x": 64.2,
-                                    "y": 19.5,
-                                    "z": 24.5
+                                    "name": "VrcholA_0_0_0",
+                                    "x": 0,
+                                    "y": 0,
+                                    "z": 0
                                 },
                                 {
-                                    "name": "Vrchol_002",
-                                    "x": 2.5,
-                                    "y": 0.6,
-                                    "z": 0.2
+                                    "name": "VrcholA_0_0_100",
+                                    "x": 0,
+                                    "y": 0,
+                                    "z": 100
                                 },
                                 {
-                                    "name": "Vrchol_003",
-                                    "x": 18.95,
-                                    "y": 5.85,
-                                    "z": 5.6
+                                    "name": "VrcholA_0_100_0",
+                                    "x": 0,
+                                    "y": 100,
+                                    "z": 0
                                 }
                             ]
-                        }
-                    ]
-                },
-                {
-                    "name": "Cast_002",
-                    "type": "LINE",
-                    "primitives": [
+                        },
                         {
-                            "name": "Usecka_001",
+                            "name": "Stena_odvesna1",
                             "fill": {
                                 "type": "COLOUR",
                                 "value": "ff00ff"
                             },
                             "vertices": [
                                 {
-                                    "name": "Vrchol_004",
-                                    "x": 85,
-                                    "y": 25,
-                                    "z": 32
+                                    "name": "VrcholB_0_0_0",
+                                    "x": 0,
+                                    "y": 0,
+                                    "z": 0
                                 },
                                 {
-                                    "name": "Vrchol_005",
-                                    "x": 18.95,
-                                    "y": 5.85,
-                                    "z": 5.6
+                                    "name": "VrcholB_0_0_100",
+                                    "x": 0,
+                                    "y": 0,
+                                    "z": 100
+                                },
+                                {
+                                    "name": "VrcholB_100_50_50",
+                                    "x": 100,
+                                    "y": 50,
+                                    "z": 50
                                 }
                             ]
                         }
