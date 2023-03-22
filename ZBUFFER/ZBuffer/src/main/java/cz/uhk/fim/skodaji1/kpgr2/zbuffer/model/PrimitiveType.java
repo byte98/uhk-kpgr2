@@ -31,7 +31,12 @@ public enum PrimitiveType
     /**
      * Primitive is line
      */
-    LINE("LINE");
+    LINE("LINE"),
+    
+    /**
+     * Bicubics primitive type
+     */
+    BICUBICS("BICUBICS");
     
     /**
      * String representation of fill type
@@ -60,6 +65,7 @@ public enum PrimitiveType
         {
             case "TRIANGLE": reti  = PrimitiveType.TRIANGLE; break;
             case "LINE":     reti  = PrimitiveType.LINE;     break; 
+            case "BICUBICS": reti  = PrimitiveType.BICUBICS; break;
             default: reti = null;
         }
         return reti;
@@ -76,6 +82,7 @@ public enum PrimitiveType
         {
             case TRIANGLE: reti = 3; break;
             case LINE:     reti = 2; break;
+            case BICUBICS: reti = 4; break;
         }
         return reti;
     }

@@ -17,12 +17,11 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 
-import cz.uhk.fim.kpgr2.transforms.Point3D;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.ObjectChangeCallback;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 /**
  * Class representing whole scene
@@ -291,7 +290,7 @@ public class Scene extends MutableAdapter
     private void generateVertexBuffer()
     {
         List<Vertex> tmp = new ArrayList<>();
-                for(Solid solid: this.solids)
+        for(Solid solid: this.solids)
         {
             for(Part part: solid.getParts())
             {
@@ -395,16 +394,100 @@ public class Scene extends MutableAdapter
         this.showAxis = false;
     }
     
+    /**
+     * Replaces all bicubics in scene with triangles
+     */
+    public void replaceBicubics()
+    {
+        this.removeDirtySolids();
+        List<Solid> toAdd = new ArrayList<>();
+        for(Solid solid: this.findBicubics())
+        {
+            Solid s = new Solid();
+            s.setDirty(true);
+            for(Part part: solid.getParts())
+            {
+                if (part.getPrimitiveType() == PrimitiveType.BICUBICS)
+                {
+                    Part newPart = new Part(PrimitiveType.TRIANGLE);
+                    for(Primitive primitive: part.getPrimitives())
+                    {
+                        if (primitive.getPrimitiveType() == PrimitiveType.BICUBICS)
+                        {
+                            Bicubics bi = (Bicubics)primitive;
+                            for(Triangle t: bi.generateTriangles())
+                            {
+                                newPart.addPrimitive(t);
+                            }
+                        }
+                        else
+                        {
+                            newPart.addPrimitive(primitive);
+                        }
+                    }
+                    s.addPart(newPart);
+                }
+                else
+                {
+                    s.addPart(part);
+                }
+            }
+            for(Transformation transformation: solid.getTransformations())
+            {
+                s.addTransformation(transformation);
+            }
+            toAdd.add(s);
+        }
+        for(Solid s: toAdd)
+        {
+            this.addSolid(s);
+        }
+    }
+    
+    /**
+     * Removes all 'dirty' solids from scene
+     */
+    private void removeDirtySolids()
+    {
+        List<Solid> toRemove = new ArrayList<>();
+        for(Solid solid: this.solids)
+        {
+            if (solid.isDirty())
+            {
+                toRemove.add(solid);
+            }
+        }
+        for(Solid rem: toRemove)
+        {
+            this.solids.remove(rem);
+        }
+    }
+    
+    /**
+     * Finds all solids which contains any bicubic
+     * @return List of solids with bicubics
+     */
+    private List<Solid> findBicubics()
+    {
+        List<Solid> reti = new ArrayList<>();
+        for(Solid solid: this.solids)
+        {
+            for(Part part: solid.getParts())
+            {
+                if (part.getPrimitiveType() == PrimitiveType.BICUBICS)
+                {
+                    reti.add(solid);
+                    break;
+                }
+            }
+        }
+        return reti;
+    }
+    
     @Override
     public String[] getProperties()
     {
         return new String[]{"Název"};
-    }
-
-    @Override
-    public boolean isMutable(String property)
-    {
-        return true;
     }
 
     @Override

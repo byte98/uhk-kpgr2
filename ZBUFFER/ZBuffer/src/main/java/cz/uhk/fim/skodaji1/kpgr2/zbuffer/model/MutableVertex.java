@@ -49,10 +49,11 @@ public class MutableVertex extends Vertex implements Mutable
      * @param x Position on X axis
      * @param y Position on Y axis
      * @param z Position on Z axis
+     * @param parent Primitive to which vertex belongs to
      */
-    public MutableVertex(double x, double y, double z)
+    public MutableVertex(double x, double y, double z, Primitive parent)
     {
-        this(String.format("Vrchol_%03d", MutableVertex.COUNTER), x, y, z);
+        this(String.format("Vrchol_%03d", MutableVertex.COUNTER), x, y, z, parent);
     }
     
     /**
@@ -61,10 +62,11 @@ public class MutableVertex extends Vertex implements Mutable
      * @param x Position on X axis
      * @param y Position on Y axis
      * @param z Position on Z axis
+     * @param parent Primitive to which vertex belongs to
      */
-    public MutableVertex(String name, double x, double y, double z)
+    public MutableVertex(String name, double x, double y, double z, Primitive parent)
     {
-        super(x, y, z);
+        super(x, y, z, parent);
         this.name =  name;
         this.handlers = new ArrayList<>();
         MutableVertex.COUNTER++;
@@ -76,7 +78,7 @@ public class MutableVertex extends Vertex implements Mutable
      */
     public MutableVertex(Vertex v)
     {
-        this(v.getX(), v.getY(), v.getZ());
+        this(v.getX(), v.getY(), v.getZ(), v.parent);
     }
 
     /**

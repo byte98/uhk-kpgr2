@@ -20,6 +20,8 @@ package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.ObjectChangeCallback;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class representing one triangle
@@ -123,28 +125,11 @@ public class Triangle implements Primitive
             callback.objectChanged();
         }
     }
-    
-    @Override
-    public String[] getAllowedValues(String enumName)
-    {
-        return new String[0];
-    }
-    
-    @Override public String getEnumValue(String enumName)
-    {
-        return "";
-    }
-
-    @Override public void setEnum(String property, String value){}
 
     @Override
     public void setFill(Fill fill)
     {
         this.fill = fill;
-        for(Vertex v: this.getVertices())
-        {
-            v.setFill(fill);
-        }
     }
 
     @Override
@@ -152,4 +137,11 @@ public class Triangle implements Primitive
     {
         return this.fill;
     }
+    
+    @Override 
+    public String toString()
+    {
+        return "TRIANGLE (" + this.vertices.get(0).toString() + ", " + this.vertices.get(1).toString() + "," + this.vertices.get(2).toString() + ")";
+    }
+    
 }

@@ -114,46 +114,41 @@ public class Rasterizer
     public void rasterize()
     {
         this.lineRasterizer.setRaster(this.raster);
+        this.lineRasterizer.setMode(this.renderType);
         this.triangleRasterizer.setRaster(this.raster);
-        if (this.renderType == Renderer.RenderType.WIREFRAME)
+        this.triangleRasterizer.setMode(this.renderType);
+        for (Scene.PartBufferItem part: this.partBuffer)
         {
-            this.renderWireframe();
-        }
-        else
-        {
-            for (Scene.PartBufferItem part: this.partBuffer)
+            if (part.getType() == PrimitiveType.TRIANGLE)
             {
-                if (part.getType() == PrimitiveType.TRIANGLE)
+                for (int i = 0; i < part.getCount(); i++)
                 {
-                    for (int i = 0; i < part.getCount(); i++)
-                    {
-                        int index = part.getIndex() + (i * part.getType().getVerticesCount());
-                        Vertex v1 = this.vertexBuffer[this.indexBuffer[index]];
-                        Vertex v2 = this.vertexBuffer[this.indexBuffer[index + 1]];
-                        Vertex v3 = this.vertexBuffer[this.indexBuffer[index + 2]];
-                        this.triangleRasterizer.setColour(v1.getFill().getPixelProvider());
-                        this.triangleRasterizer.rasterize(
-                                v1.getX(), v1.getY(), v1.getZ(),
-                                v2.getX(), v2.getY(), v2.getZ(),
-                                v3.getX(), v3.getY(), v3.getZ()
-                        );
-                    }
+                    int index = part.getIndex() + (i * part.getType().getVerticesCount());
+                    Vertex v1 = this.vertexBuffer[this.indexBuffer[index]];
+                    Vertex v2 = this.vertexBuffer[this.indexBuffer[index + 1]];
+                    Vertex v3 = this.vertexBuffer[this.indexBuffer[index + 2]];
+                    this.triangleRasterizer.setColour(v1.getFill().getPixelProvider());
+                    this.triangleRasterizer.rasterize(
+                            v1.getX(), v1.getY(), v1.getZ(),
+                            v2.getX(), v2.getY(), v2.getZ(),
+                            v3.getX(), v3.getY(), v3.getZ()
+                    );
                 }
-                else if (part.getType() == PrimitiveType.LINE)
-                {
-                    for (int i = 0; i < part.getCount(); i++)
-                    {
-                        int index = part.getIndex() + (i * part.getType().getVerticesCount());
-                        Vertex v1 = this.vertexBuffer[this.indexBuffer[index]];
-                        Vertex v2 = this.vertexBuffer[this.indexBuffer[index + 1]];
-                        this.lineRasterizer.setColour(v1.getFill().getPixelProvider());
-                        this.lineRasterizer.rasterize(
-                                v1.getX(), v1.getY(), v1.getZ(),
-                                v2.getX(), v2.getY(), v2.getZ()
-                        );
-                    }
-                }                
             }
+            else if (part.getType() == PrimitiveType.LINE)
+            {
+                for (int i = 0; i < part.getCount(); i++)
+                {
+                    int index = part.getIndex() + (i * part.getType().getVerticesCount());
+                    Vertex v1 = this.vertexBuffer[this.indexBuffer[index]];
+                    Vertex v2 = this.vertexBuffer[this.indexBuffer[index + 1]];
+                    this.lineRasterizer.setColour(v1.getFill().getPixelProvider());
+                    this.lineRasterizer.rasterize(
+                            v1.getX(), v1.getY(), v1.getZ(),
+                            v2.getX(), v2.getY(), v2.getZ()
+                    );
+                }
+            }                
         }
     }
     

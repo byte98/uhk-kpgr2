@@ -22,6 +22,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import cz.uhk.fim.kpgr2.transforms.Col;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Bicubics;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Fill;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Line;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableCamera;
@@ -288,8 +289,33 @@ public class JsonLoader
         {
             reti = this.loadLine(elem);
         }
+        else if (type == PrimitiveType.BICUBICS)
+        {
+            reti = this.loadBicubics(elem);
+        }
         Fill fill = this.loadFill(elem.getAsJsonObject().get("fill"));
         reti.setFill(fill);
+        return reti;
+    }
+    
+    /**
+     * Loads bicubics from JSON element
+     * @param elem Element containing information about bicubics
+     * @return Bicubics loaded from JSON
+     */
+    private Bicubics loadBicubics(JsonElement elem)
+    {
+        JsonObject biObj = elem.getAsJsonObject();
+        Bicubics.BicubicsType bType = Bicubics.BicubicsType.fromString(biObj.get("type").getAsString());
+        Bicubics reti = new Bicubics(
+                Bicubics.BicubicsType.fromString(biObj.get("type").getAsString()),
+                biObj.get("precision").getAsInt(),
+                biObj.get("name").getAsString()
+        );
+        for(JsonElement vertex: biObj.get("vertices").getAsJsonArray())
+        {
+            reti.addVertex(this.loadVertex(vertex, reti));
+        }
         return reti;
     }
     
@@ -304,7 +330,7 @@ public class JsonLoader
         Line reti = new Line(lineObj.get("name").getAsString());
         for(JsonElement vertex: lineObj.get("vertices").getAsJsonArray())
         {
-            reti.addVertex(this.loadVertex(vertex));
+            reti.addVertex(this.loadVertex(vertex, reti));
         }
         return reti;
     }
@@ -337,7 +363,7 @@ public class JsonLoader
         Triangle reti = new Triangle(triangleObj.get("name").getAsString());
         for(JsonElement vertex: triangleObj.get("vertices").getAsJsonArray())
         {
-            reti.addVertex(this.loadVertex(vertex));
+            reti.addVertex(this.loadVertex(vertex, reti));
         }
         return reti;
     }
@@ -345,16 +371,18 @@ public class JsonLoader
     /**
      * Loads vertex from JSON element
      * @param elem Element containing information about vertex
+     * @param primitive Primitive to which vertex belongs to
      * @return Vertex loaded from JSON
      */
-    private MutableVertex loadVertex(JsonElement elem)
+    private MutableVertex loadVertex(JsonElement elem, Primitive primitive)
     {
         JsonObject vObj = elem.getAsJsonObject();
         MutableVertex reti = new MutableVertex(
                 vObj.get("name").getAsString(),
                 vObj.get("x").getAsDouble(),
                 vObj.get("y").getAsDouble(),
-                vObj.get("z").getAsDouble()
+                vObj.get("z").getAsDouble(),
+                primitive
         );
         return reti;
     }

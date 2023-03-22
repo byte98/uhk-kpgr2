@@ -300,6 +300,9 @@ public class Renderer extends MutableAdapter
                         primitive.getFill().addChangeCallback(() -> {
                             Renderer.this.run();
                         });
+                        primitive.addChangeCallback(() -> {
+                            Renderer.this.run();
+                        });
                     }
                 }
                 for (Transformation transformation: solid.getTransformations())
@@ -328,7 +331,7 @@ public class Renderer extends MutableAdapter
         for (int i = 0; i < this.vertexBuffer.length; i++)
         {
             Vertex vf = this.vertexBuffer[i];
-            if (vf.getX() == v.getX() && vf.getY() == v.getY() && vf.getZ() == v.getZ())
+            if (vf.equals(v))
             {
                 this.vertexBuffer[i] = r;
                 break;
@@ -344,6 +347,7 @@ public class Renderer extends MutableAdapter
         this.raster.clear();
         if (Objects.nonNull(this.scene))
         {
+            this.scene.replaceBicubics();
             if (this.axisVisible == true)
             {
                 this.scene.setAxis(this.generateAxis());
@@ -400,16 +404,16 @@ public class Renderer extends MutableAdapter
     {
         Part part = new Part(PrimitiveType.LINE);
         Line x = new Line();
-        x.addVertex(new MutableVertex(0, 0, 0));
-        x.addVertex(new MutableVertex(Renderer.AXIS_SIZE, 0, 0));
+        x.addVertex(new MutableVertex(0, 0, 0, x));
+        x.addVertex(new MutableVertex(Renderer.AXIS_SIZE, 0, 0, x));
         x.setFill(Renderer.X_FILL);
         Line y = new Line();
-        y.addVertex(new MutableVertex(0, 0, 0));
-        y.addVertex(new MutableVertex(0, Renderer.AXIS_SIZE, 0));
+        y.addVertex(new MutableVertex(0, 0, 0, y));
+        y.addVertex(new MutableVertex(0, Renderer.AXIS_SIZE, 0, y));
         y.setFill(Renderer.Y_FILL);
         Line z = new Line();
-        z.addVertex(new MutableVertex(0, 0, 0));
-        z.addVertex(new MutableVertex(0, 0, Renderer.AXIS_SIZE));
+        z.addVertex(new MutableVertex(0, 0, 0, z));
+        z.addVertex(new MutableVertex(0, 0, Renderer.AXIS_SIZE, z));
         z.setFill(Renderer.Z_FILL);
         part.addPrimitive(x);
         part.addPrimitive(y);

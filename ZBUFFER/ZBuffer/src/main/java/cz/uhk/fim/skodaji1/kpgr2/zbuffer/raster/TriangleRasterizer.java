@@ -18,6 +18,7 @@
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster;
 
 import cz.uhk.fim.kpgr2.transforms.Point3D;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.render.Renderer;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -57,46 +58,72 @@ public class TriangleRasterizer extends AbstractRasterizer
         // Initialize line rasterizer
         this.lineRasterizer.setRaster(this.raster);
         this.lineRasterizer.setColour(this.colour);
-        // Get intervals on X,Y axis
-        int maxX = Integer.max(x1, Integer.max(x2, x3));
-        int minX = Integer.min(x1, Integer.min(x2, x3));
-        int maxY = Integer.max(y1, Integer.max(y2, y3));
-        int minY = Integer.min(y1, Integer.min(y2, y3));
-        int dX = maxX - minX;
-        int dY = maxY - minY;
-        Point3D[] points = new Point3D[]{new Point3D(x1, y1, z1), new Point3D(x2, y2, z2), new Point3D(x3, y3, z3)};
-        if (dX > dY)
+        if (this.mode == Renderer.RenderType.NORMAL)
         {
-            // Sort points according to X axis
-            Arrays.sort(points, 0, points.length, new Comparator<Point3D>(){
-                @Override
-                public int compare(Point3D t, Point3D t1)
-                {
-                    return (int)Math.round(t1.x - t.x);
-                }
-            });
-            this.rasterizeX(
-                    points[0].x, points[0].y, points[0].z,
-                    points[1].x, points[1].y, points[1].z,
-                    points[2].x, points[2].y, points[2].z
-            );
+            // Get intervals on X,Y axis
+            int maxX = Integer.max(x1, Integer.max(x2, x3));
+            int minX = Integer.min(x1, Integer.min(x2, x3));
+            int maxY = Integer.max(y1, Integer.max(y2, y3));
+            int minY = Integer.min(y1, Integer.min(y2, y3));
+            int dX = maxX - minX;
+            int dY = maxY - minY;
+            Point3D[] points = new Point3D[]{new Point3D(x1, y1, z1), new Point3D(x2, y2, z2), new Point3D(x3, y3, z3)};
+            if (dX > dY)
+            {
+                // Sort points according to X axis
+                Arrays.sort(points, 0, points.length, new Comparator<Point3D>(){
+                    @Override
+                    public int compare(Point3D t, Point3D t1)
+                    {
+                        return (int)Math.round(t1.x - t.x);
+                    }
+                });
+                this.rasterizeX(
+                        points[0].x, points[0].y, points[0].z,
+                        points[1].x, points[1].y, points[1].z,
+                        points[2].x, points[2].y, points[2].z
+                );
+            }
+            else
+            {
+                // Sort points according to Y axis
+                Arrays.sort(points, 0, points.length, new Comparator<Point3D>(){
+                    @Override
+                    public int compare(Point3D t, Point3D t1)
+                    {
+                        return (int)Math.round(t.y - t1.y);
+                    }
+                });
+                this.rasterizeY(
+                        points[0].x, points[0].y, points[0].z,
+                        points[1].x, points[1].y, points[1].z,
+                        points[2].x, points[2].y, points[2].z
+                );
+            }
         }
         else
         {
-            // Sort points according to Y axis
-            Arrays.sort(points, 0, points.length, new Comparator<Point3D>(){
-                @Override
-                public int compare(Point3D t, Point3D t1)
-                {
-                    return (int)Math.round(t.y - t1.y);
-                }
-            });
-            this.rasterizeY(
-                    points[0].x, points[0].y, points[0].z,
-                    points[1].x, points[1].y, points[1].z,
-                    points[2].x, points[2].y, points[2].z
-            );
+            this.rasterizeWireframe(x1, y1, z1, x2, y2, z2, x3, y3, z3);
         }
+    }
+    
+    /**
+     * Rasterizes just wireframe
+     * @param x1 X coordinate of first point of triangle
+     * @param y1 Y coordinate of first point of triangle
+     * @param z1 Z coordinate of first point of triangle
+     * @param x2 X coordinate of second point of triangle
+     * @param y2 Y coordinate of second point of triangle
+     * @param z2 Z coordinate of second point of triangle
+     * @param x3 X coordinate of third point of triangle
+     * @param y3 Y coordinate of third point of triangle
+     * @param z3 Z coordinate of third point of triangle
+     */
+    private void rasterizeWireframe(int x1, int y1, double z1, int x2, int y2, double z2, int x3, int y3, double z3)
+    {
+        this.lineRasterizer.rasterize(x1, y1, z1, x2, y2, z2);
+        this.lineRasterizer.rasterize(x2, y2, z2, x3, y3, z3);
+        this.lineRasterizer.rasterize(x3, y3, z3, x1, y1, z1);
     }
     
     /**

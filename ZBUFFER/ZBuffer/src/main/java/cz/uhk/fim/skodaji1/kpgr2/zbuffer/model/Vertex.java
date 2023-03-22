@@ -17,7 +17,6 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 
-import cz.uhk.fim.kpgr2.transforms.Col;
 import cz.uhk.fim.kpgr2.transforms.Mat4;
 import cz.uhk.fim.kpgr2.transforms.Point3D;
 import cz.uhk.fim.kpgr2.transforms.Vec3D;
@@ -30,10 +29,6 @@ import cz.uhk.fim.kpgr2.transforms.Vec3D;
  */
 public class Vertex implements Cloneable
 {
-    /**
-     * Default colour of fill of vertex
-     */
-    protected static final Col DEFAULT_COLOR = new Col(0xffffff);
     
     /**
      * Counter of created vertices
@@ -46,37 +41,26 @@ public class Vertex implements Cloneable
     protected Point3D position;
     
     /**
-     * Fill of vertex
+     * Parent primitive to which vertex belongs to
      */
-    protected Fill fill;
+    protected Primitive parent;
     
     /**
      * Identifier of vertex
      */
     protected final long id;
-    
+        
     /**
      * Creates new vertex
      * @param x Position on X axis
      * @param y Position on Y axis
      * @param z Position on Z axis
+     * @param parent Primitive to which vertex belongs to
      */
-    public Vertex(double x, double y, double z)
-    {
-        this(x, y, z, new Fill(Vertex.DEFAULT_COLOR));
-    }
-    
-    /**
-     * Creates new vertex
-     * @param x Position on X axis
-     * @param y Position on Y axis
-     * @param z Position on Z axis
-     * @param fill Fill of vertex
-     */
-    public Vertex(double x, double y, double z, Fill fill)
+    public Vertex(double x, double y, double z, Primitive parent)
     {
         this.position = new Point3D(x, y, z);
-        this.fill = fill;
+        this.parent = parent;
         this.id = Vertex.COUNTER;
         Vertex.COUNTER++;
     }
@@ -87,16 +71,7 @@ public class Vertex implements Cloneable
      */
     public Fill getFill()
     {
-        return this.fill;
-    }
-    
-    /**
-     * Sets fill of vertex
-     * @param fill New fill of vertex
-     */
-    public void setFill(Fill fill)
-    {
-        this.fill = fill;
+        return this.parent.getFill();
     }
     
     /**
@@ -157,7 +132,7 @@ public class Vertex implements Cloneable
         newPos.y = res.y;
         newPos.z = res.z;
         newPos.w = this.position.w;
-        Vertex reti = new Vertex(newPos.x, newPos.y, newPos.z, this.fill.clone());
+        Vertex reti = new Vertex(newPos.x, newPos.y, newPos.z, this.parent);
         reti.setPosition(newPos);
         return reti;
     }
@@ -169,7 +144,7 @@ public class Vertex implements Cloneable
      */
     public Vertex mul(Mat4 mat4)
     {
-        Vertex reti = new Vertex(this.position.x, this.position.y, this.position.z, this.fill.clone());
+        Vertex reti = new Vertex(this.position.x, this.position.y, this.position.z, this.parent);
         reti.setPosition(reti.getPosition().mul(mat4));
         return reti;
     }
@@ -181,7 +156,7 @@ public class Vertex implements Cloneable
      */
     public Vertex mul(double val)
     {
-        Vertex reti = new Vertex(this.position.x, this.position.y, this.position.z, this.fill.clone());
+        Vertex reti = new Vertex(this.position.x, this.position.y, this.position.z, this.parent);
         double x = this.position.x * val;
         double y = this.position.y * val;
         double z = this.position.z * val;
@@ -197,13 +172,13 @@ public class Vertex implements Cloneable
     public Vertex dehomog()
     {
         Vec3D dehomogVec = this.getPosition().dehomog();
-        return new Vertex(dehomogVec.x, dehomogVec.y, dehomogVec.z, this.fill.clone());    
+        return new Vertex(dehomogVec.x, dehomogVec.y, dehomogVec.z, this.parent);    
     }
     
     @Override
     public Vertex clone()
     {
-        Vertex reti = new Vertex(this.position.x, this.position.y, this.position.z, this.fill.clone());
+        Vertex reti = new Vertex(this.position.x, this.position.y, this.position.z, this.parent);
         reti.setPosition(new Point3D(this.position.x, this.position.y, this.position.z, this.position.w));
         return reti;
     }

@@ -1,6 +1,5 @@
 package cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller;
 
-import cz.uhk.fim.kpgr2.transforms.Vec3D;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.Scene;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.persistence.JsonLoader;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.render.Renderer;

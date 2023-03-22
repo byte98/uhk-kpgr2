@@ -19,63 +19,151 @@
     },
     "solids": [
         {
-            "name": "Trojboky_jehlan",
+            "name": "Jehlan_s_paprskem",
             "parts": [
                 {
-                    "name": "Steny",
+                    "name": "Podstava",
                     "type": "TRIANGLE",
-                    "primitives": [
+                    "primitives":[
                         {
-                            "name": "Podstava",
+                            "name": "Trojuhelnik_podstavy",
                             "fill": {
                                 "type": "COLOUR",
                                 "value": "ffffff"
                             },
                             "vertices": [
                                 {
-                                    "name": "VrcholA_0_0_0",
-                                    "x": 0,
-                                    "y": 0,
-                                    "z": 0
+                                    "name": "Vrchol_podstava_0_0_0",
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
                                 },
                                 {
-                                    "name": "VrcholA_0_0_100",
-                                    "x": 0,
-                                    "y": 0,
-                                    "z": 100
+                                    "name": "Vrchol_podstava_0_100_150",
+                                    "x": 0.0,
+                                    "y": 100.0,
+                                    "z": 150.0
                                 },
                                 {
-                                    "name": "VrcholA_0_100_0",
-                                    "x": 0,
-                                    "y": 100,
-                                    "z": 0
+                                    "name": "Vrchol_podstava_0_200_50",
+                                    "x": 0.0,
+                                    "y": 200.0,
+                                    "z": 50.0
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Steny",
+                    "type": "TRIANGLE",
+                    "primitives":[
+                        {
+                            "name": "Stena_1",
+                            "fill": {
+                                "type": "COLOUR",
+                                "value": "ff0000"
+                            },
+                            "vertices": [
+                                {
+                                    "name": "Vrchol_stena1_0_0_0",
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                {
+                                    "name": "Vrchol_stena1_0_100_150",
+                                    "x": 0.0,
+                                    "y": 100.0,
+                                    "z": 150.0
+                                },
+                                {
+                                    "name": "Vrchol_stena1_200_200_200",
+                                    "x": 200.0,
+                                    "y": 200.0,
+                                    "z": 200.0
                                 }
                             ]
                         },
                         {
-                            "name": "Stena_odvesna1",
+                            "name": "Stena_2",
                             "fill": {
                                 "type": "COLOUR",
-                                "value": "ff00ff"
+                                "value": "00ff00"
                             },
                             "vertices": [
                                 {
-                                    "name": "VrcholB_0_0_0",
-                                    "x": 0,
-                                    "y": 0,
-                                    "z": 0
+                                    "name": "Vrchol_stena2_0_0_0",
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
                                 },
                                 {
-                                    "name": "VrcholB_0_0_100",
-                                    "x": 0,
-                                    "y": 0,
-                                    "z": 100
+                                    "name": "Vrchol_stena2_200_200_200",
+                                    "x": 200.0,
+                                    "y": 200.0,
+                                    "z": 200.0
                                 },
                                 {
-                                    "name": "VrcholB_100_50_50",
-                                    "x": 100,
-                                    "y": 50,
-                                    "z": 50
+                                    "name": "Vrchol_stena2_0_200_50",
+                                    "x": 0.0,
+                                    "y": 200.0,
+                                    "z": 50.0
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Stena_3",
+                            "fill": {
+                                "type": "COLOUR",
+                                "value": "0000ff"
+                            },
+                            "vertices": [
+                                {
+                                    "name": "Vrchol_stena3_200_200_200",
+                                    "x": 200.0,
+                                    "y": 200.0,
+                                    "z": 200.0
+                                },
+                                {
+                                    "name": "Vrchol_stena3_0_100_150",
+                                    "x": 0.0,
+                                    "y": 100.0,
+                                    "z": 150.0
+                                },
+                                {
+                                    "name": "Vrchol_stena_3_0_200_50",
+                                    "x": 0.0,
+                                    "y": 200.0,
+                                    "z": 50.0
+                                }
+                            ]
+                        }
+                        
+                    ]
+                },
+                {
+                    "name": "Paprsek",
+                    "type": "LINE",
+                    "primitives":[
+                        {
+                            "name": "Usecka_paprsku",
+                            "fill": {
+                                "type": "COLOUR",
+                                "value": "ffff00"
+                            },
+                            "vertices":[
+                                {
+                                    "name": "Vrchol_paprsek_jehlan",
+                                    "x": 200.0,
+                                    "y": 200.0,
+                                    "z": 200.0
+                                },
+                                {
+                                    "name": "Vrchol_paprsek_prostor",
+                                    "x": 400.0,
+                                    "y": 400.0,
+                                    "z": 400.0
                                 }
                             ]
                         }
@@ -84,27 +172,146 @@
             ],
             "transformations": [
                 {
-                    "name": "Rotace_001",
+                    "name": "Prazdna_rotace",
                     "type": "ROTATION",
                     "alpha": 0.0,
                     "beta":  0.0,
                     "gamma": 0.0
                 },
                 {
-                    "name": "Meritko_001",
+                    "name": "Konstantni_meritko",
                     "type": "SCALE",
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0
                 },
                 {
-                    "name": "Posunuti_001",
+                    "name": "Zadne_posunuti",
                     "type": "TRANSLATION",
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 }
             ]
+        },
+        {
+            "name": "Bikubika",
+            "parts": [
+                {
+                    "name": "Obsah_bikubiky",
+                    "type": "BICUBICS",
+                    "primitives": [
+                        {
+                            "name": "Bikubicke_primitivum",
+                            "type": "BEZIER",
+                            "precision": 10,
+                            "fill": {
+                                "type": "COLOUR",
+                                "value": "cccccc"
+                            },
+                            "vertices":[
+                                {
+                                    "name": "Ridici_bod_bikubiky_1_1",
+                                    "x": 100.0,
+                                    "y": 20.0,
+                                    "z": 50.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_1_2",
+                                    "x": 100.0,
+                                    "y": 40.0,
+                                    "z": 100.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_1_3",
+                                    "x": 100.0,
+                                    "y": 60.0,
+                                    "z": 150.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_1_4",
+                                    "x": 100.0,
+                                    "y": 80.0,
+                                    "z": 200.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_2_1",
+                                    "x": 300.0,
+                                    "y": 100.0,
+                                    "z": 200.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_2_2",
+                                    "x": 300.0,
+                                    "y": 150.0,
+                                    "z": 250.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_2_3",
+                                    "x": 300.0,
+                                    "y": 200.0,
+                                    "z": 300.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_2_4",
+                                    "x": 300.0,
+                                    "y": 250.0,
+                                    "z": 350.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_3_1",
+                                    "x": 80.0,
+                                    "y": 400.0,
+                                    "z": 100.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_3_2",
+                                    "x": 80.0,
+                                    "y": 425.0,
+                                    "z": 150.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_3_3",
+                                    "x": 80.0,
+                                    "y": 450.0,
+                                    "z": 200.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_3_4",
+                                    "x": 80.0,
+                                    "y": 475.0,
+                                    "z": 250.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_4_1",
+                                    "x": 20.0,
+                                    "y": 300.0,
+                                    "z": 200.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_4_2",
+                                    "x": 20.0,
+                                    "y": 325.0,
+                                    "z": 225.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_4_3",
+                                    "x": 20.0,
+                                    "y": 350.0,
+                                    "z": 250.0
+                                },
+                                {
+                                    "name": "Ridici_bod_bikubiky_4_4",
+                                    "x": 20.0,
+                                    "y": 375.0,
+                                    "z": 275.0
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "transformations": []
         }
     ]
 }

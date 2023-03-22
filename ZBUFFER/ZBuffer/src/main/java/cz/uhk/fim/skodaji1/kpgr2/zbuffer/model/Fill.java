@@ -98,7 +98,7 @@ public class Fill implements Cloneable, Mutable
     {
         String[] ppProps = this.pixelProvider.getProperties();
         String[] reti = new String[ppProps.length + 1];
-        reti[0] = "Typ";
+        reti[0] = "Typ výplně";
         for (int i = 0; i < ppProps.length; i++)
         {
             reti[i + 1] = ppProps[i];
@@ -110,7 +110,7 @@ public class Fill implements Cloneable, Mutable
     public boolean isMutable(String property)
     {
         boolean reti = this.pixelProvider.isMutable(property);
-        if (property.trim().toLowerCase().equals("typ"))
+        if (property.trim().toLowerCase().equals("typ výplně"))
         {
             reti = false;
         }
@@ -121,7 +121,7 @@ public class Fill implements Cloneable, Mutable
     public Class getType(String property)
     {
         Class reti = this.pixelProvider.getType(property);
-        if (property.trim().toLowerCase().equals("typ"))
+        if (property.trim().toLowerCase().equals("typ výplně"))
         {
             reti = Enum.class;
         }
@@ -156,7 +156,7 @@ public class Fill implements Cloneable, Mutable
     public String[] getAllowedValues(String enumName)
     {
         String[] reti = this.pixelProvider.getAllowedValues(enumName);
-        if (enumName.toLowerCase().trim().equals("typ"))
+        if (enumName.toLowerCase().trim().equals("typ výplně"))
         {
             reti = new String[]{"Barva"};
         }
@@ -167,7 +167,7 @@ public class Fill implements Cloneable, Mutable
     public String getEnumValue(String enumName)
     {
         String reti = this.pixelProvider.getEnumValue(enumName);
-        if (enumName.toLowerCase().trim().equals("typ"))
+        if (enumName.toLowerCase().trim().equals("typ výplně"))
         {
             switch (this.type)
             {
