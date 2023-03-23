@@ -206,8 +206,11 @@
                             "type": "BEZIER",
                             "precision": 10,
                             "fill": {
-                                "type": "COLOUR",
-                                "value": "cccccc"
+                                "type": "PATTERN",
+                                "colour1": "111111",
+                                "colour2": "4d4d4d",
+                                "size": "10",
+                                "pattern": "CHECKER"
                             },
                             "vertices":[
                                 {

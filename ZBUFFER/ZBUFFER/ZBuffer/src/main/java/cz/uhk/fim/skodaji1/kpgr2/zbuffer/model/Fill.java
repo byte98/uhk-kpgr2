@@ -20,6 +20,7 @@ package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 import cz.uhk.fim.kpgr2.transforms.Col;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.ObjectChangeCallback;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.ColourPixelProvider;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.PatternPixelProvider;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.PixelProvider;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +39,12 @@ public class Fill implements Cloneable, Mutable
     /**
      * Type of fill
      */
-    private final FillType type;
+    private FillType type;
         
     /**
      * Provider of pixels used to fill objects
      */
-    private final PixelProvider pixelProvider;
+    private PixelProvider pixelProvider;
     
     /**
      * Creates new fill of vertex
@@ -53,6 +54,19 @@ public class Fill implements Cloneable, Mutable
     {
         this.type = FillType.COLOR;
         this.pixelProvider = new ColourPixelProvider(colour);
+    }
+    
+    /**
+     * Creates new fill of vertex
+     * @param pattern Pattern of fill of vertex
+     * @param colour1 First colour of pattern of fill of vertex
+     * @param colour2 Second colour of pattern of fill of vertex
+     * @param size Size of pattern of fill of vertex
+     */
+    public Fill(PatternPixelProvider.PatternType pattern, Col colour1, Col colour2, int size)
+    {
+        this.type = FillType.PATTERN;
+        this.pixelProvider = new PatternPixelProvider(pattern, colour1, colour2, size);
     }
     
     /**
@@ -85,6 +99,21 @@ public class Fill implements Cloneable, Mutable
     }
     
     /**
+     * Sets fill type
+     * @param type New fill type
+     */
+    private void setType(FillType type)
+    {
+        this.type = type;
+        switch(this.type)
+        {
+            case COLOR: this.pixelProvider = new ColourPixelProvider(); break;
+            case PATTERN: this.pixelProvider = new PatternPixelProvider(); break;
+        }
+        this.informChange();
+    }
+    
+    /**
      * Clones this fill
      * @return Copy of this fill
      */
@@ -108,12 +137,12 @@ public class Fill implements Cloneable, Mutable
 
     @Override
     public boolean isMutable(String property)
-    {
+    {   
         boolean reti = this.pixelProvider.isMutable(property);
-        if (property.trim().toLowerCase().equals("typ výplně"))
+        if (property.toLowerCase().trim().equals("typ výplně"))
         {
-            reti = false;
-        }
+            reti = true;
+        }        
         return reti;
     }
 
@@ -158,7 +187,7 @@ public class Fill implements Cloneable, Mutable
         String[] reti = this.pixelProvider.getAllowedValues(enumName);
         if (enumName.toLowerCase().trim().equals("typ výplně"))
         {
-            reti = new String[]{"Barva"};
+            reti = new String[]{"Barva", "Vzorek"};
         }
         return reti;
     }
@@ -172,6 +201,7 @@ public class Fill implements Cloneable, Mutable
             switch (this.type)
             {
                 case COLOR: reti = "Barva"; break;
+                case PATTERN: reti = "Vzorek"; break;
             }
         }
         return reti;
@@ -208,7 +238,14 @@ public class Fill implements Cloneable, Mutable
     @Override
     public void setEnum(String property, String value)
     {
-        this.pixelProvider.set(property, value);
+        if (property.toLowerCase().trim().equals("typ výplně"))
+        {
+            
+        }
+        else
+        {
+            this.pixelProvider.set(property, value);
+        }        
         this.informChange();
     }
 

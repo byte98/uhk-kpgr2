@@ -26,7 +26,12 @@ public enum FillType
     /**
      * Fill is solid colour
      */
-    COLOR("COLOR");
+    COLOR("COLOR"),
+    
+    /**
+     * Fill is pattern
+     */
+    PATTERN("PATTERN");
     
     /**
      * String representation of fill type
@@ -54,6 +59,7 @@ public enum FillType
         switch(str.toUpperCase())
         {
             case "COLOR": reti  = FillType.COLOR; break;
+            case "PATTERN": reti = FillType.PATTERN; break;
             default: reti = null;
         }
         return reti;

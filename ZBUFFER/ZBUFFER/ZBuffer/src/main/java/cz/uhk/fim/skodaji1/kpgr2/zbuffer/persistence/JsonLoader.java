@@ -44,6 +44,7 @@ import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.transformations.Transformation;
+import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.PatternPixelProvider;
 
 /**
  * Class representing loader of data from JSON file
@@ -348,6 +349,15 @@ public class JsonLoader
         if (fillType.equals("colour"))
         {
             reti = new Fill(new Col(Integer.parseInt(fillObj.get("value").getAsString(), 16)));
+        }
+        else if (fillType.equals("pattern"))
+        {
+            reti = new Fill(
+                    PatternPixelProvider.PatternType.fromString(fillObj.get("pattern").getAsString()),
+                    new Col(Integer.parseInt(fillObj.get("colour1").getAsString(), 16)),
+                    new Col(Integer.parseInt(fillObj.get("colour2").getAsString(), 16)),
+                    fillObj.get("size").getAsInt()
+            );
         }
         return reti;
     }

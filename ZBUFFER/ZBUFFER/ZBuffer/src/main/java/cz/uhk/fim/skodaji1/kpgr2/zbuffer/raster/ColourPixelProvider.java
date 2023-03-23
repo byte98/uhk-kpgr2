@@ -19,6 +19,7 @@ package cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster;
 
 import cz.uhk.fim.kpgr2.transforms.Col;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableAdapter;
+import java.awt.Color;
 
 /**
  * Simple pixel provider which provides just colours
@@ -26,11 +27,23 @@ import cz.uhk.fim.skodaji1.kpgr2.zbuffer.model.MutableAdapter;
  */
 public class ColourPixelProvider extends MutableAdapter implements PixelProvider
 {
+    /**
+     * Default fill colour
+     */
+    private static final Col DEFAULT_COLOUR = new Col(Color.WHITE.getRGB());
     
     /**
      * Colour which will be returned
      */
     private Col colour;
+    
+    /**
+     * Creates new provider of static colour
+     */
+    public ColourPixelProvider()
+    {
+        this(ColourPixelProvider.DEFAULT_COLOUR);
+    }
     
     /**
      * Creates new provider of static colour
