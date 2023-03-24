@@ -59,7 +59,6 @@ public enum FillType
         switch(str.toUpperCase())
         {
             case "COLOR": reti  = FillType.COLOR; break;
-            case "PATTERN": reti = FillType.PATTERN; break;
             default: reti = null;
         }
         return reti;

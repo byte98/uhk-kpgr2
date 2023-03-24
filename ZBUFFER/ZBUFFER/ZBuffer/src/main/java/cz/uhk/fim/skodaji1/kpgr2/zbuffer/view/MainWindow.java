@@ -698,10 +698,6 @@ public class MainWindow extends JFrame
                         obj.setEnum(prop, (String)comboBox.getSelectedItem());
                     }                    
                 });
-                if (obj.isMutable(prop) == false)
-                {
-                    comboBox.setEnabled(false);
-                }
                 propVal = comboBox;
                 obj.addChangeCallback(new ObjectChangeCallback(){
                     @Override
@@ -710,6 +706,13 @@ public class MainWindow extends JFrame
                         comboBox.setSelectedItem(obj.getEnumValue(prop));
                     }
                 });
+                if (obj.isMutable(prop) == false)
+                {
+                    JTextField tb = new JTextField();
+                    tb.setText(obj.getEnumValue(prop));
+                    tb.setEditable(false);
+                    propVal = tb;
+                }
             }
             else if (obj.getType(prop) == Col.class)
             {

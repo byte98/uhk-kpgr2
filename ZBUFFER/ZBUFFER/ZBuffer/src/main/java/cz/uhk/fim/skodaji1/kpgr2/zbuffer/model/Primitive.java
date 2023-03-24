@@ -102,7 +102,6 @@ public interface Primitive extends Mutable
     @Override
     default public boolean isMutable(String property)
     {
-        System.out.print(property);
         boolean reti = false;
         if (property.trim().toLowerCase().equals("název") == false && 
             property.trim().toLowerCase().equals("typ") == false)

@@ -20,7 +20,6 @@ package cz.uhk.fim.skodaji1.kpgr2.zbuffer.model;
 import cz.uhk.fim.kpgr2.transforms.Col;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.controller.ObjectChangeCallback;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.ColourPixelProvider;
-import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.PatternPixelProvider;
 import cz.uhk.fim.skodaji1.kpgr2.zbuffer.raster.PixelProvider;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,19 +53,6 @@ public class Fill implements Cloneable, Mutable
     {
         this.type = FillType.COLOR;
         this.pixelProvider = new ColourPixelProvider(colour);
-    }
-    
-    /**
-     * Creates new fill of vertex
-     * @param pattern Pattern of fill of vertex
-     * @param colour1 First colour of pattern of fill of vertex
-     * @param colour2 Second colour of pattern of fill of vertex
-     * @param size Size of pattern of fill of vertex
-     */
-    public Fill(PatternPixelProvider.PatternType pattern, Col colour1, Col colour2, int size)
-    {
-        this.type = FillType.PATTERN;
-        this.pixelProvider = new PatternPixelProvider(pattern, colour1, colour2, size);
     }
     
     /**
@@ -108,7 +94,6 @@ public class Fill implements Cloneable, Mutable
         switch(this.type)
         {
             case COLOR: this.pixelProvider = new ColourPixelProvider(); break;
-            case PATTERN: this.pixelProvider = new PatternPixelProvider(); break;
         }
         this.informChange();
     }
@@ -187,7 +172,7 @@ public class Fill implements Cloneable, Mutable
         String[] reti = this.pixelProvider.getAllowedValues(enumName);
         if (enumName.toLowerCase().trim().equals("typ výplně"))
         {
-            reti = new String[]{"Barva", "Vzorek"};
+            reti = new String[]{"Barva"};
         }
         return reti;
     }
@@ -201,7 +186,7 @@ public class Fill implements Cloneable, Mutable
             switch (this.type)
             {
                 case COLOR: reti = "Barva"; break;
-                case PATTERN: reti = "Vzorek"; break;
+                
             }
         }
         return reti;

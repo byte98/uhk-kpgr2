@@ -4,8 +4,8 @@
         "x": 0.0,
         "y": 0.0,
         "z": 0.0,
-        "azimuth": 0,
-        "zenith": 0
+        "azimuth": 1.05,
+        "zenith": 0.25
     },
     "render": {
         "camspace": {
@@ -13,8 +13,8 @@
             "zf": 1024,
             "width": 800,
             "height": 600,
-            "alpha": 1.57079632679,
-            "type": "ORTHOGONAL"
+            "alpha": 2.371,
+            "type": "PERSPECTIVE"
         }
     },
     "solids": [
@@ -206,11 +206,8 @@
                             "type": "BEZIER",
                             "precision": 10,
                             "fill": {
-                                "type": "PATTERN",
-                                "colour1": "111111",
-                                "colour2": "4d4d4d",
-                                "size": "10",
-                                "pattern": "CHECKER"
+                                "type": "COLOUR",
+                                "value": "1dff09"
                             },
                             "vertices":[
                                 {
