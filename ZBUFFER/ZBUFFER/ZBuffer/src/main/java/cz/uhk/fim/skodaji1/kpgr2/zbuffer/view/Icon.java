@@ -247,6 +247,21 @@ public class Icon
     public static final Icon TREE_ROTZ = new Icon("tree_rotate_z.png");
     
     /**
+     * Icon of colour used in tree view
+     */
+    public static final Icon TREE_COLOUR = new Icon("tree_colour.png");
+    
+    /**
+     * Icon of fill used in tree view
+     */
+    public static final Icon TREE_FILL = new Icon("tree_fill.png");
+    
+    /**
+     * Icon of accuracy used in tree view
+     */
+    public static final Icon TREE_ACCURACY = new Icon("tree_accuracy.png");
+    
+    /**
      * Name of file containing icon
      */
     private final String file;

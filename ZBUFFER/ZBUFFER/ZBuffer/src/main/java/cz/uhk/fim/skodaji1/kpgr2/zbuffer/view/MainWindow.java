@@ -611,7 +611,13 @@ public class MainWindow extends JFrame
                 case "alfa" -> propName = MainWindow.createIconLabel(Icon.TREE_ROTX, prop);
                 case "beta" -> propName = MainWindow.createIconLabel(Icon.TREE_ROTY, prop);
                 case "gama" -> propName = MainWindow.createIconLabel(Icon.TREE_ROTZ, prop);
+                case "typ výplně" -> propName = MainWindow.createIconLabel(Icon.TREE_FILL, prop);
+                case "přesnost" -> propName = MainWindow.createIconLabel(Icon.TREE_ACCURACY, prop);
                 default -> propName.add(new JLabel(prop));
+            }
+            if(prop.toLowerCase().trim().contains("barva"))
+            {
+                propName = MainWindow.createIconLabel(Icon.TREE_COLOUR, prop);
             }
             JComponent propVal = null;
             if (obj.getType(prop) == String.class)
