@@ -37,6 +37,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -46,7 +48,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 
 /**
  * FXML Controller class of main window
@@ -261,13 +266,69 @@ public class FXMLMainWindow implements Initializable {
             }
         }
     }
+    
+    /**
+     * Closes tool tab
+     * @param image Check image which will be hidden
+     * @param tab Tab which will be closed
+     */
+    private void closeTab(ImageView image, Tab tab)
+    {
+        image.setVisible(false);
+        this.tabPaneTools.getTabs().remove(tab);
+    }
+    
+    /**
+     * Pop ups tab in new window
+     * @param tab Tab which will be opened in new pop up window
+     * @param title Title of pop up window
+     * @param image Check image which will be hidden when pop up window is closed
+     */
+    private void popupTab(Tab tab, String title, ImageView image)
+    {        
+        Stage stage = new Stage();        
+        Parent parent = tab.getTabPane();        
+        this.tabPaneTools.getTabs().remove(tab);
+        Scene scene = new Scene(parent);
+        JMetro jmetro = new JMetro(scene, Style.DARK);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setTitle(title);
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
+        stage.setOnCloseRequest(event -> {
+            image.setVisible(false);
+        });
+        stage.iconifiedProperty().addListener(new ChangeListener<Boolean>(){
+            @Override
+            public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1)
+            {
+                if (stage.isIconified())
+                {
+                    stage.close();
+                    FXMLMainWindow.this.tabPaneTools.getTabs().add(FXMLMainWindow.this.tabHistogram);
+                }
+            }        
+        });
+        
+    }
 
     @FXML
     private void menuHistogramOnAction(ActionEvent event) {
-        this.tabPaneTools.getTabs().add(this.tabHistogram);
-        this.imageCheckHistogram.setVisible(true);
+        if (this.imageCheckHistogram.isVisible() == false)
+        {
+            this.tabPaneTools.getTabs().add(this.tabHistogram);
+            this.imageCheckHistogram.setVisible(true);
+        }
+    }    
+
+    @FXML
+    private void histogramPopupOnAction(ActionEvent event) {
+        this.popupTab(this.tabHistogram, "HISTOGRAM", this.imageCheckHistogram);
     }
-    
-    
-    
+
+    @FXML
+    private void histogramCloseOnAction(ActionEvent event) {
+        this.closeTab(this.imageCheckHistogram, this.tabHistogram);
+    }
 }

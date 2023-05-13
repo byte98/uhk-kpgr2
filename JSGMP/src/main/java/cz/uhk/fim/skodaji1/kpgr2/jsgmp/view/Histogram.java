@@ -18,20 +18,63 @@
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.view;
 
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 
 /**
  * Class representing histogram of bitmap
  * @author Jiri Skoda <jiri.skoda@student.upce.cz>
  */
 public class Histogram
-{    
+{   
+    /**
+     * Height of image representation of histogram
+     */
+    private static final int HEIGHT = 200;
+    
+    /**
+     * Clear colour of histogram (used as background)
+     */
+    private static final Color CLEAR = Color.rgb(51, 51, 51);
+    
+    /**
+     * Image of histogram of red colour channel
+     */
+    private final WritableImage redImage;
+    
+    /**
+     * Image of histogram of green colour channel
+     */
+    private final WritableImage greenImage;
+    
+    /**
+     * Image of histogram of blue colour channel
+     */
+    private final WritableImage blueImage;
+    
+    /**
+     * Array with values for red channel
+     */
+    private final int[] redData = new int[256];
+    
+    /**
+     * Array with values for green channel
+     */
+    private final int[] greenData = new int[256];
+    
+    /**
+     * Array with values for blue channel
+     */
+    private final int[] blueData = new int[256];
+    
     /**
      * Bitmap which histogram represents
      */
     private final Bitmap bitmap;
-    
-    
-    
+        
+        
     /**
      * Creates new histogram
      * @param bitmap Bitmap which histogram will be generated
@@ -39,5 +82,63 @@ public class Histogram
     public Histogram(Bitmap bitmap)
     {
         this.bitmap = bitmap;
+        this.redImage = new WritableImage(256, Histogram.HEIGHT);
+        this.greenImage = new WritableImage(256, Histogram.HEIGHT);
+        this.blueImage = new WritableImage(256, Histogram.HEIGHT);
+        this.clearImages();
+    }
+    
+    /**
+     * Clear all histogram images
+     */
+    private void clearImages()
+    {
+        PixelWriter redWriter = this.redImage.getPixelWriter();
+        PixelWriter greenWriter = this.greenImage.getPixelWriter();
+        PixelWriter blueWriter = this.blueImage.getPixelWriter();
+        for (int y = 0; y < Histogram.HEIGHT; y++)
+        {
+            for (int x = 0; x < 256; x++)
+            {
+                redWriter.setColor(x, y, Histogram.CLEAR);
+                greenWriter.setColor(x, y, Histogram.CLEAR);
+                blueWriter.setColor(x, y, Histogram.CLEAR);
+            }
+        }
+    }
+    
+    /**
+     * Gets image with histogram of red colour
+     * @return Image with histogram of red colour
+     */
+    public Image getRed()
+    {
+        return this.redImage;
+    }
+    
+    /**
+     * Gets image with histogram of green colour
+     * @return Image with histogram of green colour
+     */
+    public Image getGreen()
+    {
+        return this.greenImage;
+    }
+    
+    /**
+     * Gets image with histogram of blue colour
+     * @return 
+     */
+    public Image getBlue()
+    {
+        return this.blueImage;
+    }
+    
+    /**
+     * Generates graphical representation of histogram
+     */
+    private void generate()
+    {
+        
     }
 }
