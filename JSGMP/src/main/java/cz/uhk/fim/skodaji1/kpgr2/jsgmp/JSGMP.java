@@ -1,34 +1,40 @@
-/*
- * Copyright (C) 2023 Jiri Skoda <jiri.skoda@student.upce.cz>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp;
 
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.FXMLMainWindow;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
+
 /**
- * Class which represents main class of whole Java Simple Graphics Manipulation Program
- * @author Jiri Skoda <jiri.skoda@student.upce.cz>
+ * Main class of whole program
  */
-public class JSGMP
-{
+public class JSGMP extends Application {
+
     /**
-     * Entry point of program
-     * @param args Arguments of program
+     * Main scene of whole program
      */
-    public static void main(String[] args)
+    private static Scene scene;
+
+    @Override
+    public void start(Stage stage) throws IOException
     {
-        
+        FXMLLoader fxmlLoader = new FXMLLoader(JSGMP.class.getResource("fxml/FXMLMainWindow.fxml"));
+        scene = new Scene(fxmlLoader.load());
+        FXMLMainWindow controller = (FXMLMainWindow)fxmlLoader.getController();
+        controller.setPrimaryStage(stage);
+        stage.setScene(scene);
+        JMetro jmetro = new JMetro(scene, Style.DARK);
+        stage.show();
     }
+
+    public static void main(String[] args) {
+        JSGMP.launch(args);
+    }
+
 }
