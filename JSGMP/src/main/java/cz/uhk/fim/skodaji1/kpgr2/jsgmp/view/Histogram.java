@@ -18,6 +18,7 @@
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.view;
 
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -62,17 +63,17 @@ public class Histogram
     /**
      * Array with values for red channel
      */
-    private final int[] redData = new int[Histogram.WIDTH];
+    private final int[] redData = new int[256];
     
     /**
      * Array with values for green channel
      */
-    private final int[] greenData = new int[Histogram.WIDTH];
+    private final int[] greenData = new int[256];
     
     /**
      * Array with values for blue channel
      */
-    private final int[] blueData = new int[Histogram.WIDTH];
+    private final int[] blueData = new int[256];
     
     /**
      * Bitmap which histogram represents
@@ -148,10 +149,54 @@ public class Histogram
     }
     
     /**
+     * Clears all arrays with data
+     */
+    private void clearData()
+    {
+        for (int i = 0; i < 256; i++)
+        {
+            this.redData[i] = 0;
+            this.greenData[i] = 0;
+            this.blueData[i] = 0;
+        }
+    }
+    
+    /**
      * Generates graphical representation of histogram
      */
     private void generate()
     {
         this.clearImages();
+        this.clearData();
+        int redMax = Integer.MIN_VALUE;
+        int greenMax = Integer.MIN_VALUE;
+        int blueMax = Integer.MIN_VALUE;
+        for(Pixel px: this.bitmap)
+        {
+            this.redData[px.getRed()]++;
+            if (redData[px.getRed()] > redMax) redMax = redData[px.getRed()];
+            this.greenData[px.getGreen()]++;
+            if (greenData[px.getGreen()] > greenMax) greenMax = greenData[px.getGreen()];
+            this.blueData[px.getBlue()]++;
+            if (blueData[px.getBlue()] > blueMax) blueMax = redData[px.getBlue()];
+        }
+        int idx = 0;
+        double pct = (double)Histogram.HEIGHT / 100f;
+        for (int i = 0; i < 256; i++)
+        {
+            PixelWriter redWriter = this.redImage.getPixelWriter();
+            int redHeight = (int)Math.round((((double)redData[i] / (double)redMax) * 100f) * pct);
+            
+            
+            for (int j = 0; j < redHeight; j++)
+            {
+                redWriter.setColor(idx, j, Color.rgb(i, 0, 0));
+            }
+            idx++;
+            for (int j = 0; j < redHeight; j++)
+            {
+                redWriter.setColor(idx, j, Color.rgb(i, 0, 0));
+            }
+        }
     }
 }
