@@ -96,6 +96,32 @@ public class Brightness {
     }
     
     /**
+     * Changes brightness of image
+     * @param delta Delta of percentage of brightness incrementation/decrementation
+     */
+    public void changeBrightness(int delta)
+    {
+        double target = 1f + ((double)delta / 100f);
+        this.bitmap.startTransaction();
+        for (int y = 0; y < this.bitmap.getHeight(); y++)
+        {
+            for (int x = 0; x < this.bitmap.getWidth(); x++)
+            {
+                Pixel px = this.bitmap.getPixel(x, y);
+                int r = (int)Math.round((double)px.getRed() + (target * Brightness.R_COEFF));
+                if (r < 0) r = 0; if (r > 255) r = 255;
+                int g = (int)Math.round((double)px.getGreen() + (target * Brightness.G_COEFF));
+                if (g < 0) g = 0; if (g > 255) g = 255;
+                int b = (int)Math.round((double)px.getBlue() + (target * Brightness.B_COEFF));
+                if (b < 0) b = 0; if (b > 255) b = 255;
+                Pixel newPx = new Pixel((short)r, (short)g, (short)b, px.getAlpha());
+                this.bitmap.setPixel(x, y, newPx);
+            }
+        }
+        this.bitmap.finishTransaction();
+    }
+    
+    /**
      * Generates histogram
      */
     private void generateHistogram()

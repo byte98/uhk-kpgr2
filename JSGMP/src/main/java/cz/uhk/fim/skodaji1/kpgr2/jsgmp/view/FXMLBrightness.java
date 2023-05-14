@@ -55,6 +55,10 @@ public class FXMLBrightness implements Initializable {
         {
             FXMLBrightness.this.imageViewBrightness.setFitWidth(FXMLBrightness.this.vBoxContent.getWidth() - 10);
         });
+        this.sliderBrightness.valueProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
+            int delta = t1.intValue() - t.intValue();
+            FXMLBrightness.this.brightness.changeBrightness(delta);
+        });
     }    
     
     /**

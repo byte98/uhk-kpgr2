@@ -23,6 +23,9 @@ import java.util.Iterator;
 import java.util.List;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 
 
 /**
@@ -64,6 +67,17 @@ public class Bitmap implements Iterable<Pixel>
     private final Pixel[][] data;
     
     /**
+     * Flag, whether bitmap is part of transaction of change
+     */
+    private boolean inTransaction = false;
+    
+    
+    /**
+     * Graphical representation of bitmap
+     */
+    private final WritableImage image;
+    
+    /**
      * Creates new empty bitmap
      * @param width Width of bitmap
      * @param height Height of bitmap
@@ -74,6 +88,7 @@ public class Bitmap implements Iterable<Pixel>
         this.height = height;
         this.data = new Pixel[this.height][this.width];
         this.changeActionListeners = new ArrayList<>();
+        this.image = new WritableImage(this.width, this.height);
     }
     
     /**
@@ -81,10 +96,30 @@ public class Bitmap implements Iterable<Pixel>
      */
     private void invokeChange()
     {
-        for(Bitmap.BitmapChangedActionListener listener: this.changeActionListeners)
+        if (this.inTransaction == false)
         {
-            listener.onChange(this);
-        }
+            for(Bitmap.BitmapChangedActionListener listener: this.changeActionListeners)
+            {
+                listener.onChange(this);
+            }
+        }        
+    }
+    
+    /**
+     * Starts transaction of change
+     */
+    public void startTransaction()
+    {
+        this.inTransaction = true;
+    }
+    
+    /**
+     * Finishes transaction of change
+     */
+    public void finishTransaction()
+    {
+        this.inTransaction = false;
+        this.invokeChange();
     }
     
     /**
@@ -136,10 +171,13 @@ public class Bitmap implements Iterable<Pixel>
     {
         if (this.isInBitmap(x, y))
         {
+            PixelWriter pw = this.image.getPixelWriter();
             this.data[y][x] = px;
+            pw.setColor(x, y, Color.rgb(px.getRed(), px.getGreen(), px.getBlue(), (double)px.getAlpha() / 255f));
             this.invokeChange();
         }
     }
+    
     
     /**
      * Gets width of bitmap
@@ -165,15 +203,7 @@ public class Bitmap implements Iterable<Pixel>
      */
     public Image toImage()
     {
-        BufferedImage reti = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        for (int y = 0; y < this.getHeight(); y++)
-        {
-            for (int x = 0; x < this.getWidth(); x++)
-            {
-                reti.setRGB(x, y, this.getPixel(x, y).toARGB());
-            }
-        }
-        return SwingFXUtils.toFXImage(reti, null);
+        return this.image;
     }
 
     @Override

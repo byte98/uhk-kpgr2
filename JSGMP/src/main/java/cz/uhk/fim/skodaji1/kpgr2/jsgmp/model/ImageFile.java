@@ -49,7 +49,7 @@ public class ImageFile
     public ImageFile(String path)
     {
         this.path = path;
-        Bitmap data = new Bitmap(0, 0);
+        Bitmap data = new Bitmap(1, 1);
         try
         {
             BufferedImage rawImage = ImageIO.read(new File(path));
