@@ -33,17 +33,17 @@ public class Histogram
     /**
      * Height of image representation of histogram
      */
-    private static final int HEIGHT = 200;
+    public static final int HEIGHT = 200;
     
     /**
      * Width of image representation of histogram
      */
-    private static final int WIDTH = 512;
+    public static final int WIDTH = 512;
     
     /**
      * Clear colour of histogram (used as background)
      */
-    private static final Color CLEAR = Color.rgb(51, 51, 51);
+    public static final Color CLEAR = Color.rgb(51, 51, 51);
     
     /**
      * Image of histogram of red colour channel
@@ -91,7 +91,6 @@ public class Histogram
         this.redImage = new WritableImage(Histogram.WIDTH, Histogram.HEIGHT);
         this.greenImage = new WritableImage(Histogram.WIDTH, Histogram.HEIGHT);
         this.blueImage = new WritableImage(Histogram.WIDTH, Histogram.HEIGHT);
-        this.clearImages();
         this.bitmap.addChangeActionListener(new Bitmap.BitmapChangedActionListener()
         {
             @Override
@@ -100,6 +99,7 @@ public class Histogram
                 Histogram.this.generate();
             }        
         });
+        this.generate();
     }
     
     /**
@@ -180,22 +180,38 @@ public class Histogram
             this.blueData[px.getBlue()]++;
             if (blueData[px.getBlue()] > blueMax) blueMax = redData[px.getBlue()];
         }
-        int idx = 0;
         double pct = (double)Histogram.HEIGHT / 100f;
+        double width = Histogram.WIDTH / 256f;
         for (int i = 0; i < 256; i++)
         {
             PixelWriter redWriter = this.redImage.getPixelWriter();
             int redHeight = (int)Math.round((((double)redData[i] / (double)redMax) * 100f) * pct);
-            
-            
-            for (int j = 0; j < redHeight; j++)
+            for(int x = (int)(Math.round(i * width)); x < (int)(Math.round(((double)i * width) + width)); x++)
             {
-                redWriter.setColor(idx, j, Color.rgb(i, 0, 0));
+                for (int y = Histogram.HEIGHT - 1; y >= (Histogram.HEIGHT - redHeight < 0 ? 0 : Histogram.HEIGHT - redHeight); y--)
+                {
+                    redWriter.setColor(x, y, Color.rgb(i, 0, 0));
+                }
             }
-            idx++;
-            for (int j = 0; j < redHeight; j++)
+            
+            PixelWriter greenWriter = this.greenImage.getPixelWriter();
+            int greenHeight = (int)Math.round((((double)greenData[i] / (double)greenMax) * 100f) * pct);
+            for(int x = (int)(Math.round(i * width)); x < (int)(Math.round(((double)i * width) + width)); x++)
             {
-                redWriter.setColor(idx, j, Color.rgb(i, 0, 0));
+                for (int y = Histogram.HEIGHT - 1; y >= (Histogram.HEIGHT - greenHeight < 0 ? 0 : Histogram.HEIGHT - greenHeight); y--)
+                {
+                    greenWriter.setColor(x, y, Color.rgb(0, i, 0));
+                }
+            }
+            
+            PixelWriter blueWriter = this.blueImage.getPixelWriter();
+            int blueHeight = (int)Math.round((((double)blueData[i] / (double)blueMax) * 100f) * pct);
+            for(int x = (int)(Math.round(i * width)); x < (int)(Math.round(((double)i * width) + width)); x++)
+            {
+                for (int y = Histogram.HEIGHT - 1; y >= (Histogram.HEIGHT - blueHeight < 0 ? 0 : Histogram.HEIGHT - blueHeight); y--)
+                {
+                    blueWriter.setColor(x, y, Color.rgb(0, 0, i));
+                }
             }
         }
     }

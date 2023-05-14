@@ -20,6 +20,7 @@ package cz.uhk.fim.skodaji1.kpgr2.jsgmp.view;
 import com.sun.javafx.PlatformUtil;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.JSGMP;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller.MainWindowController;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Brightness;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.ImageFile;
 import java.awt.Desktop;
@@ -87,6 +88,16 @@ public class FXMLMainWindow implements Initializable {
      */
     private FXMLHistogram histogramController;
     
+    /**
+     * Pane with content of brightness tool
+     */
+    private Pane brightnessPane;
+    
+    /**
+     * Controller of brightness tool
+     */
+    private FXMLBrightness brightnessController;
+    
     @FXML
     private ImageView imageViewMain;
     
@@ -106,6 +117,10 @@ public class FXMLMainWindow implements Initializable {
     private TabPane tabPaneTools;
     @FXML
     private ImageView imageCheckHistogram;
+    @FXML
+    private ImageView imageCheckBrightness;
+    @FXML
+    private Tab tabBrightness;
 
     /**
      * Sets reference to primary stage of program
@@ -152,15 +167,23 @@ public class FXMLMainWindow implements Initializable {
      */
     private void initializeHistogram()
     {
-        FXMLLoader fxmlLoader = new FXMLLoader(JSGMP.class.getResource("fxml/FXMLHistogram.fxml"));
+        FXMLLoader histogramLoader = new FXMLLoader(JSGMP.class.getResource("fxml/FXMLHistogram.fxml"));
+        FXMLLoader brightnessLoader = new FXMLLoader(JSGMP.class.getResource("fxml/FXMLBrightness.fxml"));
         try
         {
-            this.histogramPane = (Pane)fxmlLoader.load();
-            this.histogramController = (FXMLHistogram)fxmlLoader.getController();
+            this.histogramPane = (Pane)histogramLoader.load();
+            this.histogramController = (FXMLHistogram)histogramLoader.getController();
             this.histogramPane.prefWidthProperty().bind(this.tabHistogram.getTabPane().widthProperty());
             this.histogramPane.prefHeightProperty().bind(this.tabHistogram.getTabPane().heightProperty());
             this.histogramPane.getStyleClass().add(JMetroStyleClass.BACKGROUND);
             this.tabHistogram.setContent(this.histogramPane);
+            
+            this.brightnessPane = (Pane)brightnessLoader.load();
+            this.brightnessController = (FXMLBrightness)brightnessLoader.getController();
+            this.brightnessPane.prefWidthProperty().bind(this.tabBrightness.getTabPane().widthProperty());
+            this.brightnessPane.prefHeightProperty().bind(this.tabBrightness.getTabPane().heightProperty());
+            this.brightnessPane.getStyleClass().add(JMetroStyleClass.BACKGROUND);
+            this.tabBrightness.setContent(this.brightnessPane);
         }
         catch (IOException ex)
         {
@@ -174,6 +197,7 @@ public class FXMLMainWindow implements Initializable {
     private void hideAllTabs()
     {
         this.tabPaneTools.getTabs().remove(this.tabHistogram);
+        this.tabPaneTools.getTabs().remove(this.tabBrightness);
     }
     
     /**
@@ -288,6 +312,15 @@ public class FXMLMainWindow implements Initializable {
     {
         this.histogramController.setHistogram(histogram);
     }
+    
+    /**
+     * Sets handler of brightness of image
+     * @param brightness Handler of brightness of image
+     */
+    public void setBrightness(Brightness brightness)
+    {
+        this.brightnessController.setBrightness(brightness);
+    }
 
     @FXML
     private void hyperLinkFilePathOnAction(ActionEvent event)
@@ -334,42 +367,7 @@ public class FXMLMainWindow implements Initializable {
         image.setVisible(false);
         this.tabPaneTools.getTabs().remove(tab);
     }
-    
-    /**
-     * Pop ups tab in new window
-     * @param tab Tab which will be opened in new pop up window
-     * @param title Title of pop up window
-     * @param image Check image which will be hidden when pop up window is closed
-     */
-    private void popupTab(Tab tab, String title, ImageView image)
-    {        
-        Stage stage = new Stage();        
-        Parent parent = tab.getTabPane();        
-        this.tabPaneTools.getTabs().remove(tab);
-        Scene scene = new Scene(parent);
-        JMetro jmetro = new JMetro(scene, Style.DARK);
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.setTitle(title);
-        stage.setResizable(false);
-        stage.setScene(scene);
-        stage.show();
-        stage.setOnCloseRequest(event -> {
-            image.setVisible(false);
-        });
-        stage.iconifiedProperty().addListener(new ChangeListener<Boolean>(){
-            @Override
-            public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1)
-            {
-                if (stage.isIconified())
-                {
-                    stage.close();
-                    FXMLMainWindow.this.tabPaneTools.getTabs().add(FXMLMainWindow.this.tabHistogram);
-                }
-            }        
-        });
         
-    }
-
     @FXML
     private void menuHistogramOnAction(ActionEvent event) {
         if (this.imageCheckHistogram.isVisible() == false)
@@ -411,5 +409,48 @@ public class FXMLMainWindow implements Initializable {
     @FXML
     private void histogramCloseOnAction(ActionEvent event) {
         this.closeTab(this.imageCheckHistogram, this.tabHistogram);
+    }
+
+    @FXML
+    private void menuBrightnessOnAction(ActionEvent event) {
+        if (this.imageCheckBrightness.isVisible() == false)
+        {
+            this.tabPaneTools.getTabs().add(this.tabBrightness);
+            this.imageCheckBrightness.setVisible(true);
+        }
+    }
+
+    @FXML
+    private void brightnessPopupOnAction(ActionEvent event) {
+        this.tabBrightness.setContent(null);
+        Scene scene = new Scene(this.brightnessPane);
+        Stage stage = new Stage();
+        stage.setTitle("Jas");
+        stage.setScene(scene);
+        this.tabPaneTools.getTabs().remove(this.tabBrightness);
+        stage.setOnCloseRequest(evt -> {
+            FXMLMainWindow.this.imageCheckBrightness.setVisible(false);
+            FXMLMainWindow.this.tabBrightness.setContent(FXMLMainWindow.this.brightnessPane);
+            stage.close();
+        });
+        stage.iconifiedProperty().addListener(new ChangeListener<Boolean>(){
+            @Override
+            public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1)
+            {
+                if (stage.isIconified())
+                {
+                    stage.close();
+                    FXMLMainWindow.this.tabBrightness.setContent(FXMLMainWindow.this.brightnessPane);
+                    FXMLMainWindow.this.tabPaneTools.getTabs().add(FXMLMainWindow.this.tabBrightness);
+                }
+            }        
+        });
+        JMetro jmetro = new JMetro(scene, Style.DARK);
+        stage.show();
+    }
+
+    @FXML
+    private void brightnessCloseOnAction(ActionEvent event) {
+        this.closeTab(this.imageCheckBrightness, this.tabBrightness);
     }
 }

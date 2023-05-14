@@ -1,0 +1,9 @@
+#tool-tabs .tab-label{
+  -fx-font-size: 0.01px;
+  -fx-text-fill: #1E1E1E;
+}
+
+#tool-tabs .tab-pane:focused .tab-label{
+  -fx-text-fill: #1E1E1E;
+}
+

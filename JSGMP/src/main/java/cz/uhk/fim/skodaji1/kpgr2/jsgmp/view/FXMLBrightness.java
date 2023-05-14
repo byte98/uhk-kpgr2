@@ -17,9 +17,9 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.view;
 
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Brightness;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -28,26 +28,23 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
 /**
- * FXML Controller class of histogram document
+ * FXML Controller class of brightness tool
  *
  * @author Jiri Skoda <jiri.skoda@student.upce.cz>
  */
-public class FXMLHistogram implements Initializable {
+public class FXMLBrightness implements Initializable {
 
-    @FXML
-    private ImageView imageViewRed;
-    @FXML
-    private ImageView imageViewGreen;
-    @FXML
-    private ImageView imageViewBlue;
-
-    /**
-     * Histogram which data will be displayed
-     */
-    private Histogram histogram;
-    
     @FXML
     private VBox vBoxContent;
+    @FXML
+    private ImageView imageViewBrightness;
+    @FXML
+    private Slider sliderBrightness;
+
+    /**
+     * Handler of brightness
+     */
+    private Brightness brightness;
     
     /**
      * Initializes the controller class.
@@ -56,21 +53,18 @@ public class FXMLHistogram implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         this.vBoxContent.widthProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) ->
         {
-            FXMLHistogram.this.imageViewRed.setFitWidth(FXMLHistogram.this.vBoxContent.getWidth() - 10);
-            FXMLHistogram.this.imageViewGreen.setFitWidth(FXMLHistogram.this.vBoxContent.getWidth() - 10);
-            FXMLHistogram.this.imageViewBlue.setFitWidth(FXMLHistogram.this.vBoxContent.getWidth() - 10);
+            FXMLBrightness.this.imageViewBrightness.setFitWidth(FXMLBrightness.this.vBoxContent.getWidth() - 10);
         });
-    }
+    }    
     
     /**
-     * Sets histogram which data will be displayed
-     * @param histogram Histogram which data will be displayed
+     * Sets handler of brightness
+     * @param brightness Handler of brightness
      */
-    public void setHistogram(Histogram histogram)
+    public void setBrightness(Brightness brightness)
     {
-        this.histogram = histogram;
-        this.imageViewRed.setImage(this.histogram.getRed());
-        this.imageViewGreen.setImage(this.histogram.getGreen());
-        this.imageViewBlue.setImage(this.histogram.getBlue());
+        this.brightness = brightness;
+        this.imageViewBrightness.setImage(this.brightness.getHistogram());
     }
+    
 }

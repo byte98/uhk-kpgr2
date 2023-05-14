@@ -42,9 +42,9 @@
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <TabPane fx:id="tabPaneTools" layoutX="-100.0" layoutY="55.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TabPane id="tool-tabs" fx:id="tabPaneTools" layoutX="-100.0" layoutY="55.0" prefHeight="200.0" prefWidth="200.0" stylesheets="@CSSTabs.css" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <tabs>
-                      <Tab closable="false">
+                      <Tab closable="false" text="INFORMACE">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
@@ -94,19 +94,19 @@
                            <graphic>
                               <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
                                  <children>
-                                    <Label text="INFORMACE" />
+                                    <Label style="-fx-font-size: 12px;" text="INFORMACE" />
                                  </children>
                               </HBox>
                            </graphic>
                       </Tab>
-                        <Tab fx:id="tabHistogram" closable="false">
+                        <Tab fx:id="tabHistogram" closable="false" text="HISTOGRAM">
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                           </content>
                            <graphic>
                               <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
                                  <children>
-                                    <Label text="HISTOGRAM" />
+                                    <Label style="-fx-font-size: 12px;" text="HISTOGRAM" />
                                     <Button mnemonicParsing="false" onAction="#histogramPopupOnAction" style="-fx-background-color: transparent;">
                                        <graphic>
                                           <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
@@ -117,6 +117,36 @@
                                        </graphic>
                                     </Button>
                                     <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#histogramCloseOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/close16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Tab>
+                        <Tab fx:id="tabBrightness" closable="false" text="JAS">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                           <graphic>
+                              <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 16px;" text="JAS" />
+                                    <Button mnemonicParsing="false" onAction="#brightnessPopupOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                             <image>
+                                                <Image url="@../icons/popout16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#brightnessCloseOnAction" style="-fx-background-color: transparent;">
                                        <graphic>
                                           <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
@@ -215,6 +245,37 @@
                               </ImageView>
                               <Label text="Histogram" GridPane.columnIndex="1" />
                               <ImageView fx:id="imageCheckHistogram" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
+                                 <image>
+                                    <Image url="@../icons/check16.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Upravit">
+              <items>
+                  <MenuItem mnemonicParsing="false" onAction="#menuBrightnessOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/brightness16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Jas" GridPane.columnIndex="1" />
+                              <ImageView fx:id="imageCheckBrightness" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
                                  <image>
                                     <Image url="@../icons/check16.png" />
                                  </image>

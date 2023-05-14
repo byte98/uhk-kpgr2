@@ -17,6 +17,7 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller;
 
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Brightness;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.ImageFile;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.FXMLMainWindow;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Histogram;
@@ -45,6 +46,11 @@ public class MainWindowController
     private Histogram histogram;
     
     /**
+     * Handler of brightness of image
+     */
+    private Brightness brightness;
+    
+    /**
      * Creates new controller of main window
      * @param mainWindow Reference to main window
      */
@@ -61,8 +67,10 @@ public class MainWindowController
     {
         this.image = new ImageFile(path);
         this.histogram = new Histogram(this.image.getBitmap());
+        this.brightness = new Brightness(this.image.getBitmap());
         this.mainWindow.setImage(this.image.getBitmap());
         this.mainWindow.setHistogram(this.histogram);
+        this.mainWindow.setBrightness(this.brightness);
         Path p = Paths.get(path);
         this.mainWindow.setFileName(p.getFileName().toString());
         this.mainWindow.setFilePath(Paths.get(path).toAbsolutePath().normalize().toString());
