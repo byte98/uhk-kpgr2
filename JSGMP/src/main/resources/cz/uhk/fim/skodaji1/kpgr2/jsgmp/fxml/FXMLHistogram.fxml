@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="vBoxContent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="432.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.FXMLHistogram">
+   <children>
+      <HBox prefHeight="36.0" prefWidth="600.0" spacing="10.0">
+         <children>
+            <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/histogram.png" />
+               </image>
+            </ImageView>
+            <Label style="-fx-font-size: 24px;" text="Histogram" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </HBox>
+      <Separator prefWidth="200.0">
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin></Separator>
+      <Label text="Červený kanál" />
+      <ImageView fx:id="imageViewRed" fitHeight="150.0" fitWidth="393.0" pickOnBounds="true" preserveRatio="true">
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+      </ImageView>
+      <Label layoutX="20.0" layoutY="88.0" text="Zelený kanál" />
+      <ImageView fx:id="imageViewGreen" fitHeight="150.0" fitWidth="411.0" layoutX="20.0" layoutY="106.0" pickOnBounds="true" preserveRatio="true">
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+      </ImageView>
+      <Label layoutX="20.0" layoutY="276.0" text="Modrý kanál" />
+      <ImageView fx:id="imageViewBlue" fitHeight="150.0" fitWidth="411.0" layoutX="20.0" layoutY="294.0" pickOnBounds="true" preserveRatio="true" />
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</VBox>

@@ -8,6 +8,11 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
+import javafx.stage.WindowEvent;
 import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.Style;
 
@@ -31,6 +36,9 @@ public class JSGMP extends Application {
         stage.setScene(scene);
         JMetro jmetro = new JMetro(scene, Style.DARK);
         stage.show();
+        stage.setOnCloseRequest((WindowEvent t) -> {
+            Platform.exit();
+        });
     }
 
     public static void main(String[] args) {

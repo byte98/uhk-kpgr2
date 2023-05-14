@@ -35,6 +35,11 @@ public class Histogram
     private static final int HEIGHT = 200;
     
     /**
+     * Width of image representation of histogram
+     */
+    private static final int WIDTH = 512;
+    
+    /**
      * Clear colour of histogram (used as background)
      */
     private static final Color CLEAR = Color.rgb(51, 51, 51);
@@ -57,17 +62,17 @@ public class Histogram
     /**
      * Array with values for red channel
      */
-    private final int[] redData = new int[256];
+    private final int[] redData = new int[Histogram.WIDTH];
     
     /**
      * Array with values for green channel
      */
-    private final int[] greenData = new int[256];
+    private final int[] greenData = new int[Histogram.WIDTH];
     
     /**
      * Array with values for blue channel
      */
-    private final int[] blueData = new int[256];
+    private final int[] blueData = new int[Histogram.WIDTH];
     
     /**
      * Bitmap which histogram represents
@@ -82,10 +87,18 @@ public class Histogram
     public Histogram(Bitmap bitmap)
     {
         this.bitmap = bitmap;
-        this.redImage = new WritableImage(256, Histogram.HEIGHT);
-        this.greenImage = new WritableImage(256, Histogram.HEIGHT);
-        this.blueImage = new WritableImage(256, Histogram.HEIGHT);
+        this.redImage = new WritableImage(Histogram.WIDTH, Histogram.HEIGHT);
+        this.greenImage = new WritableImage(Histogram.WIDTH, Histogram.HEIGHT);
+        this.blueImage = new WritableImage(Histogram.WIDTH, Histogram.HEIGHT);
         this.clearImages();
+        this.bitmap.addChangeActionListener(new Bitmap.BitmapChangedActionListener()
+        {
+            @Override
+            public void onChange(Bitmap bitmap)
+            {
+                Histogram.this.generate();
+            }        
+        });
     }
     
     /**
@@ -98,7 +111,7 @@ public class Histogram
         PixelWriter blueWriter = this.blueImage.getPixelWriter();
         for (int y = 0; y < Histogram.HEIGHT; y++)
         {
-            for (int x = 0; x < 256; x++)
+            for (int x = 0; x < Histogram.WIDTH; x++)
             {
                 redWriter.setColor(x, y, Histogram.CLEAR);
                 greenWriter.setColor(x, y, Histogram.CLEAR);
@@ -139,6 +152,6 @@ public class Histogram
      */
     private void generate()
     {
-        
+        this.clearImages();
     }
 }

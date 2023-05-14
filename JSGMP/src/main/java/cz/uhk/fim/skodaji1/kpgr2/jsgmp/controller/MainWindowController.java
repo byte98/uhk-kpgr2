@@ -19,6 +19,7 @@ package cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller;
 
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.ImageFile;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.FXMLMainWindow;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Histogram;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -39,6 +40,11 @@ public class MainWindowController
     private ImageFile image;
     
     /**
+     * Histogram of image
+     */
+    private Histogram histogram;
+    
+    /**
      * Creates new controller of main window
      * @param mainWindow Reference to main window
      */
@@ -54,7 +60,9 @@ public class MainWindowController
     public void fileOpen(String path)
     {
         this.image = new ImageFile(path);
+        this.histogram = new Histogram(this.image.getBitmap());
         this.mainWindow.setImage(this.image.getBitmap());
+        this.mainWindow.setHistogram(this.histogram);
         Path p = Paths.get(path);
         this.mainWindow.setFileName(p.getFileName().toString());
         this.mainWindow.setFilePath(Paths.get(path).toAbsolutePath().normalize().toString());

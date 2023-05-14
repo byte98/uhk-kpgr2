@@ -50,7 +50,7 @@
                                  <children>
                                     <VBox layoutX="85.0" layoutY="39.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
-                                          <HBox alignment="CENTER_LEFT" prefHeight="37.0" prefWidth="320.0" spacing="10.0">
+                                          <HBox alignment="CENTER_LEFT" prefHeight="36.0" prefWidth="320.0" spacing="10.0">
                                              <children>
                                                 <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
@@ -101,30 +101,7 @@
                       </Tab>
                         <Tab fx:id="tabHistogram" closable="false">
                           <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                       <padding>
-                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                       </padding>
-                                       <children>
-                                          <HBox alignment="CENTER_LEFT" prefHeight="37.0" prefWidth="320.0" spacing="10.0">
-                                             <children>
-                                                <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../icons/histogram.png" />
-                                                   </image>
-                                                </ImageView>
-                                                <Label style="-fx-font-size: 24px;" text="Histogram" />
-                                             </children>
-                                             <padding>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                             </padding>
-                                          </HBox>
-                                          <Separator prefWidth="200.0" />
-                                       </children></VBox>
-                                 </children>
-                              </AnchorPane>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                           </content>
                            <graphic>
                               <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">

@@ -18,6 +18,7 @@
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.view;
 
 import com.sun.javafx.PlatformUtil;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.JSGMP;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller.MainWindowController;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.ImageFile;
@@ -36,6 +37,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -51,6 +53,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.JMetroStyleClass;
 import jfxtras.styles.jmetro.Style;
 
 /**
@@ -73,6 +76,16 @@ public class FXMLMainWindow implements Initializable {
      */
     private MainWindowController controller;
     
+    
+    /**
+     * Pane with content of histogram tool
+     */
+    private Pane histogramPane;
+    
+    /**
+     * Controller of histogram tool
+     */
+    private FXMLHistogram histogramController;
     
     @FXML
     private ImageView imageViewMain;
@@ -101,6 +114,10 @@ public class FXMLMainWindow implements Initializable {
     public void setPrimaryStage(Stage stage)
     {
         this.primaryStage = stage;
+        this.primaryStage.maximizedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
+            FXMLMainWindow.this.relocateMainImage(FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getWidth(), FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getHeight());
+            FXMLMainWindow.this.resizeMainImageWrapper(this.imageViewMain.getFitWidth(), this.imageViewMain.getFitHeight());
+        });
     }
     
     /**
@@ -117,8 +134,39 @@ public class FXMLMainWindow implements Initializable {
             FXMLMainWindow.this.relocateMainImage(FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getWidth(), FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getHeight());
             FXMLMainWindow.this.resizeMainImageWrapper(this.imageViewMain.getFitWidth(), this.imageViewMain.getFitHeight());
         });
+        this.initializeTabs();
         this.hideAllTabs();
     }    
+    
+    
+    /**
+     * Initializes all tabs from FXML documents
+     */
+    private void initializeTabs()
+    {
+        this.initializeHistogram();
+    }
+    
+    /**
+     * Initializes histogram
+     */
+    private void initializeHistogram()
+    {
+        FXMLLoader fxmlLoader = new FXMLLoader(JSGMP.class.getResource("fxml/FXMLHistogram.fxml"));
+        try
+        {
+            this.histogramPane = (Pane)fxmlLoader.load();
+            this.histogramController = (FXMLHistogram)fxmlLoader.getController();
+            this.histogramPane.prefWidthProperty().bind(this.tabHistogram.getTabPane().widthProperty());
+            this.histogramPane.prefHeightProperty().bind(this.tabHistogram.getTabPane().heightProperty());
+            this.histogramPane.getStyleClass().add(JMetroStyleClass.BACKGROUND);
+            this.tabHistogram.setContent(this.histogramPane);
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(FXMLMainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
     /**
      * Hides all tabs which should not be visible
@@ -231,6 +279,15 @@ public class FXMLMainWindow implements Initializable {
     {
         this.labelFileSize.setText(String.format("%d px × %d px", width, height));
     }
+    
+    /**
+     * Sets histogram which will be displayed
+     * @param histogram Histogram which will be displayed
+     */
+    public void setHistogram(Histogram histogram)
+    {
+        this.histogramController.setHistogram(histogram);
+    }
 
     @FXML
     private void hyperLinkFilePathOnAction(ActionEvent event)
@@ -324,7 +381,31 @@ public class FXMLMainWindow implements Initializable {
 
     @FXML
     private void histogramPopupOnAction(ActionEvent event) {
-        this.popupTab(this.tabHistogram, "HISTOGRAM", this.imageCheckHistogram);
+        this.tabHistogram.setContent(null);
+        Scene scene = new Scene(this.histogramPane);
+        Stage stage = new Stage();
+        stage.setTitle("Histogram");
+        stage.setScene(scene);
+        this.tabPaneTools.getTabs().remove(this.tabHistogram);
+        stage.setOnCloseRequest(evt -> {
+            FXMLMainWindow.this.imageCheckHistogram.setVisible(false);
+            FXMLMainWindow.this.tabHistogram.setContent(FXMLMainWindow.this.histogramPane);
+            stage.close();
+        });
+        stage.iconifiedProperty().addListener(new ChangeListener<Boolean>(){
+            @Override
+            public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1)
+            {
+                if (stage.isIconified())
+                {
+                    stage.close();
+                    FXMLMainWindow.this.tabHistogram.setContent(FXMLMainWindow.this.histogramPane);
+                    FXMLMainWindow.this.tabPaneTools.getTabs().add(FXMLMainWindow.this.tabHistogram);
+                }
+            }        
+        });
+        JMetro jmetro = new JMetro(scene, Style.DARK);
+        stage.show();
     }
 
     @FXML
