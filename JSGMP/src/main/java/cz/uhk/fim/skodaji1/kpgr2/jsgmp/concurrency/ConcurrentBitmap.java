@@ -85,14 +85,14 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
         private final Pixel px;
         
         /**
-         * Flag, whether setter contains data
+         * Transaction which will be processed
          */
-        private final boolean hasData;
+        private final Bitmap.BitmapTransaction transaction;
         
         /**
-         * Actual state of transaction
+         * Flag, whether setter contains transaction
          */
-        private final TransactionState transactionState;
+        private final boolean isTransaction;
         
         /**
          * Creates new set pixel action
@@ -105,39 +105,39 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
             this.x = x;
             this.y = y;
             this.px = px;
-            this.transactionState = TransactionState.START;
-            this.hasData = true;
+            this.transaction = null;
+            this.isTransaction = false;
         }
         
         /**
-         * Creates new setter of transaction state
-         * @param state New state of transaction
+         * Creates new set pixel action
+         * @param transaction Transaction which will be processed
          */
-        public BitmapSetter(TransactionState state)
+        public BitmapSetter(Bitmap.BitmapTransaction transaction)
         {
             this.x = 0;
             this.y = 0;
-            this.px = new Pixel((short)0, (short)0, (short)0, (short)0);
-            this.transactionState = state;
-            this.hasData = false;
+            this.px = new Pixel((short)0, (short)0, (short)0);
+            this.transaction = transaction;
+            this.isTransaction = true;
         }
         
         /**
-         * Flag, whether setter contains dat
-         * @return TRUE if setter contains data, FALSE otherwise
+         * Checks, whether setter contains transaction
+         * @return TRUE if setter contains transaction, FALSE otherwise
          */
-        public boolean hasData()
+        public boolean isTransaction()
         {
-            return this.hasData;
+            return this.isTransaction;
         }
         
         /**
-         * Gets actual state of transaction
-         * @return Actual state of transaction
+         * Gets transaction which should be processed over pixels in bitmap
+         * @return Transaction which should be processed over pixels in bitmap
          */
-        public TransactionState getTransactionState()
+        public Bitmap.BitmapTransaction getTransaction()
         {
-            return this.transactionState;
+            return this.transaction;
         }
         
         /**
@@ -187,12 +187,7 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
      * List of listeners on bitmap change action
      */
     private final List<Bitmap.BitmapChangedActionListener> changeListeners;
-    
-    /**
-     * Actual state of transaction
-     */
-    private ConcurrentBitmap.BitmapSetter.TransactionState transactionState = ConcurrentBitmap.BitmapSetter.TransactionState.FINISH;
-    
+        
     /**
      * Creates new bitmap which works across threads
      * @param width Width of bitmap
@@ -214,7 +209,6 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
 
     @Override
     protected void invokeChange() {
-        System.out.println("i");
         synchronized(this.changeListeners)
         {
             this.changeListeners.forEach((action) ->
@@ -225,11 +219,12 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
     }
 
     @Override
-    public void setPixel(int x, int y, Pixel px)
+    public void processTransaction(BitmapTransaction transaction)
     {
         try
         {
-            this.setQueue.put(new ConcurrentBitmap.BitmapSetter(x, y, px));
+            ConcurrentBitmap.BitmapSetter setter = new ConcurrentBitmap.BitmapSetter(transaction);
+            this.setQueue.put(setter);
         }
         catch (InterruptedException ex)
         {
@@ -238,34 +233,17 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
     }    
 
     @Override
-    public void startTransaction()
+    public void setPixel(int x, int y, Pixel px)
     {
-        super.startTransaction(); 
         try
         {
-            this.setQueue.put(new ConcurrentBitmap.BitmapSetter(ConcurrentBitmap.BitmapSetter.TransactionState.START));
+            ConcurrentBitmap.BitmapSetter setter = new ConcurrentBitmap.BitmapSetter(x, y, px);
+            this.setQueue.put(setter);
         }
         catch (InterruptedException ex)
         {
             Logger.getLogger(ConcurrentBitmap.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-    
-    
-    
-    @Override
-    public void finishTransaction()
-    {
-        super.finishTransaction();
-        try
-        {
-            this.setQueue.put(new ConcurrentBitmap.BitmapSetter(ConcurrentBitmap.BitmapSetter.TransactionState.FINISH));
-        }
-        catch (InterruptedException ex)
-        {
-            Logger.getLogger(ConcurrentBitmap.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
     }    
     
     @Override
@@ -278,28 +256,28 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
                 ConcurrentBitmap.BitmapSetter item = this.setQueue.poll(ConcurrentBitmap.POLL_TIMEOUT, TimeUnit.MICROSECONDS);
                 if (Objects.nonNull(item))
                 {
-                    System.out.println(item.hasData());
-                    if (item.hasData())
+                    if (item.isTransaction() == false)
                     {
                         if (this.isInBitmap(item.getX(), item.getY()))
                         {
                             this.data[item.getY()][item.getX()] = item.getPixel();
                             PixelWriter pw = this.image.getPixelWriter();
                             pw.setColor(item.getX(), item.getY(), Color.rgb(item.getPixel().getRed(), item.getPixel().getGreen(), item.getPixel().getBlue(), (double)item.getPixel().getAlpha() / 255f));
-                            if (this.transactionState == ConcurrentBitmap.BitmapSetter.TransactionState.FINISH)
-                            {
-                                this.invokeChange();
-                            }
+                            this.invokeChange();
                         }
                     }
                     else
                     {
-                        this.transactionState = item.getTransactionState();
-                        System.out.println(this.transactionState);
-                        if (this.transactionState == ConcurrentBitmap.BitmapSetter.TransactionState.FINISH)
+                        for(Bitmap.BitmapTransaction.TransactionItem t: item.getTransaction().getItems())
                         {
-                            this.invokeChange();
+                            if (this.isInBitmap(t.getX(), t.getY()))
+                            {
+                                this.data[t.getY()][t.getX()] = t.getValue();
+                                PixelWriter pw = this.image.getPixelWriter();
+                                pw.setColor(t.getX(), t.getY(), Color.rgb(t.getValue().getRed(), t.getValue().getGreen(), t.getValue().getBlue(), (double)t.getValue().getAlpha() / 255f));
+                            }
                         }
+                        this.invokeChange();
                     }
                 }
             }

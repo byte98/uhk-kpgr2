@@ -58,23 +58,7 @@ public class BitmapController
             @Override
             public void run()
             {
-                BitmapController.this.bitmap.startTransaction();
-                ExecutorService exec = Executors.newFixedThreadPool(BitmapController.this.bitmap.getHeight());
-                List<Callable<Void>> tasks = new ArrayList<>();
-                for (int row = 0; row < BitmapController.this.bitmap.getHeight(); row++)
-                {
-                    tasks.add(BitmapController.this.applyEffect(effect, row));
-                }
-                /*try
-                {
-                    exec.invokeAll(tasks);*/
-                    BitmapController.this.bitmap.finishTransaction();/*
-                }/*
-                catch (InterruptedException ex)
-                {
-                    Logger.getLogger(BitmapController.class.getName()).log(Level.SEVERE, null, ex);
-                    BitmapController.this.bitmap.finishTransaction();
-                }*/
+                
             }            
         };
         Thread t = new Thread(task);

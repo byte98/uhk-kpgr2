@@ -204,6 +204,7 @@ public class Histogram implements Threadable
                 // Second, display data
                 double widthStep = (double)this.result.getWidth() / (double)this.data.length;
                 double heightStep = (double)this.result.getHeight() / (double)max;
+                Bitmap.BitmapTransaction transaction = new Bitmap.BitmapTransaction();
                 for (int i = 0; i < this.data.length; i++)
                 {
                     int xStart = (int)Math.round((double)i * widthStep);
@@ -215,15 +216,16 @@ public class Histogram implements Threadable
                         {
                             if (y > (this.result.getHeight() - height))
                             {
-                                this.result.setPixel(x, y, this.interpolateColor(this.startColor, this.finalColor, this.data.length - 1, i));
+                                transaction.setPixel(x, y, this.interpolateColor(this.startColor, this.finalColor, this.data.length - 1, i));
                             }
                             else
                             {
-                                this.result.setPixel(x, y, Globals.HISTOGRAM_CLEAR);
+                                transaction.setPixel(x, y, Globals.HISTOGRAM_CLEAR);
                             }
                         }
                     }
                 }
+                this.result.processTransaction(transaction);
                 this.refresh = false;
             }
             try
