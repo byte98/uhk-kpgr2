@@ -17,6 +17,7 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.view;
 
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller.MainWindowController;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Brightness;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -24,6 +25,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
@@ -40,11 +42,21 @@ public class FXMLBrightness implements Initializable {
     private ImageView imageViewBrightness;
     @FXML
     private Slider sliderBrightness;
-
+    
     /**
-     * Handler of brightness
+     * Controller of main window
      */
-    private Brightness brightness;
+    private MainWindowController mainWindow;
+    
+    /**
+     * Sets reference to main window
+     * @param mainWindow Controller of main window
+     */
+    public void setMainWindow(MainWindowController mainWindow)
+    {
+        this.mainWindow = mainWindow;
+    }
+
     
     /**
      * Initializes the controller class.
@@ -56,19 +68,23 @@ public class FXMLBrightness implements Initializable {
             FXMLBrightness.this.imageViewBrightness.setFitWidth(FXMLBrightness.this.vBoxContent.getWidth() - 10);
         });
         this.sliderBrightness.valueProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
-            int delta = t1.intValue() - t.intValue();
-            FXMLBrightness.this.brightness.changeBrightness(delta);
+            int prev = (int)Math.round((Double)t);
+            int next = (int)Math.round((Double)t1);
+            int delta = next - prev;
+            if (delta != 0)
+            {
+                this.mainWindow.brightnessChanged(next);
+            }            
         });
     }    
     
     /**
-     * Sets handler of brightness
-     * @param brightness Handler of brightness
+     * Sets histogram of brightness of image
+     * @param brightnessHistogram New histogram of brightness of image
      */
-    public void setBrightness(Brightness brightness)
+    public void setBrightnessHistogram(Image brightnessHistogram)
     {
-        this.brightness = brightness;
-        this.imageViewBrightness.setImage(this.brightness.getHistogram());
+        this.imageViewBrightness.setImage(brightnessHistogram);
     }
     
 }

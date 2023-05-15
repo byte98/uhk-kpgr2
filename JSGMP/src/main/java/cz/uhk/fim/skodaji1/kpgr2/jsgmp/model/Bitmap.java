@@ -47,6 +47,97 @@ public class Bitmap implements Iterable<Pixel>
     }
     
     /**
+     * Class representing transaction done over bitmap
+     */
+    public static class BitmapTransaction
+    {
+        /**
+         * Items done in transaction
+         */
+        private final List<TransactionItem> items;
+        
+        /**
+         * Class representing one transaction item
+         */
+        public static class TransactionItem
+        {
+            /**
+             * X coordinate of pixel which will be changed
+             */
+            private final int x;
+            
+            /**
+             * Y coordinate of pixel which will be changed
+             */
+            private final int y;
+            
+            /**
+             * New value of pixel
+             */
+            private final Pixel px;
+            
+            /**
+             * Creates new item of transaction
+             * @param x X coordinate of pixel which will be changed
+             * @param y Y coordinate of pixel which will be changed
+             * @param px New value of pixel
+             */
+            public TransactionItem(int x, int y, Pixel px)
+            {
+                this.x = x;
+                this.y = y;
+                this.px = px;
+            }
+            
+            /**
+             * Gets X coordinate of changed pixel
+             * @return X coordinate of changed pixel
+             */
+            public int getX()
+            {
+                return this.x;
+            }
+            
+            /**
+             * Gets Y coordinate of changed pixel
+             * @return Y coordinate of changed pixel
+             */
+            public int getY()
+            {
+                return this.y;
+            }
+            
+            /**
+             * Gets new value of pixel
+             * @return New value of pixel
+             */
+            public Pixel getValue()
+            {
+                return this.px;
+            }
+        }
+        
+        /**
+         * Creates new bitmap transaction
+         */
+        public BitmapTransaction()
+        {
+            this.items = new ArrayList<>();
+        }
+        
+        /**
+         * Sets pixel in bitmap
+         * @param x X coordinate of pixel
+         * @param y Y coordinate of pixel
+         * @param px New value of pixel
+         */
+        public void setPixel(int x, int y, Pixel px)
+        {
+            this.items.add(new TransactionItem(x, y, px));
+        }
+    }
+    
+    /**
      * List of listeners on bitmap change action
      */
     private List<Bitmap.BitmapChangedActionListener> changeActionListeners;
@@ -54,28 +145,28 @@ public class Bitmap implements Iterable<Pixel>
     /**
      * Width of bitmap
      */
-    private final int width;
+    protected final int width;
     
     /**
      * Height of bitmap
      */
-    private final int height;
+    protected final int height;
     
     /**
      * Data of bitmap
      */
-    private final Pixel[][] data;
+    protected final Pixel[][] data;
     
     /**
      * Flag, whether bitmap is part of transaction of change
      */
-    private boolean inTransaction = false;
+    protected boolean inTransaction = false;
     
     
     /**
      * Graphical representation of bitmap
      */
-    private final WritableImage image;
+    protected final WritableImage image;
     
     /**
      * Creates new empty bitmap
@@ -94,7 +185,7 @@ public class Bitmap implements Iterable<Pixel>
     /**
      * Invokes all action listeners on bitmap change
      */
-    private void invokeChange()
+    protected void invokeChange()
     {
         if (this.inTransaction == false)
         {
@@ -106,20 +197,15 @@ public class Bitmap implements Iterable<Pixel>
     }
     
     /**
-     * Starts transaction of change
+     * Adds transaction done over pixels in bitmap
+     * @param transaction Transaction which will be processed
      */
-    public void startTransaction()
+    public void addTransaction(BitmapTransaction transaction)
     {
-        this.inTransaction = true;
-    }
-    
-    /**
-     * Finishes transaction of change
-     */
-    public void finishTransaction()
-    {
-        this.inTransaction = false;
-        this.invokeChange();
+        for(TransactionItem item: transaction.items)
+        {
+            
+        }
     }
     
     /**
@@ -137,7 +223,7 @@ public class Bitmap implements Iterable<Pixel>
      * @param y Position on Y axis
      * @return TRUE if position is in bitmap, FALSE otherwise
      */
-    private boolean isInBitmap(int x, int y)
+    protected boolean isInBitmap(int x, int y)
     {
         return (
                 x >= 0 && x < this.width &&

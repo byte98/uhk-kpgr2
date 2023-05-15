@@ -17,6 +17,7 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.model;
 
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency.ThreadManager;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -53,7 +54,8 @@ public class ImageFile
         try
         {
             BufferedImage rawImage = ImageIO.read(new File(path));
-            data = new Bitmap(rawImage.getWidth(), rawImage.getHeight());
+            data = ThreadManager.createBitmap(rawImage.getWidth(), rawImage.getHeight());
+            data.startTransaction();
             for (int y = 0; y < rawImage.getHeight(); y++)
             {
                 for (int x = 0; x < rawImage.getWidth(); x++)
@@ -67,6 +69,7 @@ public class ImageFile
                     ));
                 }
             }
+            data.finishTransaction();
         }
         catch (IOException ex)
         {

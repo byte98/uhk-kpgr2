@@ -1,5 +1,6 @@
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp;
 
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency.ThreadManager;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.FXMLMainWindow;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -37,6 +38,7 @@ public class JSGMP extends Application {
         JMetro jmetro = new JMetro(scene, Style.DARK);
         stage.show();
         stage.setOnCloseRequest((WindowEvent t) -> {
+            ThreadManager.stopThreads();
             Platform.exit();
         });
     }

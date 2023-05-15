@@ -24,6 +24,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
@@ -63,14 +64,29 @@ public class FXMLHistogram implements Initializable {
     }
     
     /**
-     * Sets histogram which data will be displayed
-     * @param histogram Histogram which data will be displayed
+     * Sets histogram of red color channel
+     * @param image Image representation of histogram of red color channel
      */
-    public void setHistogram(Histogram histogram)
+    public void setRedHistogram(Image image)
     {
-        this.histogram = histogram;
-        this.imageViewRed.setImage(this.histogram.getRed());
-        this.imageViewGreen.setImage(this.histogram.getGreen());
-        this.imageViewBlue.setImage(this.histogram.getBlue());
+        this.imageViewRed.setImage(image);
+    }
+    
+    /**
+     * Sets histogram of green color channel
+     * @param image Image representation of histogram of green color channel
+     */
+    public void setGreenHistogram(Image image)
+    {
+        this.imageViewGreen.setImage(image);
+    }
+    
+    /**
+     * Sets histogram of blue color channel
+     * @param image Image representation of histogram of blue color channel
+     */
+    public void setBlueHistogram(Image image)
+    {
+        this.imageViewBlue.setImage(image);
     }
 }

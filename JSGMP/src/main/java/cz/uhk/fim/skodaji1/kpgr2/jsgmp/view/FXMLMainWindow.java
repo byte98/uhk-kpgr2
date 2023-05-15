@@ -47,6 +47,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -180,6 +181,7 @@ public class FXMLMainWindow implements Initializable {
             
             this.brightnessPane = (Pane)brightnessLoader.load();
             this.brightnessController = (FXMLBrightness)brightnessLoader.getController();
+            this.brightnessController.setMainWindow(this.controller);
             this.brightnessPane.prefWidthProperty().bind(this.tabBrightness.getTabPane().widthProperty());
             this.brightnessPane.prefHeightProperty().bind(this.tabBrightness.getTabPane().heightProperty());
             this.brightnessPane.getStyleClass().add(JMetroStyleClass.BACKGROUND);
@@ -305,21 +307,39 @@ public class FXMLMainWindow implements Initializable {
     }
     
     /**
-     * Sets histogram which will be displayed
-     * @param histogram Histogram which will be displayed
+     * Sets histogram of red color channel
+     * @param image Image representation of histogram of red color channel
      */
-    public void setHistogram(Histogram histogram)
+    public void setRedHistogram(Image image)
     {
-        this.histogramController.setHistogram(histogram);
+        this.histogramController.setRedHistogram(image);
     }
     
     /**
-     * Sets handler of brightness of image
-     * @param brightness Handler of brightness of image
+     * Sets histogram of green color channel
+     * @param image Image representation of histogram of green color channel
      */
-    public void setBrightness(Brightness brightness)
+    public void setGreenHistogram(Image image)
     {
-        this.brightnessController.setBrightness(brightness);
+        this.histogramController.setGreenHistogram(image);
+    }
+    
+    /**
+     * Sets histogram of blue color channel
+     * @param image Image representation of histogram of blue color channel
+     */
+    public void setBlueHistogram(Image image)
+    {
+        this.histogramController.setBlueHistogram(image);
+    }
+    
+    /**
+     * Sets histogram of brightness of image
+     * @param brightnessHistogram New histogram of brightness of image
+     */
+    public void setBrightnessHistogram(Image brightnessHistogram)
+    {
+        this.brightnessController.setBrightnessHistogram(brightnessHistogram);
     }
 
     @FXML

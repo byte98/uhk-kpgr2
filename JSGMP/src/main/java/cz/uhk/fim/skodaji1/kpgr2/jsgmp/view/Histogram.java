@@ -17,8 +17,18 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.view;
 
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency.Threadable;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Globals;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -28,191 +38,203 @@ import javafx.scene.paint.Color;
  * Class representing histogram of bitmap
  * @author Jiri Skoda <jiri.skoda@student.upce.cz>
  */
-public class Histogram
+public class Histogram implements Threadable
 {   
     /**
-     * Height of image representation of histogram
+     * Counter of created histograms
      */
-    public static final int HEIGHT = 200;
+    private static long counter = 0;
     
     /**
-     * Width of image representation of histogram
+     * Sleep time between checking, whether histogram needs to be refreshed
      */
-    public static final int WIDTH = 512;
+    private static final int SLEEP = 100;
     
     /**
-     * Clear colour of histogram (used as background)
+     * Function which computes value of histogram from pixel
      */
-    public static final Color CLEAR = Color.rgb(51, 51, 51);
+    private final Function<Pixel, Integer> histogramFunction;
     
     /**
-     * Image of histogram of red colour channel
+     * Bitmap which histogram will be computed
      */
-    private final WritableImage redImage;
+    private final Bitmap source;
     
     /**
-     * Image of histogram of green colour channel
+     * Bitmap to which result will be drawn
      */
-    private final WritableImage greenImage;
+    private final Bitmap result;
     
     /**
-     * Image of histogram of blue colour channel
+     * Starting color of histogram
      */
-    private final WritableImage blueImage;
+    private final Color startColor;
     
     /**
-     * Array with values for red channel
+     * Final color of histogram
      */
-    private final int[] redData = new int[256];
+    private final Color finalColor;
     
     /**
-     * Array with values for green channel
+     * Flag, whether there is need to refresh histogram
      */
-    private final int[] greenData = new int[256];
+    private boolean refresh = false;
     
     /**
-     * Array with values for blue channel
+     * Flag, whether histogram generator is running
      */
-    private final int[] blueData = new int[256];
+    private boolean running = false;
     
     /**
-     * Bitmap which histogram represents
+     * Thread which handles asynchronous histogram generation
      */
-    private final Bitmap bitmap;
-        
-        
+    private final Thread thread;
+    
+    /**
+     * Data displayed in histogram
+     */
+    private final int[] data;
+    
     /**
      * Creates new histogram
-     * @param bitmap Bitmap which histogram will be generated
+     * @param function Function which computes value of histogram for pixel
+     * @param source Bitmap which histogram will be computed
+     * @param result Bitmap to which results will be drawn into
+     * @param startColor Starting color of histogram
+     * @param finalColor Final color of histogram
+     * @param dataLength Length of data (i.e. number of possible values from function)
      */
-    public Histogram(Bitmap bitmap)
+    public Histogram(
+            Function<Pixel, Integer> function,
+            Bitmap source,
+            Bitmap result,
+            Color startColor,
+            Color finalColor,
+            int dataLength
+    )
     {
-        this.bitmap = bitmap;
-        this.redImage = new WritableImage(Histogram.WIDTH, Histogram.HEIGHT);
-        this.greenImage = new WritableImage(Histogram.WIDTH, Histogram.HEIGHT);
-        this.blueImage = new WritableImage(Histogram.WIDTH, Histogram.HEIGHT);
-        this.bitmap.addChangeActionListener(new Bitmap.BitmapChangedActionListener()
+        this.histogramFunction = function;
+        this.source = source;
+        this.result = result;
+        this.startColor = startColor;
+        this.finalColor = finalColor;
+        this.thread = new Thread(this, String.format("Histogram-%d", Histogram.counter));
+        Histogram.counter++;
+        this.data = new int[dataLength];
+        this.source.addChangeActionListener(new Bitmap.BitmapChangedActionListener()
         {
             @Override
             public void onChange(Bitmap bitmap)
             {
-                Histogram.this.generate();
+                Histogram.this.refresh = true;
             }        
         });
-        this.generate();
     }
     
     /**
-     * Clear all histogram images
+     * Gets image representation of histogram
+     * @return Image representation of histogram
      */
-    private void clearImages()
+    public Image getImage()
     {
-        PixelWriter redWriter = this.redImage.getPixelWriter();
-        PixelWriter greenWriter = this.greenImage.getPixelWriter();
-        PixelWriter blueWriter = this.blueImage.getPixelWriter();
-        for (int y = 0; y < Histogram.HEIGHT; y++)
+        return this.result.toImage();
+    }
+
+    @Override
+    public void start()
+    {
+        this.running = true;
+        this.thread.start();
+    }
+
+    @Override
+    public void stop() {
+        this.running = false;
+    }
+    
+    /**
+     * Interpolates color
+     * @param startColor Starting color
+     * @param finalColor Final color
+     * @param steps Number of steps of transition between colors
+     * @param step Actual number of step
+     * @return Interpolated color between starting color and final color
+     */
+    private final Pixel interpolateColor(Color startColor, Color finalColor, int steps, int step)
+    {
+        double r = startColor.getRed() * 255f;
+        double g = startColor.getBlue() * 255f;
+        double b = startColor.getGreen() * 255f;
+        double stepR = ((finalColor.getRed() * 255) - r) / (double)steps;
+        double stepG = ((finalColor.getGreen() * 255) - g) / (double)steps;
+        double stepB = ((finalColor.getBlue() * 255) - b) / (double)steps;
+        r = r + (step * stepR);
+        g = g + (step * stepG);
+        b = b + (step * stepB);
+        return new Pixel((short)Math.round(r), (short)Math.round(g), (short)Math.round(b));
+    }
+
+    @Override
+    public void run()
+    {
+        while (this.running == true)
         {
-            for (int x = 0; x < Histogram.WIDTH; x++)
+            if (this.refresh == true)
             {
-                redWriter.setColor(x, y, Histogram.CLEAR);
-                greenWriter.setColor(x, y, Histogram.CLEAR);
-                blueWriter.setColor(x, y, Histogram.CLEAR);
-            }
-        }
-    }
-    
-    /**
-     * Gets image with histogram of red colour
-     * @return Image with histogram of red colour
-     */
-    public Image getRed()
-    {
-        return this.redImage;
-    }
-    
-    /**
-     * Gets image with histogram of green colour
-     * @return Image with histogram of green colour
-     */
-    public Image getGreen()
-    {
-        return this.greenImage;
-    }
-    
-    /**
-     * Gets image with histogram of blue colour
-     * @return 
-     */
-    public Image getBlue()
-    {
-        return this.blueImage;
-    }
-    
-    /**
-     * Clears all arrays with data
-     */
-    private void clearData()
-    {
-        for (int i = 0; i < 256; i++)
-        {
-            this.redData[i] = 0;
-            this.greenData[i] = 0;
-            this.blueData[i] = 0;
-        }
-    }
-    
-    /**
-     * Generates graphical representation of histogram
-     */
-    private void generate()
-    {
-        this.clearImages();
-        this.clearData();
-        int redMax = Integer.MIN_VALUE;
-        int greenMax = Integer.MIN_VALUE;
-        int blueMax = Integer.MIN_VALUE;
-        for(Pixel px: this.bitmap)
-        {
-            this.redData[px.getRed()]++;
-            if (redData[px.getRed()] > redMax) redMax = redData[px.getRed()];
-            this.greenData[px.getGreen()]++;
-            if (greenData[px.getGreen()] > greenMax) greenMax = greenData[px.getGreen()];
-            this.blueData[px.getBlue()]++;
-            if (blueData[px.getBlue()] > blueMax) blueMax = redData[px.getBlue()];
-        }
-        double pct = (double)Histogram.HEIGHT / 100f;
-        double width = Histogram.WIDTH / 256f;
-        for (int i = 0; i < 256; i++)
-        {
-            PixelWriter redWriter = this.redImage.getPixelWriter();
-            int redHeight = (int)Math.round((((double)redData[i] / (double)redMax) * 100f) * pct);
-            for(int x = (int)(Math.round(i * width)); x < (int)(Math.round(((double)i * width) + width)); x++)
-            {
-                for (int y = Histogram.HEIGHT - 1; y >= (Histogram.HEIGHT - redHeight < 0 ? 0 : Histogram.HEIGHT - redHeight); y--)
+                // First, compute data
+                Arrays.fill(this.data, 0);
+                int max = Integer.MIN_VALUE;
+                for(Pixel px: this.source)
                 {
-                    redWriter.setColor(x, y, Color.rgb(i, 0, 0));
+                    if (px != null)
+                    {
+                        int val = this.histogramFunction.apply(px);
+                        if (val >= this.data.length)
+                        {
+                            val = this.data.length - 1;
+                        }
+                        this.data[val]++;
+                        if (this.data[val] > max)
+                        {
+                            max = this.data[val];
+                        }
+                    }
                 }
-            }
-            
-            PixelWriter greenWriter = this.greenImage.getPixelWriter();
-            int greenHeight = (int)Math.round((((double)greenData[i] / (double)greenMax) * 100f) * pct);
-            for(int x = (int)(Math.round(i * width)); x < (int)(Math.round(((double)i * width) + width)); x++)
-            {
-                for (int y = Histogram.HEIGHT - 1; y >= (Histogram.HEIGHT - greenHeight < 0 ? 0 : Histogram.HEIGHT - greenHeight); y--)
+                
+                // Second, display data
+                double widthStep = (double)this.result.getWidth() / (double)this.data.length;
+                double heightStep = (double)this.result.getHeight() / (double)max;
+                for (int i = 0; i < this.data.length; i++)
                 {
-                    greenWriter.setColor(x, y, Color.rgb(0, i, 0));
+                    int xStart = (int)Math.round((double)i * widthStep);
+                    int xEnd = (int)Math.round((double)xStart + widthStep);
+                    int height = (int)Math.round((double)this.data[i] * heightStep);
+                    for (int x = xStart; x <= xEnd; x++)
+                    {
+                        for (int y = this.result.getHeight() - 1; y >= 0; y--)
+                        {
+                            if (y > (this.result.getHeight() - height))
+                            {
+                                this.result.setPixel(x, y, this.interpolateColor(this.startColor, this.finalColor, this.data.length - 1, i));
+                            }
+                            else
+                            {
+                                this.result.setPixel(x, y, Globals.HISTOGRAM_CLEAR);
+                            }
+                        }
+                    }
                 }
+                this.refresh = false;
             }
-            
-            PixelWriter blueWriter = this.blueImage.getPixelWriter();
-            int blueHeight = (int)Math.round((((double)blueData[i] / (double)blueMax) * 100f) * pct);
-            for(int x = (int)(Math.round(i * width)); x < (int)(Math.round(((double)i * width) + width)); x++)
+            try
             {
-                for (int y = Histogram.HEIGHT - 1; y >= (Histogram.HEIGHT - blueHeight < 0 ? 0 : Histogram.HEIGHT - blueHeight); y--)
-                {
-                    blueWriter.setColor(x, y, Color.rgb(0, 0, i));
-                }
+                Thread.sleep(Histogram.SLEEP);
+            }
+            catch (InterruptedException ex)
+            {
+                Logger.getLogger(Histogram.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
+    
 }

@@ -17,12 +17,16 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller;
 
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency.ThreadManager;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Brightness;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Globals;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.ImageFile;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.FXMLMainWindow;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Histogram;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javafx.scene.paint.Color;
 
 /**
  * Class which handles behaviour of main window
@@ -41,9 +45,24 @@ public class MainWindowController
     private ImageFile image;
     
     /**
-     * Histogram of image
+     * Controller of operations over bitmap
      */
-    private Histogram histogram;
+    private BitmapController bitmap;
+    
+    /**
+     * Histogram of red color channel
+     */
+    private Histogram redHistogram;
+    
+    /**
+     * Histogram of green color channel
+     */
+    private Histogram greenHistogram;
+    
+    /**
+     * Histogram of blue color channel
+     */
+    private Histogram blueHistogram;
     
     /**
      * Handler of brightness of image
@@ -66,14 +85,59 @@ public class MainWindowController
     public void fileOpen(String path)
     {
         this.image = new ImageFile(path);
-        this.histogram = new Histogram(this.image.getBitmap());
-        this.brightness = new Brightness(this.image.getBitmap());
+        
+        this.bitmap = new BitmapController(this.image.getBitmap());
         this.mainWindow.setImage(this.image.getBitmap());
-        this.mainWindow.setHistogram(this.histogram);
-        this.mainWindow.setBrightness(this.brightness);
+        
+        this.redHistogram = ThreadManager.createHistogram(
+                (Pixel px) -> {return (int)px.getRed();},
+                this.image.getBitmap(),
+                Globals.HISTOGRAM_WIDTH,
+                Globals.HISTOGRAM_HEIGHT,
+                Color.rgb(0, 0, 0),
+                Color.rgb(255, 0, 0),
+                256
+        );
+        this.mainWindow.setRedHistogram(this.redHistogram.getImage());
+        
+        this.greenHistogram = ThreadManager.createHistogram(
+                (Pixel px) -> {return (int)px.getGreen();},
+                this.image.getBitmap(),
+                Globals.HISTOGRAM_WIDTH,
+                Globals.HISTOGRAM_HEIGHT,
+                Color.rgb(0, 0, 0),
+                Color.rgb(0, 255, 0),
+                256
+        );
+        this.mainWindow.setGreenHistogram(this.greenHistogram.getImage());
+        
+        this.blueHistogram = ThreadManager.createHistogram(
+                (Pixel px) -> {return (int)px.getBlue();},
+                this.image.getBitmap(),
+                Globals.HISTOGRAM_WIDTH,
+                Globals.HISTOGRAM_HEIGHT,
+                Color.rgb(0, 0, 0),
+                Color.rgb(0, 0, 255),
+                256
+        );
+        this.mainWindow.setBlueHistogram(this.blueHistogram.getImage());
+        
+        this.brightness = new Brightness(this.image.getBitmap());
+        this.mainWindow.setBrightnessHistogram(this.brightness.getHistogram());
+        
         Path p = Paths.get(path);
         this.mainWindow.setFileName(p.getFileName().toString());
         this.mainWindow.setFilePath(Paths.get(path).toAbsolutePath().normalize().toString());
         this.mainWindow.setFileSize(image.getBitmap().getWidth(), image.getBitmap().getHeight());
+    }
+    
+    /**
+     * Handles change of brightness
+     * @param newValue New value of brightness
+     */
+    public void brightnessChanged(int newValue)
+    {
+        this.brightness.setValue(newValue);
+        this.bitmap.applyEffect(this.brightness);
     }
 }
