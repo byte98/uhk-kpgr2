@@ -17,6 +17,7 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency;
 
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Effect;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Histogram;
@@ -76,6 +77,18 @@ public class ThreadManager
         ThreadManager.threads.add(reti);
         reti.start();
         return reti;
+    }
+    
+    /**
+     * Applies effect on bitmap
+     * @param effect Effect which will be applied
+     * @param bitmap Bitmap on which effect will be applied
+     */
+    public static void applyEffect(Effect effect, Bitmap bitmap)
+    {
+        EffectApplier e = new EffectApplier(effect, bitmap);
+        ThreadManager.threads.add(e);
+        e.start();
     }
     
     /**

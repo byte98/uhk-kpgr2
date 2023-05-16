@@ -101,94 +101,27 @@ public class Brightness implements Effect
         return this.histogram.getImage();
     }
     
-    /**
-     * Generates histogram
-     *//*
-    private void generateHistogram()
-    {
-        PixelWriter pw = Brightness.this.histogram.getPixelWriter();
-                
-        // Set default background color
-        for (int y = 0; y < Brightness.this.histogram.getHeight(); y++)
-        {
-            for (int x = 0; x < Brightness.this.histogram.getWidth(); x++)
-            {
-                pw.setColor(x, y, Histogram.CLEAR);
-                if (x < 0 || y < 0) System.out.println("!!!");
-            }
-        }
-
-        // Clear data
-        for (int i = 0; i < 256; i++)
-        {
-            Brightness.this.histogramData[i] = 0;
-        }
-
-        // Compute data
-        int brightnessMax = Integer.MIN_VALUE;
-        for(Pixel px: Brightness.this.bitmap)
-        {
-            int brightness = (int)Math.round(Brightness.R_COEFF * px.getRed() + Brightness.G_COEFF * px.getGreen() + Brightness.B_COEFF * px.getBlue());
-            if (brightness > 255)
-            {
-                brightness = 255;
-            }
-
-            Brightness.this.histogramData[brightness]++;
-            if (Brightness.this.histogramData[brightness] > brightnessMax)
-            {
-                brightnessMax = Brightness.this.histogramData[brightness];
-            }
-        }
-
-        // Generate image
-        double pct = (double)Histogram.HEIGHT / 100f;
-        double width = Histogram.WIDTH / 256f;
-
-        // Interpolate histogram color
-        int redFinal = (int)Math.round(Brightness.HISTOGRAM_COLOR.getRed() * 255f);
-        int greenFinal = (int)Math.round(Brightness.HISTOGRAM_COLOR.getGreen() * 255f);
-        int blueFinal = (int)Math.round(Brightness.HISTOGRAM_COLOR.getBlue() * 255f);
-        double redStep = (double)redFinal / 255f;
-        double greenStep = (double)greenFinal / 255f;
-        double blueStep = (double)blueFinal / 255f;
-
-        for (int i = 0; i < 256; i++)
-        {            
-            int r = (int)Math.round(i * redStep);
-            int g = (int)Math.round(i * greenStep);
-            int b = (int)Math.round(i * blueStep);
-            Color c = Color.rgb(r, g, b);
-            int height = (int)Math.round((((double)histogramData[i] / (double)brightnessMax) * 100f) * pct);
-            for(int x = (int)(Math.round(i * width)); x < (int)(Math.round(((double)i * width) + width)); x++)
-            {
-                for (int y = Histogram.HEIGHT - 1; y >= (Histogram.HEIGHT - height < 0 ? 0 : Histogram.HEIGHT - height); y--)
-                {
-
-                    pw.setColor(x, y, c);
-                }
-            }
-        }
-        
-    }*/
-
     @Override
     public Pixel apply(Pixel pixel)
     {
         int delta = this.value - this.lastApplied;
-        double target = 1f + (double)delta;
-        int r = pixel.getRed();
-        int g = pixel.getGreen();
-        int b = pixel.getBlue();
-        short a = pixel.getAlpha();
-        this.lastApplied = this.value;
-        r = (int)Math.round((double)r * target);
-        if (r < 0) r = 0; if (r > 255) r = 255;
-        g = (int)Math.round((double)g * target);
-        if (g < 0) g = 0; if (g > 255) g = 255;
-        b = (int)Math.round((double)b * target);
-        if (b < 0) b = 0; if (b > 255) b = 255;
-        return new Pixel((short)r, (short)g, (short)b, a);
+        final double range = (2 * 255) + 1;        
+        double step = range / ((double)2 * 100 + 1);
+        Pixel reti = pixel;
+        if (delta != 0)
+        {
+            short target = (short)Math.round((double)delta * step);
+            short r = (short)(pixel.getRed() + target);
+            short g = (short)(pixel.getGreen() + target);
+            short b = (short)(pixel.getBlue() + target);
+            short a = pixel.getAlpha();
+            this.lastApplied = this.value;
+            if (r < 0) r = 0; if (r > 255) r = 255;
+            if (g < 0) g = 0; if (g > 255) g = 255;
+            if (b < 0) b = 0; if (b > 255) b = 255;            
+            reti = new Pixel((short)r, (short)g, (short)b, a);
+        }
+        return reti;
     }
 
     @Override

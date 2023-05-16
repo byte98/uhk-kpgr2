@@ -17,7 +17,7 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.view;
 
-import cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller.MainWindowController;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller.MainController;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Brightness;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -46,13 +46,13 @@ public class FXMLBrightness implements Initializable {
     /**
      * Controller of main window
      */
-    private MainWindowController mainWindow;
+    private MainController mainWindow;
     
     /**
      * Sets reference to main window
      * @param mainWindow Controller of main window
      */
-    public void setMainWindow(MainWindowController mainWindow)
+    public void setMainWindow(MainController mainWindow)
     {
         this.mainWindow = mainWindow;
     }

@@ -19,7 +19,7 @@ package cz.uhk.fim.skodaji1.kpgr2.jsgmp.view;
 
 import com.sun.javafx.PlatformUtil;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.JSGMP;
-import cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller.MainWindowController;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller.MainController;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Brightness;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.ImageFile;
@@ -76,7 +76,7 @@ public class FXMLMainWindow implements Initializable {
     /**
      * Controller of behaviour of main window
      */
-    private MainWindowController controller;
+    private MainController controller;
     
     
     /**
@@ -141,7 +141,7 @@ public class FXMLMainWindow implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        this.controller = new MainWindowController(this);
+        this.controller = new MainController(this);
         this.scrollPaneMainImage.widthProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
             FXMLMainWindow.this.relocateMainImage(FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getWidth(), FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getHeight());
             FXMLMainWindow.this.resizeMainImageWrapper(this.imageViewMain.getFitWidth(), this.imageViewMain.getFitHeight());

@@ -32,7 +32,7 @@ import javafx.scene.paint.Color;
  * Class which handles behaviour of main window
  * @author Jiri Skoda <jiri.skoda@student.upce.cz>
  */
-public class MainWindowController
+public class MainController
 {
     /**
      * Reference to main window
@@ -43,11 +43,6 @@ public class MainWindowController
      * Actually processed image
      */
     private ImageFile image;
-    
-    /**
-     * Controller of operations over bitmap
-     */
-    private BitmapController bitmap;
     
     /**
      * Histogram of red color channel
@@ -73,7 +68,7 @@ public class MainWindowController
      * Creates new controller of main window
      * @param mainWindow Reference to main window
      */
-    public MainWindowController(FXMLMainWindow mainWindow)
+    public MainController(FXMLMainWindow mainWindow)
     {
         this.mainWindow = mainWindow;
     }
@@ -86,7 +81,6 @@ public class MainWindowController
     {
         this.image = new ImageFile(path);
         
-        this.bitmap = new BitmapController(this.image.getBitmap());
         this.mainWindow.setImage(this.image.getBitmap());
         
         this.redHistogram = ThreadManager.createHistogram(
@@ -138,6 +132,7 @@ public class MainWindowController
     public void brightnessChanged(int newValue)
     {
         this.brightness.setValue(newValue);
-        this.bitmap.applyEffect(this.brightness);
+        ThreadManager.applyEffect(this.brightness, this.image.getBitmap());
+
     }
 }

@@ -28,6 +28,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
@@ -261,20 +262,40 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
                         if (this.isInBitmap(item.getX(), item.getY()))
                         {
                             this.data[item.getY()][item.getX()] = item.getPixel();
-                            PixelWriter pw = this.image.getPixelWriter();
-                            pw.setColor(item.getX(), item.getY(), Color.rgb(item.getPixel().getRed(), item.getPixel().getGreen(), item.getPixel().getBlue(), (double)item.getPixel().getAlpha() / 255f));
+                            Platform.runLater(new Runnable(){
+                                @Override
+                                public void run()
+                                {
+                                    PixelWriter pw = ConcurrentBitmap.this.image.getPixelWriter();
+                                    pw.setColor(item.getX(), item.getY(), Color.rgb(item.getPixel().getRed(), item.getPixel().getGreen(), item.getPixel().getBlue(), (double)item.getPixel().getAlpha() / 255f));
+                                }
+                            
+                            });
                             this.invokeChange();
                         }
                     }
                     else
                     {
+                        Platform.runLater(new Runnable(){
+                            @Override
+                            public void run()
+                            {
+                                PixelWriter pw = ConcurrentBitmap.this.image.getPixelWriter();
+                                for(Bitmap.BitmapTransaction.TransactionItem t: item.getTransaction().getItems())
+                                {
+                                    if (ConcurrentBitmap.this.isInBitmap(t.getX(), t.getY()))
+                                    {
+                                        pw.setColor(t.getX(), t.getY(), Color.rgb(t.getValue().getRed(), t.getValue().getGreen(), t.getValue().getBlue(), (double)t.getValue().getAlpha() / 255f));
+                                        System.out.println(String);
+                                    }
+                                }                            
+                            }                        
+                        });
                         for(Bitmap.BitmapTransaction.TransactionItem t: item.getTransaction().getItems())
                         {
                             if (this.isInBitmap(t.getX(), t.getY()))
                             {
                                 this.data[t.getY()][t.getX()] = t.getValue();
-                                PixelWriter pw = this.image.getPixelWriter();
-                                pw.setColor(t.getX(), t.getY(), Color.rgb(t.getValue().getRed(), t.getValue().getGreen(), t.getValue().getBlue(), (double)t.getValue().getAlpha() / 255f));
                             }
                         }
                         this.invokeChange();
