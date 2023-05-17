@@ -122,7 +122,7 @@ public class FXMLMainWindow implements Initializable {
     private ImageView imageCheckBrightness;
     @FXML
     private Tab tabBrightness;
-
+    
     /**
      * Sets reference to primary stage of program
      * @param stage Reference to primary stage of program

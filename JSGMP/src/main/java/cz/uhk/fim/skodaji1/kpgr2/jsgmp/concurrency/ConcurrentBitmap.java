@@ -269,13 +269,19 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
                                     PixelWriter pw = ConcurrentBitmap.this.image.getPixelWriter();
                                     pw.setColor(item.getX(), item.getY(), Color.rgb(item.getPixel().getRed(), item.getPixel().getGreen(), item.getPixel().getBlue(), (double)item.getPixel().getAlpha() / 255f));
                                 }
-                            
                             });
                             this.invokeChange();
                         }
                     }
                     else
                     {
+                        for(Bitmap.BitmapTransaction.TransactionItem t: item.getTransaction().getItems())
+                        {
+                            if (this.isInBitmap(t.getX(), t.getY()))
+                            {
+                                this.data[t.getY()][t.getX()] = t.getValue();
+                            }
+                        }
                         Platform.runLater(new Runnable(){
                             @Override
                             public void run()
@@ -286,18 +292,10 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
                                     if (ConcurrentBitmap.this.isInBitmap(t.getX(), t.getY()))
                                     {
                                         pw.setColor(t.getX(), t.getY(), Color.rgb(t.getValue().getRed(), t.getValue().getGreen(), t.getValue().getBlue(), (double)t.getValue().getAlpha() / 255f));
-                                        System.out.println(String);
                                     }
-                                }                            
+                                }
                             }                        
                         });
-                        for(Bitmap.BitmapTransaction.TransactionItem t: item.getTransaction().getItems())
-                        {
-                            if (this.isInBitmap(t.getX(), t.getY()))
-                            {
-                                this.data[t.getY()][t.getX()] = t.getValue();
-                            }
-                        }
                         this.invokeChange();
                     }
                 }

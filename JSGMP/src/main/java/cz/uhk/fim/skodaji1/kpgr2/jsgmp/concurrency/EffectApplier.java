@@ -19,6 +19,7 @@ package cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency;
 
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Effect;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
 
 /**
  * Class which handles applying effect on bitmap
@@ -78,14 +79,11 @@ public class EffectApplier implements Threadable{
         Bitmap.BitmapTransaction transaction = new Bitmap.BitmapTransaction();
         for (int y = 0; y < this.bitmap.getHeight(); y++)
         {
-            if (this.running == false) return;
             for (int x = 0; x < this.bitmap.getWidth(); x++)
             {
-                if (this.running == false) return;
-                transaction.setPixel(x, y, this.effect.apply(this.bitmap.getPixel(x, y)));
-                if (this.running == false) return;
+                Pixel result = this.effect.apply(this.bitmap.getPixel(x, y));
+                transaction.setPixel(x, y, result);
             }
-            if (this.running == false) return;
         }
         if (this.running == false) return;
         this.bitmap.processTransaction(transaction);

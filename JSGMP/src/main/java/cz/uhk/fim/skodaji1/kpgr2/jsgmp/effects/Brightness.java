@@ -23,6 +23,7 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap.BitmapChangedActionListener;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Globals;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Histogram;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.image.Image;
@@ -105,27 +106,27 @@ public class Brightness implements Effect
     public Pixel apply(Pixel pixel)
     {
         int delta = this.value - this.lastApplied;
-        final double range = (2 * 255) + 1;        
-        double step = range / ((double)2 * 100 + 1);
-        Pixel reti = pixel;
+        double target = (100f + (double)delta) / 100f;
+        Pixel reti = new Pixel(pixel.getRed(), pixel.getGreen(), pixel.getBlue(), pixel.getAlpha());
         if (delta != 0)
         {
-            short target = (short)Math.round((double)delta * step);
-            short r = (short)(pixel.getRed() + target);
-            short g = (short)(pixel.getGreen() + target);
-            short b = (short)(pixel.getBlue() + target);
-            short a = pixel.getAlpha();
-            this.lastApplied = this.value;
-            if (r < 0) r = 0; if (r > 255) r = 255;
-            if (g < 0) g = 0; if (g > 255) g = 255;
-            if (b < 0) b = 0; if (b > 255) b = 255;            
-            reti = new Pixel((short)r, (short)g, (short)b, a);
+            Color color = Color.rgb(pixel.getRed(), pixel.getGreen(), pixel.getBlue());
+            double brightness = color.getBrightness() * target;
+            if (brightness < 0) brightness = 0f; if (brightness > 1) brightness = 1f;
+            Color newColor = Color.hsb(color.getHue(), color.getSaturation(), brightness);
+            reti = new Pixel(
+                    (short)Math.round(newColor.getRed() * 255f),
+                    (short)Math.round(newColor.getGreen() * 255f),
+                    (short)Math.round(newColor.getBlue() * 255f)
+            );
         }
         return reti;
     }
 
     @Override
-    public void setValue(int value) {
+    public void setValue(int value)
+    {
+        this.lastApplied = this.value;
         this.value = value;
     }
 
