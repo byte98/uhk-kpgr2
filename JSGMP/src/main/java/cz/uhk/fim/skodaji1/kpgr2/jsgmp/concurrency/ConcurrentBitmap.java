@@ -197,7 +197,7 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
     public ConcurrentBitmap(int width, int height)
     {
         super(width, height);
-        this.thread = new Thread(this, String.format("Bitmap-%d", ConcurrentBitmap.counter));
+        this.thread = new Thread(this, String.format("JSGMP:Bitmap-%d", ConcurrentBitmap.counter));
         ConcurrentBitmap.counter++;
         this.setQueue = new LinkedBlockingDeque();
         this.changeListeners = Collections.synchronizedList(new ArrayList<>());

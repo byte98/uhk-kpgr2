@@ -18,7 +18,7 @@
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.view;
 
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller.MainController;
-import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Brightness;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.BrightnessContrast;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;

@@ -32,16 +32,4 @@ public interface Effect
      */
     public abstract Pixel apply(Pixel pixel);
     
-    /**
-     * Sets value of effect
-     * @param value New value of effect
-     */
-    public abstract void setValue(int value);
-    
-    /**
-     * Gets value of effect
-     * @return Actual value of effect
-     */
-    public abstract int getValue();
-    
 }

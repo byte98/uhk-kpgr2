@@ -118,7 +118,7 @@ public class Histogram implements Threadable
         this.result = result;
         this.startColor = startColor;
         this.finalColor = finalColor;
-        this.thread = new Thread(this, String.format("Histogram-%d", Histogram.counter));
+        this.thread = new Thread(this, String.format("JSGMP:Histogram-%d", Histogram.counter));
         Histogram.counter++;
         this.data = new int[dataLength];
         this.source.addChangeActionListener(new Bitmap.BitmapChangedActionListener()

@@ -20,7 +20,7 @@ package cz.uhk.fim.skodaji1.kpgr2.jsgmp.view;
 import com.sun.javafx.PlatformUtil;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.JSGMP;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller.MainController;
-import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Brightness;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.BrightnessContrast;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.ImageFile;
 import java.awt.Desktop;

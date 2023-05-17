@@ -28,6 +28,11 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
 public class EffectApplier implements Threadable{
 
     /**
+     * Counter of created effect appliers
+     */
+    private static long counter = 0;
+    
+    /**
      * Thread which handles all action
      */
     private final Thread thread;
@@ -54,7 +59,8 @@ public class EffectApplier implements Threadable{
      */
     public EffectApplier(Effect e, Bitmap b)
     {
-        this.thread = new Thread(this);
+        this.thread = new Thread(this, "JSGMP:EffectApplier-" + EffectApplier.counter);
+        EffectApplier.counter++;
         this.effect = e;
         this.bitmap = b;
         this.running = false;

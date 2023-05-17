@@ -18,7 +18,7 @@
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller;
 
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency.ThreadManager;
-import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Brightness;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.BrightnessContrast;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Globals;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.ImageFile;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
@@ -62,7 +62,7 @@ public class MainController
     /**
      * Handler of brightness of image
      */
-    private Brightness brightness;
+    private BrightnessContrast brightness;
     
     /**
      * Creates new controller of main window
@@ -116,8 +116,8 @@ public class MainController
         );
         this.mainWindow.setBlueHistogram(this.blueHistogram.getImage());
         
-        this.brightness = new Brightness(this.image.getBitmap());
-        this.mainWindow.setBrightnessHistogram(this.brightness.getHistogram());
+        this.brightness = new BrightnessContrast(this.image.getBitmap());
+        this.mainWindow.setBrightnessHistogram(this.brightness.getBrightnessHistogram());
         
         Path p = Paths.get(path);
         this.mainWindow.setFileName(p.getFileName().toString());
@@ -131,7 +131,7 @@ public class MainController
      */
     public void brightnessChanged(int newValue)
     {
-        this.brightness.setValue(newValue);
+        this.brightness.setBrightness(newValue);
         ThreadManager.applyEffect(this.brightness, this.image.getBitmap());
 
     }
