@@ -47,6 +47,8 @@ public class FXMLBrightness implements Initializable {
      * Controller of main window
      */
     private MainController mainWindow;
+    @FXML
+    private ImageView imageViewChart;
     
     /**
      * Sets reference to main window
@@ -55,6 +57,15 @@ public class FXMLBrightness implements Initializable {
     public void setMainWindow(MainController mainWindow)
     {
         this.mainWindow = mainWindow;
+    }
+
+    /**
+     * Sets chart of brightness/contrast curve
+     * @param chart Image which contains chart with contrast/brightness chart
+     */
+    public void setChart(Image chart)
+    {
+        this.imageViewChart.setImage(chart);
     }
 
     

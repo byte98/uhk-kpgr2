@@ -342,6 +342,15 @@ public class FXMLMainWindow implements Initializable {
         this.brightnessController.setBrightnessHistogram(brightnessHistogram);
     }
 
+    /**
+     * Sets chart of brightness/contrast curve
+     * @param brightnessContrastChart Image with chart of brightness/contrast
+     */
+    public void setBrightnessContrastChart(Image brightnessContrastChart)
+    {
+        this.brightnessController.setChart(brightnessContrastChart);
+    }
+    
     @FXML
     private void hyperLinkFilePathOnAction(ActionEvent event)
     {

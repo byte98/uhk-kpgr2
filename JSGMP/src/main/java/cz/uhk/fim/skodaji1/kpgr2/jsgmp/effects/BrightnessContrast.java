@@ -27,6 +27,7 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Histogram;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -51,7 +52,12 @@ public class BrightnessContrast implements Effect, Threadable
     /**
      * Color of curve in chart
      */
-    private static final Color CHART_COLOR = Color.WHITE;
+    private static final Pixel CHART_COLOR = new Pixel((short)255, (short)255, (short)255);
+    
+    /**
+     * Sleep time between checking for refreshing chart (in miliseconds)
+     */
+    private static final int SLEEP = 1000;
     
     /**
      * Histogram of brightness
@@ -92,12 +98,7 @@ public class BrightnessContrast implements Effect, Threadable
      * Actual value of contrast
      */
     private double contrast;
-    
-    /**
-     * Last applied value of effect
-     */
-    private int lastApplied = 0;
-    
+        
     /**
      * Thread which handles update of chart
      */
@@ -111,7 +112,7 @@ public class BrightnessContrast implements Effect, Threadable
     /**
      * Flag, whether chart should be updated
      */
-    private boolean update = false;
+    private boolean update = true;
     
     /**
      * Creates new handler of brightness effect
@@ -142,14 +143,6 @@ public class BrightnessContrast implements Effect, Threadable
     public Image getBrightnessHistogram()
     {
         return this.brightnessHistogram.getImage();
-    }
-    
-    /**
-     * Generates chart of brightness and contrast
-     */
-    private void generateChart()
-    {
-        
     }
     
     /**
@@ -203,9 +196,114 @@ public class BrightnessContrast implements Effect, Threadable
         this.running = false;
     }
 
+    /**
+     * Draws chart
+     */
+    private void drawChart()
+    {
+        System.out.println("draw");
+        int centerX = (int)Math.round((double)this.chart.getWidth() / 2f);
+        int centerY = (int)Math.round((double)this.chart.getHeight() / 2f);
+        int deltaX = centerX % BrightnessContrast.CHART_GRID;
+        int deltaY = centerY % BrightnessContrast.CHART_GRID;
+        // Draw background with grid
+        for (int y = 0; y < this.chart.getHeight(); y++)
+        {
+            for (int x = 0; x < this.chart.getWidth(); x++)
+            {
+                if ((x - deltaX) % BrightnessContrast.CHART_GRID == 0 || (y - deltaY) % BrightnessContrast.CHART_GRID == 0)
+                {
+                    this.chart.setPixel(x, y, new Pixel(Globals.HISTOGRAM_CLEAR.getRed(), Globals.HISTOGRAM_CLEAR.getGreen(), Globals.HISTOGRAM_CLEAR.getBlue(), (short)0));      
+                }
+                else
+                {
+                    this.chart.setPixel(x, y, Globals.HISTOGRAM_CLEAR);
+                }
+            }
+        }
+        
+        // Draw line
+        // a ... this.contrast
+        // b ... this.brightness
+        //           y = ax + b
+        //       y - b = ax
+        // (y - b) / a = x
+        // Because of coordinates are indexed from top (not from bottom):
+        // y = 0 <=> y = this.chart.getHeight() - 1;
+        // 
+        // For starting point (most bottom, most left; y ~ 0):
+        // xA = (0 - this.brightness) / this.contrast
+        // yA = (this.contrast * xA) + this.brightness 
+        int xA = (int)Math.round((0f - this.brightness) / this.contrast);
+        int yA = (int)Math.round((this.contrast * (double)xA) + this.brightness);
+        // For ending point (most top, most right; y ~ this.chart.getHeight()
+        // xB = (this.chart.getHeight() - this.brightness) / this.contrast
+        // yB = (this.contrast * xB) + this.brightness
+        int xB = (int)Math.round((double)(this.chart.getHeight() - this.brightness) / this.contrast);
+        int yB = (int)Math.round((this.contrast * (double)xB) + this.brightness);
+        
+        int dX = Math.abs(xB - xA);
+        int dY = Math.abs(yB - yA);
+        Bitmap.BitmapTransaction transaction = new Bitmap.BitmapTransaction();
+        
+        System.out.println(String.format("[%d %d] -> [%d %d] (%d %d)", xA, yA, xB, yB,dX, dY));
+        
+        if (dX > dY)
+        {
+            for (int i = xA; i <= xB; i++)
+            {
+                int x = i;
+                int y = this.interpolateNumber(yA, yB, i, dY);
+                System.out.println(String.format("[%d; %d]", x, y));
+                transaction.setPixel(x, y,BrightnessContrast.CHART_COLOR);
+            }
+        }
+        else
+        {
+            for (int i = yA; i <= yB; i++)
+            {
+                int x = this.interpolateNumber(xA, xB, i, dY);
+                int y = i;
+                System.out.println(String.format("[%d; %d]", x, y));
+                transaction.setPixel(x, y,BrightnessContrast.CHART_COLOR);
+            }
+        }
+        this.chart.processTransaction(transaction);
+    }
+    
+    /**
+     * Interpolates number
+     * @param i1 First number
+     * @param i2 Second number
+     * @param step Number of step
+     * @param steps Number of all steps between numbers
+     * @return Interpolated number
+     */
+    private final int interpolateNumber(int i1, int i2, int step, int steps)
+    {
+        int delta = i2 - i1;
+        double stepReal = (double)delta / (double)steps;
+        return (int)Math.round(i1 + ((double)step) * stepReal);
+    }
+    
     @Override
     public void run()
     {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        while(this.running == true)
+        {
+            if (this.update == true)
+            {
+                this.update = false;
+                BrightnessContrast.this.drawChart();
+            }
+            try
+            {
+                Thread.sleep(BrightnessContrast.SLEEP);
+            }
+            catch (InterruptedException ex) 
+            {
+                Logger.getLogger(BrightnessContrast.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }

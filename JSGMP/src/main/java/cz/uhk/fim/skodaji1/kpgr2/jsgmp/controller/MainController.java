@@ -60,7 +60,7 @@ public class MainController
     private Histogram blueHistogram;
     
     /**
-     * Handler of brightness of image
+     * Handler of brightness and contrast of image
      */
     private BrightnessContrast brightness;
     
@@ -116,8 +116,9 @@ public class MainController
         );
         this.mainWindow.setBlueHistogram(this.blueHistogram.getImage());
         
-        this.brightness = new BrightnessContrast(this.image.getBitmap());
+        this.brightness = ThreadManager.createBrightnessContrastEffect(this.image.getBitmap());
         this.mainWindow.setBrightnessHistogram(this.brightness.getBrightnessHistogram());
+        this.mainWindow.setBrightnessContrastChart(this.brightness.getChart());
         
         Path p = Paths.get(path);
         this.mainWindow.setFileName(p.getFileName().toString());
@@ -132,7 +133,6 @@ public class MainController
     public void brightnessChanged(int newValue)
     {
         this.brightness.setBrightness(newValue);
-        ThreadManager.applyEffect(this.brightness, this.image.getBitmap());
-
+        //ThreadManager.applyEffect(this.brightness, this.image.getBitmap());
     }
 }

@@ -17,6 +17,7 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency;
 
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.BrightnessContrast;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Effect;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
@@ -92,6 +93,19 @@ public class ThreadManager
     }
     
     /**
+     * Creates new brightness/contrast effect
+     * @param bitmap Bitmap on which histograms will be computed
+     * @return Brightness/contrast effect handler
+     */
+    public static BrightnessContrast createBrightnessContrastEffect(Bitmap bitmap)
+    {
+        BrightnessContrast reti = new BrightnessContrast(bitmap);
+        ThreadManager.threads.add(reti);
+        reti.start();
+        return reti;
+    }
+    
+    /**
      * Stops all managed threads
      */
     public static synchronized final void stopThreads()
@@ -102,3 +116,4 @@ public class ThreadManager
         }
     }
 }
+
