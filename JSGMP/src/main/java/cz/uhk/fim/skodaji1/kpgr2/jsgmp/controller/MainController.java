@@ -118,6 +118,7 @@ public class MainController
         
         this.brightness = ThreadManager.createBrightnessContrastEffect(this.image.getBitmap());
         this.mainWindow.setBrightnessHistogram(this.brightness.getBrightnessHistogram());
+        this.mainWindow.setContrastHistogram(this.brightness.getContrastHistogram());
         this.mainWindow.setBrightnessContrastChart(this.brightness.getChart());
         
         Path p = Paths.get(path);
@@ -133,6 +134,16 @@ public class MainController
     public void brightnessChanged(int newValue)
     {
         this.brightness.setBrightness(newValue);
+        //ThreadManager.applyEffect(this.brightness, this.image.getBitmap());
+    }
+    
+    /**
+     * Handles change of contrast
+     * @param newValue New value of contrast
+     */
+    public void contrastChanged(double newValue)
+    {
+        this.brightness.setContrast(newValue);
         //ThreadManager.applyEffect(this.brightness, this.image.getBitmap());
     }
 }

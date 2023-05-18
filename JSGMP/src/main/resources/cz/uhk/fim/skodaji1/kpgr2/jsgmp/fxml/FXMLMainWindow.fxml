@@ -136,7 +136,7 @@
                            <graphic>
                               <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
                                  <children>
-                                    <Label style="-fx-font-size: 16px;" text="JAS" />
+                                    <Label style="-fx-font-size: 12px;" text="JAS" />
                                     <Button mnemonicParsing="false" onAction="#brightnessPopupOnAction" style="-fx-background-color: transparent;">
                                        <graphic>
                                           <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
@@ -147,6 +147,36 @@
                                        </graphic>
                                     </Button>
                                     <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#brightnessCloseOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/close16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Tab>
+                        <Tab fx:id="tabContrast" closable="false" text="KONTRAST">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                           <graphic>
+                              <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="KONTRAST" />
+                                    <Button mnemonicParsing="false" onAction="#contrastPopupOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                             <image>
+                                                <Image url="@../icons/popout16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#contrastCloseOnAction" style="-fx-background-color: transparent;">
                                        <graphic>
                                           <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
@@ -276,6 +306,33 @@
                               </ImageView>
                               <Label text="Jas" GridPane.columnIndex="1" />
                               <ImageView fx:id="imageCheckBrightness" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
+                                 <image>
+                                    <Image url="@../icons/check16.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#menuContrastOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/contrast16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Kontrast" GridPane.columnIndex="1" />
+                              <ImageView fx:id="imageCheckContrast" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
                                  <image>
                                     <Image url="@../icons/check16.png" />
                                  </image>

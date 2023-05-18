@@ -262,6 +262,14 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
                         if (this.isInBitmap(item.getX(), item.getY()))
                         {
                             this.data[item.getY()][item.getX()] = item.getPixel();
+                            if (Objects.isNull(this.maxPixel) || item.getPixel().getRed() > this.maxPixel.getRed() || item.getPixel().getGreen() > this.maxPixel.getGreen() || item.getPixel().getBlue() > this.maxPixel.getBlue())
+                            {
+                                this.maxPixel = item.getPixel();
+                            }
+                            if (Objects.isNull(this.minPixel) || item.getPixel().getRed() < this.minPixel.getRed() || item.getPixel().getGreen() < this.minPixel.getGreen() || item.getPixel().getBlue() < this.minPixel.getBlue())
+                            {
+                                this.minPixel = item.getPixel();
+                            }
                             Platform.runLater(new Runnable(){
                                 @Override
                                 public void run()
@@ -280,6 +288,14 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
                             if (this.isInBitmap(t.getX(), t.getY()))
                             {
                                 this.data[t.getY()][t.getX()] = t.getValue();
+                                if (Objects.isNull(this.maxPixel) || t.getValue().getRed() > this.maxPixel.getRed() || t.getValue().getGreen() > this.maxPixel.getGreen() || t.getValue().getBlue() > this.maxPixel.getBlue())
+                                {
+                                    this.maxPixel = t.getValue();
+                                }
+                                if (Objects.isNull(this.minPixel) || t.getValue().getRed() < this.minPixel.getRed() || t.getValue().getGreen() < this.minPixel.getGreen() || t.getValue().getBlue() < this.minPixel.getBlue())
+                                {
+                                    this.minPixel = t.getValue();
+                                }
                             }
                         }
                         Platform.runLater(new Runnable(){

@@ -24,6 +24,7 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap.BitmapChangedActionListener;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Globals;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Histogram;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,6 +51,11 @@ public class BrightnessContrast implements Effect, Threadable
     private static final int CHART_GRID = 20;
     
     /**
+     * Color of axis in chart
+     */
+    private static final Pixel CHART_AXIS = new Pixel((short)96, (short)96, (short)96);
+    
+    /**
      * Color of curve in chart
      */
     private static final Pixel CHART_COLOR = new Pixel((short)255, (short)255, (short)255);
@@ -57,7 +63,7 @@ public class BrightnessContrast implements Effect, Threadable
     /**
      * Sleep time between checking for refreshing chart (in miliseconds)
      */
-    private static final int SLEEP = 1000;
+    private static final int SLEEP = 200;
     
     /**
      * Histogram of brightness
@@ -92,12 +98,12 @@ public class BrightnessContrast implements Effect, Threadable
     /**
      * Actual value of brightness
      */
-    private int brightness;
+    private int brightness = 0;
     
     /**
      * Actual value of contrast
      */
-    private double contrast;
+    private double contrast = 1f;
         
     /**
      * Thread which handles update of chart
@@ -112,7 +118,12 @@ public class BrightnessContrast implements Effect, Threadable
     /**
      * Flag, whether chart should be updated
      */
-    private boolean update = true;
+    private boolean update = false;
+    
+    /**
+     * Histogram of contrast
+     */
+    private final Histogram contrastHistogram;
     
     /**
      * Creates new handler of brightness effect
@@ -128,7 +139,40 @@ public class BrightnessContrast implements Effect, Threadable
                 Globals.HISTOGRAM_WIDTH,
                 Globals.HISTOGRAM_HEIGHT,
                 Color.BLACK,
-                Color.rgb(255, 227, 105),
+                Color.rgb(255, 238, 179),
+                256
+        );
+        this.contrastHistogram = ThreadManager.createHistogram((Pixel px) ->
+        {/*
+            long sumR = 0;
+            long sumG = 0;
+            long sumB = 0;
+            for(Pixel p: BrightnessContrast.this.bitmap)
+            {
+                sumR += p.getRed();
+                sumG += p.getGreen();
+                sumB += p.getBlue();
+            }
+            double avgR = (double)sumR / (double)(BrightnessContrast.this.bitmap.getWidth() * BrightnessContrast.this.bitmap.getHeight());
+            double avgG = (double)sumG / (double)(BrightnessContrast.this.bitmap.getWidth() * BrightnessContrast.this.bitmap.getHeight());
+            double avgB = (double)sumB / (double)(BrightnessContrast.this.bitmap.getWidth() * BrightnessContrast.this.bitmap.getHeight());
+            
+            double diffR = (double)px.getRed() - avgR;
+            double diffG = (double)px.getGreen() - avgG;
+            double diffB = (double)px.getBlue() - avgB;
+            
+            double sqDiffR = Math.pow(diffR, 2);
+            double sqDiffG = Math.pow(diffG, 2);
+            double sqDiffB = Math.pow(diffB, 2);
+            System.out.println("F");*/
+            
+            return ThreadLocalRandom.current().nextInt(0, 255);
+        },
+                this.bitmap,
+                Globals.HISTOGRAM_WIDTH,
+                Globals.HISTOGRAM_HEIGHT,
+                Color.BLACK,
+                Color.rgb(176, 255, 244),
                 256
         );
         this.chart = ThreadManager.createBitmap(Globals.HISTOGRAM_WIDTH, Globals.HISTOGRAM_HEIGHT);
@@ -143,6 +187,15 @@ public class BrightnessContrast implements Effect, Threadable
     public Image getBrightnessHistogram()
     {
         return this.brightnessHistogram.getImage();
+    }
+    
+    /**
+     * Gets histogram of contrast
+     * @return Image containing histogram of contrast
+     */
+    public Image getContrastHistogram()
+    {
+        return this.contrastHistogram.getImage();
     }
     
     /**
@@ -161,6 +214,16 @@ public class BrightnessContrast implements Effect, Threadable
     public void setBrightness(int brightness)
     {
         this.brightness = brightness;
+        this.update = true;
+    }
+    
+    /**
+     * Sets new value of contrast
+     * @param contrast New value of contrast [0.9 1.9]
+     */
+    public void setContrast(double contrast)
+    {
+        this.contrast = contrast;
         this.update = true;
     }
     
@@ -201,74 +264,146 @@ public class BrightnessContrast implements Effect, Threadable
      */
     private void drawChart()
     {
-        System.out.println("draw");
-        int centerX = (int)Math.round((double)this.chart.getWidth() / 2f);
-        int centerY = (int)Math.round((double)this.chart.getHeight() / 2f);
-        int deltaX = centerX % BrightnessContrast.CHART_GRID;
-        int deltaY = centerY % BrightnessContrast.CHART_GRID;
-        // Draw background with grid
-        for (int y = 0; y < this.chart.getHeight(); y++)
-        {
-            for (int x = 0; x < this.chart.getWidth(); x++)
+        Runnable task = () -> {
+            Bitmap.BitmapTransaction transaction = new Bitmap.BitmapTransaction();
+            int centerX = (int)Math.round((double)BrightnessContrast.this.chart.getWidth() / 2f);
+            int centerY = (int)Math.round((double)BrightnessContrast.this.chart.getHeight() / 2f);
+            int deltaX = centerX % BrightnessContrast.CHART_GRID;
+            int deltaY = centerY % BrightnessContrast.CHART_GRID;
+            // Draw background with grid
+            for (int y = 0; y < BrightnessContrast.this.chart.getHeight(); y++)
             {
-                if ((x - deltaX) % BrightnessContrast.CHART_GRID == 0 || (y - deltaY) % BrightnessContrast.CHART_GRID == 0)
+                for (int x = 0; x < BrightnessContrast.this.chart.getWidth(); x++)
                 {
-                    this.chart.setPixel(x, y, new Pixel(Globals.HISTOGRAM_CLEAR.getRed(), Globals.HISTOGRAM_CLEAR.getGreen(), Globals.HISTOGRAM_CLEAR.getBlue(), (short)0));      
+                    if ((x - deltaX) % BrightnessContrast.CHART_GRID == 0 || (y - deltaY) % BrightnessContrast.CHART_GRID == 0)
+                    {
+                        transaction.setPixel(x, y, new Pixel(Globals.HISTOGRAM_CLEAR.getRed(), Globals.HISTOGRAM_CLEAR.getGreen(), Globals.HISTOGRAM_CLEAR.getBlue(), (short)0));      
+                    }
+                    else
+                    {
+                        transaction.setPixel(x, y, Globals.HISTOGRAM_CLEAR);
+                    }
+                }
+            }
+            
+            // Draw axis
+            for (int y = 0; y < BrightnessContrast.this.chart.getHeight(); y++)
+            {
+                transaction.setPixel(BrightnessContrast.this.chart.getWidth() / 2, y, BrightnessContrast.CHART_AXIS);
+            }
+            for (int x = 0; x < BrightnessContrast.this.chart.getWidth(); x++)
+            {
+                transaction.setPixel(x, BrightnessContrast.this.chart.getHeight() / 2, BrightnessContrast.CHART_AXIS);
+            }
+
+            final Function<Integer, Integer> translateX = (inX) -> 
+            {
+                return inX + BrightnessContrast.this.chart.getWidth() / 2;
+            };
+
+            final Function<Integer, Integer> translateY = (inY) ->
+            {
+                return BrightnessContrast.this.chart.getHeight() / 2 - inY;
+            };
+
+            int startX = -BrightnessContrast.this.chart.getWidth() / 2;
+            int startY = (int)Math.round((BrightnessContrast.this.contrast * (double)startX) + BrightnessContrast.this.brightness);
+            if (Math.abs(startY) > Math.abs(BrightnessContrast.this.chart.getHeight() / 2))
+            {
+                if (startY < ((-1)*BrightnessContrast.this.chart.getHeight() / 2))
+                {
+                    startY = ((-1)*BrightnessContrast.this.chart.getHeight() / 2);
                 }
                 else
                 {
-                    this.chart.setPixel(x, y, Globals.HISTOGRAM_CLEAR);
+                    startY = BrightnessContrast.this.chart.getHeight() / 2;
+                }
+                startX = (int)Math.round(((double)startY - (double)BrightnessContrast.this.brightness)*BrightnessContrast.this.contrast);
+            }
+            int endX = BrightnessContrast.this.chart.getWidth() / 2;
+            int endY = (int)Math.round((BrightnessContrast.this.contrast * (double)endX) + BrightnessContrast.this.brightness);
+            if (Math.abs(endY) > Math.abs(BrightnessContrast.this.chart.getHeight() / 2))
+            {
+                if (endY < ((-1)*BrightnessContrast.this.chart.getHeight() / 2))
+                {
+                    endY = ((-1)*BrightnessContrast.this.chart.getHeight() / 2);
+                }
+                else
+                {
+                    endY = BrightnessContrast.this.chart.getHeight() / 2;
+                }
+                endX = (int)Math.round(((double)endY - (double)BrightnessContrast.this.brightness)*BrightnessContrast.this.contrast);
+            }
+            startX = translateX.apply(startX);
+            startY = translateY.apply(startY);
+            endX = translateX.apply(endX);
+            endY = translateY.apply(endY);
+            int dX = Math.abs(endX - startX);
+            int dY = Math.abs(endY - startY);
+            if (dX > dY)
+            {
+                if (endX < startX)
+                {
+                    int temp = startX;
+                    startX = endX;
+                    endX = temp;
+                    temp = startY;
+                    startY = endY;
+                    endY = temp;                    
+                }
+                for (int x = startX; x <= endX; x++)
+                {
+                    transaction.setPixel(
+                            x,
+                            BrightnessContrast.this.interpolateNumber(startY, endY, x, dX),
+                            BrightnessContrast.CHART_COLOR
+                    );
+                    transaction.setPixel(
+                            x,
+                            BrightnessContrast.this.interpolateNumber(startY, endY, x, dX) + 1,
+                            BrightnessContrast.CHART_COLOR
+                    );
+                    transaction.setPixel(
+                            x,
+                            BrightnessContrast.this.interpolateNumber(startY, endY, x, dX) - 1,
+                            BrightnessContrast.CHART_COLOR
+                    );
                 }
             }
-        }
-        
-        // Draw line
-        // a ... this.contrast
-        // b ... this.brightness
-        //           y = ax + b
-        //       y - b = ax
-        // (y - b) / a = x
-        // Because of coordinates are indexed from top (not from bottom):
-        // y = 0 <=> y = this.chart.getHeight() - 1;
-        // 
-        // For starting point (most bottom, most left; y ~ 0):
-        // xA = (0 - this.brightness) / this.contrast
-        // yA = (this.contrast * xA) + this.brightness 
-        int xA = (int)Math.round((0f - this.brightness) / this.contrast);
-        int yA = (int)Math.round((this.contrast * (double)xA) + this.brightness);
-        // For ending point (most top, most right; y ~ this.chart.getHeight()
-        // xB = (this.chart.getHeight() - this.brightness) / this.contrast
-        // yB = (this.contrast * xB) + this.brightness
-        int xB = (int)Math.round((double)(this.chart.getHeight() - this.brightness) / this.contrast);
-        int yB = (int)Math.round((this.contrast * (double)xB) + this.brightness);
-        
-        int dX = Math.abs(xB - xA);
-        int dY = Math.abs(yB - yA);
-        Bitmap.BitmapTransaction transaction = new Bitmap.BitmapTransaction();
-        
-        System.out.println(String.format("[%d %d] -> [%d %d] (%d %d)", xA, yA, xB, yB,dX, dY));
-        
-        if (dX > dY)
-        {
-            for (int i = xA; i <= xB; i++)
+            else
             {
-                int x = i;
-                int y = this.interpolateNumber(yA, yB, i, dY);
-                System.out.println(String.format("[%d; %d]", x, y));
-                transaction.setPixel(x, y,BrightnessContrast.CHART_COLOR);
+                if (endY < startY)
+                {
+                    int temp = startY;
+                    startY = endY;
+                    endY = temp;
+                    temp = startX;
+                    startX = endX;
+                    endX = temp;
+                }
+                for (int y = startY; y <= endY; y++)
+                {
+                    transaction.setPixel(
+                            BrightnessContrast.this.interpolateNumber(startX, endX, y, dY),
+                            y,
+                            BrightnessContrast.CHART_COLOR
+                    );
+                    transaction.setPixel(
+                            BrightnessContrast.this.interpolateNumber(startX, endX, y, dY) + 1,
+                            y,
+                            BrightnessContrast.CHART_COLOR
+                    );
+                    transaction.setPixel(
+                            BrightnessContrast.this.interpolateNumber(startX, endX, y, dY) - 1,
+                            y,
+                            BrightnessContrast.CHART_COLOR
+                    );
+                }
             }
-        }
-        else
-        {
-            for (int i = yA; i <= yB; i++)
-            {
-                int x = this.interpolateNumber(xA, xB, i, dY);
-                int y = i;
-                System.out.println(String.format("[%d; %d]", x, y));
-                transaction.setPixel(x, y,BrightnessContrast.CHART_COLOR);
-            }
-        }
-        this.chart.processTransaction(transaction);
+            BrightnessContrast.this.chart.processTransaction(transaction);
+        };
+        Thread t = new Thread(task, "JSGMP:DrawBrightnessContrastChart");
+        t.start();
     }
     
     /**
@@ -289,12 +424,13 @@ public class BrightnessContrast implements Effect, Threadable
     @Override
     public void run()
     {
+        this.drawChart();
         while(this.running == true)
         {
             if (this.update == true)
             {
                 this.update = false;
-                BrightnessContrast.this.drawChart();
+                this.drawChart();
             }
             try
             {

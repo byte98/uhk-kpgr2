@@ -21,6 +21,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
@@ -173,6 +174,16 @@ public class Bitmap implements Iterable<Pixel>
     protected final WritableImage image;
     
     /**
+     * Pixel with maximal values
+     */
+    protected Pixel maxPixel = null;
+    
+    /**
+     * Pixel with minimal values
+     */
+    protected Pixel minPixel = null;
+    
+    /**
      * Creates new empty bitmap
      * @param width Width of bitmap
      * @param height Height of bitmap
@@ -274,13 +285,38 @@ public class Bitmap implements Iterable<Pixel>
             PixelWriter pw = this.image.getPixelWriter();
             this.data[y][x] = px;
             pw.setColor(x, y, Color.rgb(px.getRed(), px.getGreen(), px.getBlue(), (double)px.getAlpha() / 255f));
+            if (Objects.isNull(this.maxPixel) || px.getRed() > this.maxPixel.getRed() || px.getGreen() > this.maxPixel.getGreen() || px.getBlue() > this.maxPixel.getBlue())
+            {
+                this.maxPixel = px;
+            }
+            if (Objects.isNull(this.minPixel) || px.getRed() < this.minPixel.getRed() || px.getGreen() < this.minPixel.getGreen() || px.getBlue() < this.minPixel.getBlue())
+            {
+                this.minPixel = px;
+            }
             if (inform == true)
             {
                 this.invokeChange();
-            }            
+            }
         }
     }
     
+    /**
+     * Gets pixel with maximal values
+     * @return Pixel with maximal values
+     */
+    public Pixel getMaxPixel()
+    {
+        return this.maxPixel;
+    }
+    
+    /**
+     * Gets pixel with minimal values
+     * @return Pixel with minimal values
+     */
+    public Pixel getMinPixel()
+    {
+        return this.minPixel;
+    }
     
     /**
      * Gets width of bitmap

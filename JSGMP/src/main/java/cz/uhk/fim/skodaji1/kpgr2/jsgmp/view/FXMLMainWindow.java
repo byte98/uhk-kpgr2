@@ -99,6 +99,16 @@ public class FXMLMainWindow implements Initializable {
      */
     private FXMLBrightness brightnessController;
     
+    /**
+     * Pane with content of contrast tool
+     */
+    private Pane contrastPane;
+    
+    /**
+     * Controller of contrast tool
+     */
+    private FXMLContrast contrastController;
+    
     @FXML
     private ImageView imageViewMain;
     
@@ -122,6 +132,10 @@ public class FXMLMainWindow implements Initializable {
     private ImageView imageCheckBrightness;
     @FXML
     private Tab tabBrightness;
+    @FXML
+    private ImageView imageCheckContrast;
+    @FXML
+    private Tab tabContrast;
     
     /**
      * Sets reference to primary stage of program
@@ -161,6 +175,8 @@ public class FXMLMainWindow implements Initializable {
     private void initializeTabs()
     {
         this.initializeHistogram();
+        this.initializeBrightness();
+        this.initializeContrast();
     }
     
     /**
@@ -169,7 +185,6 @@ public class FXMLMainWindow implements Initializable {
     private void initializeHistogram()
     {
         FXMLLoader histogramLoader = new FXMLLoader(JSGMP.class.getResource("fxml/FXMLHistogram.fxml"));
-        FXMLLoader brightnessLoader = new FXMLLoader(JSGMP.class.getResource("fxml/FXMLBrightness.fxml"));
         try
         {
             this.histogramPane = (Pane)histogramLoader.load();
@@ -178,7 +193,21 @@ public class FXMLMainWindow implements Initializable {
             this.histogramPane.prefHeightProperty().bind(this.tabHistogram.getTabPane().heightProperty());
             this.histogramPane.getStyleClass().add(JMetroStyleClass.BACKGROUND);
             this.tabHistogram.setContent(this.histogramPane);
-            
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(FXMLMainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * Initializes brightness tool
+     */
+    private void initializeBrightness()
+    {
+        FXMLLoader brightnessLoader = new FXMLLoader(JSGMP.class.getResource("fxml/FXMLBrightness.fxml"));
+        try
+        {
             this.brightnessPane = (Pane)brightnessLoader.load();
             this.brightnessController = (FXMLBrightness)brightnessLoader.getController();
             this.brightnessController.setMainWindow(this.controller);
@@ -194,12 +223,35 @@ public class FXMLMainWindow implements Initializable {
     }
     
     /**
+     * Initializes contrast tool
+     */
+    private void initializeContrast()
+    {
+        FXMLLoader loader = new FXMLLoader(JSGMP.class.getResource("fxml/FXMLContrast.fxml"));
+        try
+        {
+            this.contrastPane = (Pane)loader.load();
+            this.contrastController = (FXMLContrast)loader.getController();
+            this.contrastController.setMainWindow(this.controller);
+            this.contrastPane.prefWidthProperty().bind(this.tabContrast.getTabPane().widthProperty());
+            this.contrastPane.prefHeightProperty().bind(this.tabContrast.getTabPane().heightProperty());
+            this.contrastPane.getStyleClass().add(JMetroStyleClass.BACKGROUND);
+            this.tabContrast.setContent(this.contrastPane);
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(FXMLMainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
      * Hides all tabs which should not be visible
      */
     private void hideAllTabs()
     {
         this.tabPaneTools.getTabs().remove(this.tabHistogram);
         this.tabPaneTools.getTabs().remove(this.tabBrightness);
+        this.tabPaneTools.getTabs().remove(this.tabContrast);
     }
     
     /**
@@ -343,12 +395,22 @@ public class FXMLMainWindow implements Initializable {
     }
 
     /**
+     * Sets histogram of contrast of image
+     * @param contrastHistogram New histogram of contrast of image
+     */
+    public void setContrastHistogram(Image contrastHistogram)
+    {
+        this.contrastController.setHistogram(contrastHistogram);
+    }
+    
+    /**
      * Sets chart of brightness/contrast curve
      * @param brightnessContrastChart Image with chart of brightness/contrast
      */
     public void setBrightnessContrastChart(Image brightnessContrastChart)
     {
         this.brightnessController.setChart(brightnessContrastChart);
+        this.contrastController.setChart(brightnessContrastChart);
     }
     
     @FXML
@@ -408,31 +470,7 @@ public class FXMLMainWindow implements Initializable {
 
     @FXML
     private void histogramPopupOnAction(ActionEvent event) {
-        this.tabHistogram.setContent(null);
-        Scene scene = new Scene(this.histogramPane);
-        Stage stage = new Stage();
-        stage.setTitle("Histogram");
-        stage.setScene(scene);
-        this.tabPaneTools.getTabs().remove(this.tabHistogram);
-        stage.setOnCloseRequest(evt -> {
-            FXMLMainWindow.this.imageCheckHistogram.setVisible(false);
-            FXMLMainWindow.this.tabHistogram.setContent(FXMLMainWindow.this.histogramPane);
-            stage.close();
-        });
-        stage.iconifiedProperty().addListener(new ChangeListener<Boolean>(){
-            @Override
-            public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1)
-            {
-                if (stage.isIconified())
-                {
-                    stage.close();
-                    FXMLMainWindow.this.tabHistogram.setContent(FXMLMainWindow.this.histogramPane);
-                    FXMLMainWindow.this.tabPaneTools.getTabs().add(FXMLMainWindow.this.tabHistogram);
-                }
-            }        
-        });
-        JMetro jmetro = new JMetro(scene, Style.DARK);
-        stage.show();
+        this.popupOnAction("Histogram", this.histogramPane, this.tabHistogram, this.imageCheckHistogram);
     }
 
     @FXML
@@ -449,17 +487,24 @@ public class FXMLMainWindow implements Initializable {
         }
     }
 
-    @FXML
-    private void brightnessPopupOnAction(ActionEvent event) {
-        this.tabBrightness.setContent(null);
-        Scene scene = new Scene(this.brightnessPane);
+    /**
+     * Handles pop up action of tab
+     * @param title Title of tool
+     * @param content Content of tool
+     * @param tab Tab with tool
+     * @param imageCheck Image showing whether tool is opened or not
+     */
+    private void popupOnAction(String title, Pane content, Tab tab, ImageView imageCheck)
+    {
+        tab.setContent(null);
+        Scene scene = new Scene(content);
         Stage stage = new Stage();
-        stage.setTitle("Jas");
+        stage.setTitle(title);
         stage.setScene(scene);
-        this.tabPaneTools.getTabs().remove(this.tabBrightness);
+        this.tabPaneTools.getTabs().remove(tab);
         stage.setOnCloseRequest(evt -> {
-            FXMLMainWindow.this.imageCheckBrightness.setVisible(false);
-            FXMLMainWindow.this.tabBrightness.setContent(FXMLMainWindow.this.brightnessPane);
+            imageCheck.setVisible(false);
+            tab.setContent(content);
             stage.close();
         });
         stage.iconifiedProperty().addListener(new ChangeListener<Boolean>(){
@@ -469,17 +514,41 @@ public class FXMLMainWindow implements Initializable {
                 if (stage.isIconified())
                 {
                     stage.close();
-                    FXMLMainWindow.this.tabBrightness.setContent(FXMLMainWindow.this.brightnessPane);
-                    FXMLMainWindow.this.tabPaneTools.getTabs().add(FXMLMainWindow.this.tabBrightness);
+                    tab.setContent(content);
+                    FXMLMainWindow.this.tabPaneTools.getTabs().add(tab);
                 }
             }        
         });
         JMetro jmetro = new JMetro(scene, Style.DARK);
         stage.show();
     }
+    
+    @FXML
+    private void brightnessPopupOnAction(ActionEvent event) {
+        this.popupOnAction("Jas", this.brightnessPane, this.tabBrightness, this.imageCheckBrightness);
+    }
 
     @FXML
     private void brightnessCloseOnAction(ActionEvent event) {
         this.closeTab(this.imageCheckBrightness, this.tabBrightness);
+    }
+
+    @FXML
+    private void menuContrastOnAction(ActionEvent event) {
+        if (this.imageCheckContrast.isVisible() == false)
+        {
+            this.tabPaneTools.getTabs().add(this.tabContrast);
+            this.imageCheckContrast.setVisible(true);
+        }
+    }
+
+    @FXML
+    private void contrastPopupOnAction(ActionEvent event) {
+       this.popupOnAction("Kontrast", this.contrastPane, this.tabContrast, this.imageCheckContrast);
+    }
+
+    @FXML
+    private void contrastCloseOnAction(ActionEvent event) {
+        this.closeTab(this.imageCheckContrast, this.tabContrast);
     }
 }
