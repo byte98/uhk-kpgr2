@@ -243,7 +243,12 @@ public class BrightnessContrast implements Effect, Threadable
     @Override
     public Pixel apply(Pixel pixel)
     {
-        return new Pixel(this.computeValue(pixel.getRed()), this.computeValue(pixel.getGreen()), this.computeValue(pixel.getBlue()), pixel.getAlpha());
+        return new Pixel(
+                this.computeValue(pixel.getRed()),
+                this.computeValue(pixel.getGreen()),
+                this.computeValue(pixel.getBlue()),
+                pixel.getAlpha()
+        );
     }
 
     @Override

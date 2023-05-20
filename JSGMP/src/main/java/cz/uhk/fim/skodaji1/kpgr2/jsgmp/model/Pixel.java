@@ -17,7 +17,7 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.model;
 
-import java.awt.Color;
+import javafx.scene.paint.Color;
 
 /**
  * Class representing one single pixel
@@ -72,6 +72,39 @@ public class Pixel
     }
     
     /**
+     * Creates new pixel
+     * @param argb Integer containing red, green, blue and alpha values
+     */
+    public Pixel(int argb)
+    {
+        this.alpha = (short)((argb >> 24) & 0xFF);
+        this.red   = (short)((argb >> 16) & 0xFF);
+        this.green = (short)((argb >> 8 ) & 0xFF);
+        this.blue  = (short)((argb >> 0 ) & 0xFF);
+    }
+    
+    /**
+     * Creates new pixel
+     * @param c Color holding all pixel values
+     */
+    public Pixel (Color c)
+    {
+        this.alpha = (short)Math.round(c.getOpacity() * 255f);
+        this.red = (short)Math.round(c.getRed() * 255f);
+        this.green = (short)Math.round(c.getGreen() * 255f);
+        this.blue = (short)Math.round(c.getBlue() * 255f);
+    }
+    
+    /**
+     * Gets color object representation of pixel
+     * @return Color object representing pixel
+     */
+    public Color toColor()
+    {
+        return Color.rgb(this.red, this.green, this.blue, (double)this.alpha / 255f);
+    }
+    
+    /**
      * Gets red part of colour of pixel
      * @return Red part of colour of pixel
      */
@@ -113,7 +146,11 @@ public class Pixel
      */
     public int toARGB()
     {
-        Color reti = new Color(this.getRed(), this.getGreen(), this.getBlue(), this.alpha);
-        return reti.getRGB();
+        int reti = 0;
+        reti |= (int)(this.alpha & 0xff) << 24;
+        reti |= (int)(this.red   & 0xff) << 16;
+        reti |= (int)(this.green & 0xff) << 8;
+        reti |= (int)(this.blue  & 0xff) << 0;
+        return reti;
     }
 }

@@ -165,8 +165,17 @@ public class Bitmap implements Iterable<Pixel>
     /**
      * Data of bitmap
      */
-    protected final Pixel[][] data;
+    protected final int[][] data;
     
+    /**
+     * Original data of bitmap
+     */
+    protected final int[][]original;
+    
+    /**
+     * Deltas of values of pixels
+     */
+    protected final int[][]deltas;
     
     /**
      * Graphical representation of bitmap
@@ -184,6 +193,11 @@ public class Bitmap implements Iterable<Pixel>
     protected Pixel minPixel = null;
     
     /**
+     * Flag, whether original state of bitmap has been set (TRUE) or not (FALSE)
+     */
+    protected boolean originalSet = false;
+    
+    /**
      * Creates new empty bitmap
      * @param width Width of bitmap
      * @param height Height of bitmap
@@ -192,9 +206,61 @@ public class Bitmap implements Iterable<Pixel>
     {
         this.width = width;
         this.height = height;
-        this.data = new Pixel[this.height][this.width];
+        this.data = new int[this.height][this.width];
+        this.deltas = new int[this.height][this.width];
+        this.original = new int[this.height][this.width];
         this.changeActionListeners = new ArrayList<>();
         this.image = new WritableImage(this.width, this.height);
+    }
+    
+    /**
+     * Sets actual state of bitmap as original one
+     */
+    public void setOriginal()
+    {
+        if (this.originalSet == false)
+        {
+            this.originalSet = true;
+            for (int y = 0; y < this.height; y++)
+            {
+                for (int x = 0; x < this.width; x++)
+                {
+                    this.original[y][x] = this.data[y][x];
+                }
+            }
+            this.invokeChange();
+        }
+        else
+        {
+            throw new IllegalStateException("Cannot set original state of bitmap: original state already set!");
+        }
+    }
+    
+    /**
+     * Gets original value of pixel
+     * @param x X coordinate of pixel
+     * @param y Y coordinate of pixel
+     * @return Original value of pixel
+     */
+    public Pixel getOriginal(int x, int y)
+    {
+        return new Pixel(this.original[y][x]);
+    }
+    
+    /**
+     * Removes applied changes
+     */
+    public void removeChanges()
+    {
+        Bitmap.BitmapTransaction transaction = new Bitmap.BitmapTransaction();
+        for (int y = 0; y < this.height; y++)
+        {
+            for (int x = 0; x < this.width; x++)
+            {
+                transaction.setPixel(x, y, this.getOriginal(x, y));
+            }
+        }
+        this.processTransaction(transaction);
     }
     
     /**
@@ -255,7 +321,7 @@ public class Bitmap implements Iterable<Pixel>
         Pixel reti = null;
         if (this.isInBitmap(x, y))
         {
-            reti = this.data[y][x];
+            reti = new Pixel(this.data[y][x]);
         }
         return reti;
     }
@@ -283,8 +349,12 @@ public class Bitmap implements Iterable<Pixel>
         if (this.isInBitmap(x, y))
         {
             PixelWriter pw = this.image.getPixelWriter();
-            this.data[y][x] = px;
-            pw.setColor(x, y, Color.rgb(px.getRed(), px.getGreen(), px.getBlue(), (double)px.getAlpha() / 255f));
+            this.data[y][x] = px.toARGB();
+            if (this.originalSet == true)
+            {
+                this.deltas[y][x] = px.toARGB() - this.getOriginal(x, y).toARGB();
+            }
+            pw.setColor(x, y, px.toColor());
             if (Objects.isNull(this.maxPixel) || px.getRed() > this.maxPixel.getRed() || px.getGreen() > this.maxPixel.getGreen() || px.getBlue() > this.maxPixel.getBlue())
             {
                 this.maxPixel = px;

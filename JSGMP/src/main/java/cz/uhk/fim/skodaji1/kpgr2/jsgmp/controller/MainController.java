@@ -125,6 +125,8 @@ public class MainController
         this.mainWindow.setFileName(p.getFileName().toString());
         this.mainWindow.setFilePath(Paths.get(path).toAbsolutePath().normalize().toString());
         this.mainWindow.setFileSize(image.getBitmap().getWidth(), image.getBitmap().getHeight());
+        
+        this.image.getBitmap().setOriginal();
     }
     
     /**
@@ -134,7 +136,7 @@ public class MainController
     public void brightnessChanged(int newValue)
     {
         this.brightness.setBrightness(newValue);
-        //ThreadManager.applyEffect(this.brightness, this.image.getBitmap());
+        ThreadManager.applyEffect(this.brightness, this.image.getBitmap());
     }
     
     /**
@@ -144,6 +146,6 @@ public class MainController
     public void contrastChanged(double newValue)
     {
         this.brightness.setContrast(newValue);
-        //ThreadManager.applyEffect(this.brightness, this.image.getBitmap());
+        ThreadManager.applyEffect(this.brightness, this.image.getBitmap());
     }
 }

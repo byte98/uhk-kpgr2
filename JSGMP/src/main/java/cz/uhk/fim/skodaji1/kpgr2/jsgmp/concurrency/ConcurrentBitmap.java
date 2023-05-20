@@ -246,6 +246,24 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
             Logger.getLogger(ConcurrentBitmap.class.getName()).log(Level.SEVERE, null, ex);
         }
     }    
+
+    @Override
+    public Pixel getPixel(int x, int y)
+    {
+        synchronized(this.data)
+        {
+            return new Pixel(this.data[y][x]);
+        }
+    }
+
+    @Override
+    public Pixel getOriginal(int x, int y)
+    {
+        synchronized(this.original)
+        {
+            return new Pixel(this.original[y][x]);
+        }
+    }    
     
     @Override
     public void run()
@@ -261,7 +279,14 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
                     {
                         if (this.isInBitmap(item.getX(), item.getY()))
                         {
-                            this.data[item.getY()][item.getX()] = item.getPixel();
+                            synchronized(this.data)
+                            {
+                                this.data[item.getY()][item.getX()] = item.getPixel().toARGB();
+                                if (this.originalSet)
+                                {
+                                    this.deltas[item.getY()][item.getX()] = item.getPixel().toARGB() - this.getOriginal(item.getY(), item.getX()).toARGB();
+                                }
+                            }                            
                             if (Objects.isNull(this.maxPixel) || item.getPixel().getRed() > this.maxPixel.getRed() || item.getPixel().getGreen() > this.maxPixel.getGreen() || item.getPixel().getBlue() > this.maxPixel.getBlue())
                             {
                                 this.maxPixel = item.getPixel();
@@ -287,7 +312,14 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
                         {
                             if (this.isInBitmap(t.getX(), t.getY()))
                             {
-                                this.data[t.getY()][t.getX()] = t.getValue();
+                                synchronized(this.data)
+                                {
+                                    this.data[t.getY()][t.getX()] = t.getValue().toARGB();
+                                    if (this.originalSet)
+                                    {
+                                        this.deltas[t.getY()][t.getX()] = t.getValue().toARGB() - this.getOriginal(t.getY(), t.getX()).toARGB();
+                                    }
+                                }      
                                 if (Objects.isNull(this.maxPixel) || t.getValue().getRed() > this.maxPixel.getRed() || t.getValue().getGreen() > this.maxPixel.getGreen() || t.getValue().getBlue() > this.maxPixel.getBlue())
                                 {
                                     this.maxPixel = t.getValue();

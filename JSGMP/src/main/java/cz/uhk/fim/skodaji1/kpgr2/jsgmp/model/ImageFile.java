@@ -55,18 +55,18 @@ public class ImageFile
         {
             BufferedImage rawImage = ImageIO.read(new File(path));
             data = ThreadManager.createBitmap(rawImage.getWidth(), rawImage.getHeight());
+            //data = new Bitmap(rawImage.getWidth(), rawImage.getHeight());
             Bitmap.BitmapTransaction transaction = new Bitmap.BitmapTransaction();
             for (int y = 0; y < rawImage.getHeight(); y++)
             {
                 for (int x = 0; x < rawImage.getWidth(); x++)
                 {
                     Color c = new Color(rawImage.getRGB(x, y), true);
-                    transaction.setPixel(x, y, new Pixel(
-                            (short)c.getRed(),
-                            (short)c.getGreen(),
-                            (short)c.getBlue(),
-                            (short)c.getAlpha()
-                    ));
+                    short r = (short)c.getRed();
+                    short g = (short)c.getGreen();
+                    short b = (short)c.getBlue();
+                    short a = (short)c.getAlpha();
+                    transaction.setPixel(x, y, new Pixel(r, g, b, a));
                 }
             }
             data.processTransaction(transaction);

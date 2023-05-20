@@ -23,8 +23,9 @@
         <dependency>
     <groupId>org.openjfx</groupId>
     <artifactId>javafx-swing</artifactId>
-    <version>13</version>
-</dependency>
+    <version>20.0.1</version>
+            <type>jar</type>
+        </dependency>
 
         <dependency>
     <groupId>org.jfxtras</groupId>
