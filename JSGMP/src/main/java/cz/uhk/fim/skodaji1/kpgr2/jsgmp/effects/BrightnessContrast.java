@@ -266,14 +266,14 @@ public class BrightnessContrast implements Effect, Threadable
     {
         Runnable task = () -> {
             Bitmap.BitmapTransaction transaction = new Bitmap.BitmapTransaction();
-            int centerX = (int)Math.round((double)BrightnessContrast.this.chart.getWidth() / 2f);
-            int centerY = (int)Math.round((double)BrightnessContrast.this.chart.getHeight() / 2f);
+            int centerX = (int)Math.round((double)this.chart.getWidth() / 2f);
+            int centerY = (int)Math.round((double)this.chart.getHeight() / 2f);
             int deltaX = centerX % BrightnessContrast.CHART_GRID;
             int deltaY = centerY % BrightnessContrast.CHART_GRID;
             // Draw background with grid
-            for (int y = 0; y < BrightnessContrast.this.chart.getHeight(); y++)
+            for (int y = 0; y < this.chart.getHeight(); y++)
             {
-                for (int x = 0; x < BrightnessContrast.this.chart.getWidth(); x++)
+                for (int x = 0; x < this.chart.getWidth(); x++)
                 {
                     if ((x - deltaX) % BrightnessContrast.CHART_GRID == 0 || (y - deltaY) % BrightnessContrast.CHART_GRID == 0)
                     {
@@ -287,120 +287,64 @@ public class BrightnessContrast implements Effect, Threadable
             }
             
             // Draw axis
-            for (int y = 0; y < BrightnessContrast.this.chart.getHeight(); y++)
+            for (int y = 0; y < this.chart.getHeight(); y++)
             {
-                transaction.setPixel(BrightnessContrast.this.chart.getWidth() / 2, y, BrightnessContrast.CHART_AXIS);
+                transaction.setPixel(this.chart.getWidth() / 2, y, BrightnessContrast.CHART_AXIS);
             }
-            for (int x = 0; x < BrightnessContrast.this.chart.getWidth(); x++)
+            for (int x = 0; x < this.chart.getWidth(); x++)
             {
-                transaction.setPixel(x, BrightnessContrast.this.chart.getHeight() / 2, BrightnessContrast.CHART_AXIS);
+                transaction.setPixel(x, this.chart.getHeight() / 2, BrightnessContrast.CHART_AXIS);
             }
 
             final Function<Integer, Integer> translateX = (inX) -> 
             {
-                return inX + BrightnessContrast.this.chart.getWidth() / 2;
+                return inX + this.chart.getWidth() / 2;
             };
 
             final Function<Integer, Integer> translateY = (inY) ->
             {
-                return BrightnessContrast.this.chart.getHeight() / 2 - inY;
+                return this.chart.getHeight() / 2 - inY;
             };
 
-            int startX = -BrightnessContrast.this.chart.getWidth() / 2;
-            int startY = (int)Math.round((BrightnessContrast.this.contrast * (double)startX) + BrightnessContrast.this.brightness);
-            if (Math.abs(startY) > Math.abs(BrightnessContrast.this.chart.getHeight() / 2))
-            {
-                if (startY < ((-1)*BrightnessContrast.this.chart.getHeight() / 2))
-                {
-                    startY = ((-1)*BrightnessContrast.this.chart.getHeight() / 2);
-                }
-                else
-                {
-                    startY = BrightnessContrast.this.chart.getHeight() / 2;
-                }
-                startX = (int)Math.round(((double)startY - (double)BrightnessContrast.this.brightness)*BrightnessContrast.this.contrast);
-            }
-            int endX = BrightnessContrast.this.chart.getWidth() / 2;
-            int endY = (int)Math.round((BrightnessContrast.this.contrast * (double)endX) + BrightnessContrast.this.brightness);
-            if (Math.abs(endY) > Math.abs(BrightnessContrast.this.chart.getHeight() / 2))
-            {
-                if (endY < ((-1)*BrightnessContrast.this.chart.getHeight() / 2))
-                {
-                    endY = ((-1)*BrightnessContrast.this.chart.getHeight() / 2);
-                }
-                else
-                {
-                    endY = BrightnessContrast.this.chart.getHeight() / 2;
-                }
-                endX = (int)Math.round(((double)endY - (double)BrightnessContrast.this.brightness)*BrightnessContrast.this.contrast);
-            }
+            // Draw chart
+            int startX = this.chart.getHeight() / (-2);
+            int startY = startX;
+            int endX = this.chart.getHeight() / 2;
+            int endY = endX;
+            startX = (int)Math.round((double)startX * this.contrast);
+            endX = (int)Math.round((double)endX * this.contrast);
+            startX = startX + this.brightness;
+            endX = endX + this.brightness;
             startX = translateX.apply(startX);
             startY = translateY.apply(startY);
             endX = translateX.apply(endX);
             endY = translateY.apply(endY);
             int dX = Math.abs(endX - startX);
             int dY = Math.abs(endY - startY);
+            int counter = 0;
             if (dX > dY)
             {
-                if (endX < startX)
-                {
-                    int temp = startX;
-                    startX = endX;
-                    endX = temp;
-                    temp = startY;
-                    startY = endY;
-                    endY = temp;                    
-                }
                 for (int x = startX; x <= endX; x++)
                 {
-                    transaction.setPixel(
-                            x,
-                            BrightnessContrast.this.interpolateNumber(startY, endY, x, dX),
-                            BrightnessContrast.CHART_COLOR
-                    );
-                    transaction.setPixel(
-                            x,
-                            BrightnessContrast.this.interpolateNumber(startY, endY, x, dX) + 1,
-                            BrightnessContrast.CHART_COLOR
-                    );
-                    transaction.setPixel(
-                            x,
-                            BrightnessContrast.this.interpolateNumber(startY, endY, x, dX) - 1,
-                            BrightnessContrast.CHART_COLOR
-                    );
+                    int y = this.interpolateNumber(startY, endY, counter, dX);
+                    transaction.setPixel(x, y, BrightnessContrast.CHART_COLOR);
+                    transaction.setPixel(x + 1, y, BrightnessContrast.CHART_COLOR);
+                    transaction.setPixel(x - 1, y, BrightnessContrast.CHART_COLOR);
+                    counter++;
                 }
             }
             else
             {
-                if (endY < startY)
+                for (int y = startY; y >= endY; y--)
                 {
-                    int temp = startY;
-                    startY = endY;
-                    endY = temp;
-                    temp = startX;
-                    startX = endX;
-                    endX = temp;
-                }
-                for (int y = startY; y <= endY; y++)
-                {
-                    transaction.setPixel(
-                            BrightnessContrast.this.interpolateNumber(startX, endX, y, dY),
-                            y,
-                            BrightnessContrast.CHART_COLOR
-                    );
-                    transaction.setPixel(
-                            BrightnessContrast.this.interpolateNumber(startX, endX, y, dY) + 1,
-                            y,
-                            BrightnessContrast.CHART_COLOR
-                    );
-                    transaction.setPixel(
-                            BrightnessContrast.this.interpolateNumber(startX, endX, y, dY) - 1,
-                            y,
-                            BrightnessContrast.CHART_COLOR
-                    );
+                    int x = this.interpolateNumber(startX, endX, counter, dY);
+                    transaction.setPixel(x, y, BrightnessContrast.CHART_COLOR);
+                    transaction.setPixel(x + 1, y, BrightnessContrast.CHART_COLOR);
+                    transaction.setPixel(x - 1, y, BrightnessContrast.CHART_COLOR);
+                    counter++;
                 }
             }
-            BrightnessContrast.this.chart.processTransaction(transaction);
+            this.chart.processTransaction(transaction);
         };
         Thread t = new Thread(task, "JSGMP:DrawBrightnessContrastChart");
         t.start();
