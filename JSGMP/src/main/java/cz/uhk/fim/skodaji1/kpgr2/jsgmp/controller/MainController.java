@@ -136,7 +136,6 @@ public class MainController
     public void brightnessChanged(int newValue)
     {
         this.brightness.setBrightness(newValue);
-        ThreadManager.applyEffect(this.brightness, this.image.getBitmap());
     }
     
     /**
@@ -146,6 +145,6 @@ public class MainController
     public void contrastChanged(double newValue)
     {
         this.brightness.setContrast(newValue);
-        ThreadManager.applyEffect(this.brightness, this.image.getBitmap());
+        this.image.getBitmap().setPixel(0, 0, new Pixel(Color.RED));
     }
 }

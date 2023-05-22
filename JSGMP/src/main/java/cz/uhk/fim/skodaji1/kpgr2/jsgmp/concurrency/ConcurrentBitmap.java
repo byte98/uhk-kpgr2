@@ -18,6 +18,7 @@
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency;
 
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Globals;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -282,19 +283,14 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
                             synchronized(this.data)
                             {
                                 this.data[item.getY()][item.getX()] = item.getPixel().toARGB();
+                                int intensity = Globals.INTENSITY.apply(item.getPixel());
+                                if (intensity > this.maxIntensity) maxIntensity = intensity;
+                                if (intensity < this.minIntensity) minIntensity = intensity;
                                 if (this.originalSet)
                                 {
-                                    this.deltas[item.getY()][item.getX()] = item.getPixel().toARGB() - this.getOriginal(item.getY(), item.getX()).toARGB();
+                                    this.deltas[item.getY()][item.getX()] = item.getPixel().toARGB() - this.getOriginal(item.getX(), item.getY()).toARGB();
                                 }
-                            }                            
-                            if (Objects.isNull(this.maxPixel) || item.getPixel().getRed() > this.maxPixel.getRed() || item.getPixel().getGreen() > this.maxPixel.getGreen() || item.getPixel().getBlue() > this.maxPixel.getBlue())
-                            {
-                                this.maxPixel = item.getPixel();
-                            }
-                            if (Objects.isNull(this.minPixel) || item.getPixel().getRed() < this.minPixel.getRed() || item.getPixel().getGreen() < this.minPixel.getGreen() || item.getPixel().getBlue() < this.minPixel.getBlue())
-                            {
-                                this.minPixel = item.getPixel();
-                            }
+                            }        
                             Platform.runLater(new Runnable(){
                                 @Override
                                 public void run()
@@ -315,19 +311,14 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
                                 synchronized(this.data)
                                 {
                                     this.data[t.getY()][t.getX()] = t.getValue().toARGB();
+                                    int intensity = Globals.INTENSITY.apply(t.getValue());
+                                    if (intensity > this.maxIntensity) maxIntensity = intensity;
+                                    if (intensity < this.minIntensity) minIntensity = intensity;
                                     if (this.originalSet)
                                     {
-                                        this.deltas[t.getY()][t.getX()] = t.getValue().toARGB() - this.getOriginal(t.getY(), t.getX()).toARGB();
+                                        this.deltas[t.getY()][t.getX()] = t.getValue().toARGB() - this.getOriginal(t.getX(), t.getY()).toARGB();
                                     }
-                                }      
-                                if (Objects.isNull(this.maxPixel) || t.getValue().getRed() > this.maxPixel.getRed() || t.getValue().getGreen() > this.maxPixel.getGreen() || t.getValue().getBlue() > this.maxPixel.getBlue())
-                                {
-                                    this.maxPixel = t.getValue();
-                                }
-                                if (Objects.isNull(this.minPixel) || t.getValue().getRed() < this.minPixel.getRed() || t.getValue().getGreen() < this.minPixel.getGreen() || t.getValue().getBlue() < this.minPixel.getBlue())
-                                {
-                                    this.minPixel = t.getValue();
-                                }
+                                }     
                             }
                         }
                         Platform.runLater(new Runnable(){

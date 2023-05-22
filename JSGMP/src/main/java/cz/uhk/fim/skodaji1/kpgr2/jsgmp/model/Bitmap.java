@@ -183,19 +183,19 @@ public class Bitmap implements Iterable<Pixel>
     protected final WritableImage image;
     
     /**
-     * Pixel with maximal values
-     */
-    protected Pixel maxPixel = null;
-    
-    /**
-     * Pixel with minimal values
-     */
-    protected Pixel minPixel = null;
-    
-    /**
      * Flag, whether original state of bitmap has been set (TRUE) or not (FALSE)
      */
     protected boolean originalSet = false;
+    
+    /**
+     * Maximal value of intensity of pixel in bitmap
+     */
+    protected int maxIntensity = Integer.MIN_VALUE;
+    
+    /**
+     * Minimal value of intensity of pixel in bitmap
+     */
+    protected int minIntensity = Integer.MAX_VALUE;
     
     /**
      * Creates new empty bitmap
@@ -350,19 +350,14 @@ public class Bitmap implements Iterable<Pixel>
         {
             PixelWriter pw = this.image.getPixelWriter();
             this.data[y][x] = px.toARGB();
+            int intensity = Globals.INTENSITY.apply(px);
+            if (intensity > this.maxIntensity) maxIntensity = intensity;
+            if (intensity < this.minIntensity) minIntensity = intensity;
             if (this.originalSet == true)
             {
                 this.deltas[y][x] = px.toARGB() - this.getOriginal(x, y).toARGB();
             }
             pw.setColor(x, y, px.toColor());
-            if (Objects.isNull(this.maxPixel) || px.getRed() > this.maxPixel.getRed() || px.getGreen() > this.maxPixel.getGreen() || px.getBlue() > this.maxPixel.getBlue())
-            {
-                this.maxPixel = px;
-            }
-            if (Objects.isNull(this.minPixel) || px.getRed() < this.minPixel.getRed() || px.getGreen() < this.minPixel.getGreen() || px.getBlue() < this.minPixel.getBlue())
-            {
-                this.minPixel = px;
-            }
             if (inform == true)
             {
                 this.invokeChange();
@@ -371,21 +366,21 @@ public class Bitmap implements Iterable<Pixel>
     }
     
     /**
-     * Gets pixel with maximal values
-     * @return Pixel with maximal values
+     * Gets maximal value of pixel intensity of actual bitmap
+     * @return Maximal pixel intensity
      */
-    public Pixel getMaxPixel()
+    public int getMaxIntensity()
     {
-        return this.maxPixel;
+        return this.maxIntensity;
     }
     
     /**
-     * Gets pixel with minimal values
-     * @return Pixel with minimal values
+     * Gets minimal value of pixel intensity of actual bitmap
+     * @return Minimal pixel intensity
      */
-    public Pixel getMinPixel()
+    public int getMinIntensity()
     {
-        return this.minPixel;
+        return this.minIntensity;
     }
     
     /**

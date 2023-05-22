@@ -143,30 +143,11 @@ public class BrightnessContrast implements Effect, Threadable
                 256
         );
         this.contrastHistogram = ThreadManager.createHistogram((Pixel px) ->
-        {/*
-            long sumR = 0;
-            long sumG = 0;
-            long sumB = 0;
-            for(Pixel p: BrightnessContrast.this.bitmap)
-            {
-                sumR += p.getRed();
-                sumG += p.getGreen();
-                sumB += p.getBlue();
-            }
-            double avgR = (double)sumR / (double)(BrightnessContrast.this.bitmap.getWidth() * BrightnessContrast.this.bitmap.getHeight());
-            double avgG = (double)sumG / (double)(BrightnessContrast.this.bitmap.getWidth() * BrightnessContrast.this.bitmap.getHeight());
-            double avgB = (double)sumB / (double)(BrightnessContrast.this.bitmap.getWidth() * BrightnessContrast.this.bitmap.getHeight());
-            
-            double diffR = (double)px.getRed() - avgR;
-            double diffG = (double)px.getGreen() - avgG;
-            double diffB = (double)px.getBlue() - avgB;
-            
-            double sqDiffR = Math.pow(diffR, 2);
-            double sqDiffG = Math.pow(diffG, 2);
-            double sqDiffB = Math.pow(diffB, 2);
-            System.out.println("F");*/
-            
-            return ThreadLocalRandom.current().nextInt(0, 255);
+        {
+            int delta = BrightnessContrast.this.bitmap.getMaxIntensity() - BrightnessContrast.this.bitmap.getMinIntensity();
+            double step = 255f / (double)delta;
+            int intensity = Globals.INTENSITY.apply(px);
+            return (int)Math.round((double)intensity * step);
         },
                 this.bitmap,
                 Globals.HISTOGRAM_WIDTH,

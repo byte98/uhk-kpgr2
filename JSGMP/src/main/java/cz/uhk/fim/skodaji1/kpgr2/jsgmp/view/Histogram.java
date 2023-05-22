@@ -91,6 +91,11 @@ public class Histogram implements Threadable
     private final Thread thread;
     
     /**
+     * Flag, whether histogram data should be smoothed or not
+     */
+    private final boolean smooth;
+    
+    /**
      * Data displayed in histogram
      */
     private final int[] data;
@@ -113,6 +118,29 @@ public class Histogram implements Threadable
             int dataLength
     )
     {
+        this(function, source, result, startColor, finalColor, dataLength, false);
+    }
+    
+    /**
+     * Creates new histogram
+     * @param function Function which computes value of histogram for pixel
+     * @param source Bitmap which histogram will be computed
+     * @param result Bitmap to which results will be drawn into
+     * @param startColor Starting color of histogram
+     * @param finalColor Final color of histogram
+     * @param dataLength Length of data (i.e. number of possible values from function)
+     * @param smooth Flag, whether histogram data should be smoothed or not
+     */
+    public Histogram(
+            Function<Pixel, Integer> function,
+            Bitmap source,
+            Bitmap result,
+            Color startColor,
+            Color finalColor,
+            int dataLength,
+            boolean smooth
+    )
+    {
         this.histogramFunction = function;
         this.source = source;
         this.result = result;
@@ -121,6 +149,7 @@ public class Histogram implements Threadable
         this.thread = new Thread(this, String.format("JSGMP:Histogram-%d", Histogram.counter));
         Histogram.counter++;
         this.data = new int[dataLength];
+        this.smooth = true;
         this.source.addChangeActionListener(new Bitmap.BitmapChangedActionListener()
         {
             @Override
@@ -150,6 +179,14 @@ public class Histogram implements Threadable
     @Override
     public void stop() {
         this.running = false;
+    }
+    
+    /**
+     * Smoothes data
+     */
+    private void smooth()
+    {
+        
     }
     
     /**

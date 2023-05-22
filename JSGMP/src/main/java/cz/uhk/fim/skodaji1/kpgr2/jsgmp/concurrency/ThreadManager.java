@@ -79,19 +79,7 @@ public class ThreadManager
         reti.start();
         return reti;
     }
-    
-    /**
-     * Applies effect on bitmap
-     * @param effect Effect which will be applied
-     * @param bitmap Bitmap on which effect will be applied
-     */
-    public static void applyEffect(Effect effect, Bitmap bitmap)
-    {
-        EffectApplier e = new EffectApplier(effect, bitmap);
-        ThreadManager.threads.add(e);
-        e.start();
-    }
-    
+        
     /**
      * Creates new brightness/contrast effect
      * @param bitmap Bitmap on which histograms will be computed

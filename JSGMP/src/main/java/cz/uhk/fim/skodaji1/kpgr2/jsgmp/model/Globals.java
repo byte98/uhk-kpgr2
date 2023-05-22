@@ -17,6 +17,7 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.model;
 
+import java.util.function.Function;
 import javafx.scene.paint.Color;
 
 /**
@@ -38,4 +39,12 @@ public class Globals {
      * Background of histogram where are no data present
      */
     public static final Pixel HISTOGRAM_CLEAR = new Pixel((short)51, (short)51, (short)51);
+    
+    /**
+     * Function which computes intensity of pixel
+     */
+    public static final Function<Pixel, Integer> INTENSITY = (Pixel px) -> 
+    {
+        return (int)Math.round(((double)px.getRed() + (double)px.getGreen() + (double)px.getBlue()) / 3f);
+    };
 }
