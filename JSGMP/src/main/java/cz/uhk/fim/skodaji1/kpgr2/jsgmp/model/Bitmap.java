@@ -171,12 +171,7 @@ public class Bitmap implements Iterable<Pixel>
      * Original data of bitmap
      */
     protected final int[][]original;
-    
-    /**
-     * Deltas of values of pixels
-     */
-    protected final int[][]deltas;
-    
+        
     /**
      * Graphical representation of bitmap
      */
@@ -207,7 +202,6 @@ public class Bitmap implements Iterable<Pixel>
         this.width = width;
         this.height = height;
         this.data = new int[this.height][this.width];
-        this.deltas = new int[this.height][this.width];
         this.original = new int[this.height][this.width];
         this.changeActionListeners = new ArrayList<>();
         this.image = new WritableImage(this.width, this.height);
@@ -244,7 +238,16 @@ public class Bitmap implements Iterable<Pixel>
      */
     public Pixel getOriginal(int x, int y)
     {
-        return new Pixel(this.original[y][x]);
+        Pixel reti = null;
+        if (this.originalSet == false)
+        {
+            throw new IllegalStateException("Cannot get original state of bitmap: original state has not been set!");
+        }
+        else
+        {
+            reti = new Pixel(this.original[y][x]);
+        }
+        return reti;
     }
     
     /**
@@ -353,10 +356,6 @@ public class Bitmap implements Iterable<Pixel>
             int intensity = Globals.INTENSITY.apply(px);
             if (intensity > this.maxIntensity) maxIntensity = intensity;
             if (intensity < this.minIntensity) minIntensity = intensity;
-            if (this.originalSet == true)
-            {
-                this.deltas[y][x] = px.toARGB() - this.getOriginal(x, y).toARGB();
-            }
             pw.setColor(x, y, px.toColor());
             if (inform == true)
             {

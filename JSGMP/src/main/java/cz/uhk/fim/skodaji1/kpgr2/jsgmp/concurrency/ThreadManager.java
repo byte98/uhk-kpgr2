@@ -17,6 +17,7 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency;
 
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller.EffectsController;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.BrightnessContrast;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Effect;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap;
@@ -114,6 +115,19 @@ public class ThreadManager
     public static BrightnessContrast createBrightnessContrastEffect(Bitmap bitmap)
     {
         BrightnessContrast reti = new BrightnessContrast(bitmap);
+        ThreadManager.threads.add(reti);
+        reti.start();
+        return reti;
+    }
+    
+    /**
+     * Creates new controller of all effects
+     * @param bitmap Bitmap on which effects will be applied
+     * @return Controller of all effects
+     */
+    public static EffectsController createEffectsController(Bitmap bitmap)
+    {
+        EffectsController reti = new EffectsController(bitmap);
         ThreadManager.threads.add(reti);
         reti.start();
         return reti;

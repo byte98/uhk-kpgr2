@@ -24,6 +24,10 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap.BitmapChangedActionListener;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Globals;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Histogram;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -126,6 +130,11 @@ public class BrightnessContrast implements Effect, Threadable
     private final Histogram contrastHistogram;
     
     /**
+     * Listeners of brightness/contrast changed
+     */
+    private final List<Effect.EffectChangedListener> listeners;
+    
+    /**
      * Creates new handler of brightness effect
      * @param bitmap Bitmap which brightness will be handled
      */
@@ -160,6 +169,7 @@ public class BrightnessContrast implements Effect, Threadable
         this.chart = ThreadManager.createBitmap(Globals.HISTOGRAM_WIDTH, Globals.HISTOGRAM_HEIGHT);
         this.thread = new Thread(this, "JSGMP:BrightnessContrast-" + BrightnessContrast.counter);
         BrightnessContrast.counter++;
+        this.listeners = Collections.synchronizedList(new ArrayList<>());
     }    
     
     /**
@@ -197,6 +207,7 @@ public class BrightnessContrast implements Effect, Threadable
     {
         this.brightness = brightness;
         this.update = true;
+        this.invokeChange();
     }
     
     /**
@@ -207,6 +218,7 @@ public class BrightnessContrast implements Effect, Threadable
     {
         this.contrast = contrast;
         this.update = true;
+        this.invokeChange();
     }
     
     /**
@@ -345,7 +357,7 @@ public class BrightnessContrast implements Effect, Threadable
      * @param steps Number of all steps between numbers
      * @return Interpolated number
      */
-    private final int interpolateNumber(int i1, int i2, int step, int steps)
+    private int interpolateNumber(int i1, int i2, int step, int steps)
     {
         int delta = i2 - i1;
         double stepReal = (double)delta / (double)steps;
@@ -371,6 +383,23 @@ public class BrightnessContrast implements Effect, Threadable
             {
                 Logger.getLogger(BrightnessContrast.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+    }
+
+    @Override
+    public void addEffectChangedListener(EffectChangedListener listener)
+    {
+        this.listeners.add(listener);
+    }
+    
+    /**
+     * Invokes change of brightness and/or contrast
+     */
+    private void invokeChange()
+    {
+        for(Effect.EffectChangedListener listener: this.listeners)
+        {
+            listener.effectChanged();
         }
     }
 }

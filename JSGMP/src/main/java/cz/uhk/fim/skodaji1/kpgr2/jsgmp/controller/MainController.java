@@ -19,6 +19,7 @@ package cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller;
 
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency.ThreadManager;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.BrightnessContrast;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Temperature;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Globals;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.ImageFile;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
@@ -65,6 +66,16 @@ public class MainController
     private BrightnessContrast brightness;
     
     /**
+     * Handler of all available effects
+     */
+    private EffectsController effects;
+    
+    /**
+     * Handler of temperature effect
+     */
+    private Temperature temperature;
+    
+    /**
      * Creates new controller of main window
      * @param mainWindow Reference to main window
      */
@@ -80,6 +91,7 @@ public class MainController
     public void fileOpen(String path)
     {
         this.image = new ImageFile(path);
+        this.effects = ThreadManager.createEffectsController(this.image.getBitmap());
         
         this.mainWindow.setImage(this.image.getBitmap());
         
@@ -117,9 +129,14 @@ public class MainController
         this.mainWindow.setBlueHistogram(this.blueHistogram.getImage());
         
         this.brightness = ThreadManager.createBrightnessContrastEffect(this.image.getBitmap());
+        this.effects.addEffect(this.brightness);
         this.mainWindow.setBrightnessHistogram(this.brightness.getBrightnessHistogram());
         this.mainWindow.setContrastHistogram(this.brightness.getContrastHistogram());
         this.mainWindow.setBrightnessContrastChart(this.brightness.getChart());
+        
+        this.temperature = new Temperature(this.image.getBitmap());
+        this.effects.addEffect(this.temperature);
+        this.mainWindow.setTemperatureHistogram(this.temperature.getHistogram().getImage());
         
         Path p = Paths.get(path);
         this.mainWindow.setFileName(p.getFileName().toString());
@@ -145,6 +162,14 @@ public class MainController
     public void contrastChanged(double newValue)
     {
         this.brightness.setContrast(newValue);
-        this.image.getBitmap().setPixel(0, 0, new Pixel(Color.RED));
+    }
+    
+    /**
+     * Handles change of temperature
+     * @param newValue New value of temperature
+     */
+    public void temperatureChanged(int newValue)
+    {
+        this.temperature.setTemperature(newValue);
     }
 }

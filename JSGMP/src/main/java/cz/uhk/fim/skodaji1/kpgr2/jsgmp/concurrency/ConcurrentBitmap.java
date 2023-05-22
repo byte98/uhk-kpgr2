@@ -205,6 +205,45 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
     }
 
     @Override
+    public void setOriginal()
+    {
+        synchronized(this.original)
+        {
+            if (this.originalSet == false)
+            {
+                this.originalSet = true;
+                for (int y = 0; y < this.height; y++)
+                {
+                    System.arraycopy(this.data[y], 0, this.original[y], 0, this.width);
+                }
+                this.invokeChange();
+            }
+            else
+            {
+                throw new IllegalStateException("Cannot set original state of bitmap: original state already set!");
+            }
+        }
+    }
+    
+    @Override
+    public Pixel getOriginal(int x, int y)
+    {
+        Pixel reti = null;
+        synchronized(this.original)
+        {
+            if (this.originalSet == false)
+            {
+                throw new IllegalStateException("Cannot get original state of bitmap: original state has not been set!");
+            }
+            else
+            {
+                reti = new Pixel(this.original[y][x]);
+            }
+        }
+        return reti;
+    }
+    
+    @Override
     public void addChangeActionListener(BitmapChangedActionListener listener) {
         this.changeListeners.add(listener);
     }
@@ -256,15 +295,6 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
             return new Pixel(this.data[y][x]);
         }
     }
-
-    @Override
-    public Pixel getOriginal(int x, int y)
-    {
-        synchronized(this.original)
-        {
-            return new Pixel(this.original[y][x]);
-        }
-    }    
     
     @Override
     public void run()
@@ -286,10 +316,6 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
                                 int intensity = Globals.INTENSITY.apply(item.getPixel());
                                 if (intensity > this.maxIntensity) maxIntensity = intensity;
                                 if (intensity < this.minIntensity) minIntensity = intensity;
-                                if (this.originalSet)
-                                {
-                                    this.deltas[item.getY()][item.getX()] = item.getPixel().toARGB() - this.getOriginal(item.getX(), item.getY()).toARGB();
-                                }
                             }        
                             Platform.runLater(new Runnable(){
                                 @Override
@@ -314,10 +340,6 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
                                     int intensity = Globals.INTENSITY.apply(t.getValue());
                                     if (intensity > this.maxIntensity) maxIntensity = intensity;
                                     if (intensity < this.minIntensity) minIntensity = intensity;
-                                    if (this.originalSet)
-                                    {
-                                        this.deltas[t.getY()][t.getX()] = t.getValue().toARGB() - this.getOriginal(t.getX(), t.getY()).toARGB();
-                                    }
                                 }     
                             }
                         }

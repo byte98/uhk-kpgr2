@@ -26,6 +26,23 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
 public interface Effect
 {
     /**
+     * Interface abstracting listener of effect change
+     */
+    public interface EffectChangedListener
+    {
+        /**
+         * Function which will be called when effect changed
+         */
+        public abstract void effectChanged();
+    }
+    
+    /**
+     * Adds listener to effect changed event
+     * @param listener Object which will be informed about effect change
+     */
+    public abstract void addEffectChangedListener(Effect.EffectChangedListener listener);
+    
+    /**
      * Applies effect on image
      * @param pixel Pixel on which effect will be applied
      * @return Pixel with applied effect

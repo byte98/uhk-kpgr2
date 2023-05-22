@@ -109,6 +109,16 @@ public class FXMLMainWindow implements Initializable {
      */
     private FXMLContrast contrastController;
     
+    /**
+     * Pane with content of temperature tool
+     */
+    private Pane temperaturePane;
+    
+    /**
+     * Controller of temperature tool
+     */
+    private FXMLTemperature temperatureController;
+    
     @FXML
     private ImageView imageViewMain;
     
@@ -136,6 +146,10 @@ public class FXMLMainWindow implements Initializable {
     private ImageView imageCheckContrast;
     @FXML
     private Tab tabContrast;
+    @FXML
+    private ImageView imageCheckTemperature;
+    @FXML
+    private Tab tabTemperature;
     
     /**
      * Sets reference to primary stage of program
@@ -177,6 +191,7 @@ public class FXMLMainWindow implements Initializable {
         this.initializeHistogram();
         this.initializeBrightness();
         this.initializeContrast();
+        this.initializeTemperature();
     }
     
     /**
@@ -245,6 +260,28 @@ public class FXMLMainWindow implements Initializable {
     }
     
     /**
+     * Initializes temperature tool
+     */
+    private void initializeTemperature()
+    {
+        FXMLLoader loader = new FXMLLoader(JSGMP.class.getResource("fxml/FXMLTemperature.fxml"));
+        try
+        {
+            this.temperaturePane = (Pane)loader.load();
+            this.temperatureController = (FXMLTemperature)loader.getController();
+            this.temperatureController.setMainController(this.controller);
+            this.temperaturePane.prefWidthProperty().bind(this.tabTemperature.getTabPane().widthProperty());
+            this.temperaturePane.prefHeightProperty().bind(this.tabTemperature.getTabPane().heightProperty());
+            this.temperaturePane.getStyleClass().add(JMetroStyleClass.BACKGROUND);
+            this.tabTemperature.setContent(this.temperaturePane);
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(FXMLMainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
      * Hides all tabs which should not be visible
      */
     private void hideAllTabs()
@@ -252,6 +289,7 @@ public class FXMLMainWindow implements Initializable {
         this.tabPaneTools.getTabs().remove(this.tabHistogram);
         this.tabPaneTools.getTabs().remove(this.tabBrightness);
         this.tabPaneTools.getTabs().remove(this.tabContrast);
+        this.tabPaneTools.getTabs().remove(this.tabTemperature);
     }
     
     /**
@@ -413,6 +451,15 @@ public class FXMLMainWindow implements Initializable {
         this.contrastController.setChart(brightnessContrastChart);
     }
     
+    /**
+     * Sets histogram of temperature
+     * @param temperatureHistogram Image containing histogram of temperature
+     */
+    public void setTemperatureHistogram(Image temperatureHistogram)
+    {
+        this.temperatureController.setHistogram(temperatureHistogram);
+    }
+    
     @FXML
     private void hyperLinkFilePathOnAction(ActionEvent event)
     {
@@ -516,6 +563,7 @@ public class FXMLMainWindow implements Initializable {
                     stage.close();
                     tab.setContent(content);
                     FXMLMainWindow.this.tabPaneTools.getTabs().add(tab);
+                    FXMLMainWindow.this.tabPaneTools.getSelectionModel().select(tab);
                 }
             }        
         });
@@ -550,5 +598,24 @@ public class FXMLMainWindow implements Initializable {
     @FXML
     private void contrastCloseOnAction(ActionEvent event) {
         this.closeTab(this.imageCheckContrast, this.tabContrast);
+    }
+
+    @FXML
+    private void menuTemperatureOnAction(ActionEvent event) {
+        if (this.imageCheckTemperature.isVisible() == false)
+        {
+            this.tabPaneTools.getTabs().add(this.tabTemperature);
+            this.imageCheckTemperature.setVisible(true);
+        }
+    }
+
+    @FXML
+    private void temperaturePopupOnAction(ActionEvent event) {
+        this.popupOnAction("Teplota", this.temperaturePane, this.tabTemperature, this.imageCheckTemperature);
+    }
+
+    @FXML
+    private void temperatureCloseOnAction(ActionEvent event) {
+        this.closeTab(this.imageCheckTemperature, this.tabTemperature);
     }
 }

@@ -206,8 +206,8 @@ public class Histogram implements Threadable
     private final Pixel interpolateColor(Color startColor, Color finalColor, int steps, int step)
     {
         double r = startColor.getRed() * 255f;
-        double g = startColor.getBlue() * 255f;
-        double b = startColor.getGreen() * 255f;
+        double g = startColor.getGreen() * 255f;
+        double b = startColor.getBlue() * 255f;
         double stepR = ((finalColor.getRed() * 255) - r) / (double)steps;
         double stepG = ((finalColor.getGreen() * 255) - g) / (double)steps;
         double stepB = ((finalColor.getBlue() * 255) - b) / (double)steps;
@@ -235,6 +235,10 @@ public class Histogram implements Threadable
                         if (val >= this.data.length)
                         {
                             val = this.data.length - 1;
+                        }
+                        if (val < 0)
+                        {
+                            val = 0;
                         }
                         this.data[val]++;
                         if (this.data[val] > max)
