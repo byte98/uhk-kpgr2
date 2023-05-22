@@ -62,7 +62,7 @@ public class ThreadManager
      * @param startColor Starting color of histogram
      * @param finalColor Final color of histogram
      * @param dataLength Length of data (i.e. number of possible values from function)
-     * @return 
+     * @return New histogram which works over multiple threads
      */
     public static final Histogram createHistogram(
             Function<Pixel, Integer> function,
@@ -74,7 +74,33 @@ public class ThreadManager
             int dataLength
     )
     {
-        Histogram reti = new Histogram(function, source, ThreadManager.createBitmap(width, height), startColor, finalColor, dataLength);
+        return ThreadManager.createHistogram(function, source, width, height, startColor, finalColor, dataLength, false);
+    }
+    
+    /**
+     * Creates new histogram which works over multiple threads
+     * @param function Function which computes value of histogram for pixel
+     * @param source Bitmap which histogram will be computed
+     * @param width Width of histogram
+     * @param height Height of histogram
+     * @param startColor Starting color of histogram
+     * @param finalColor Final color of histogram
+     * @param dataLength Length of data (i.e. number of possible values from function)
+     * @param smooth Flag, whether data in histogram should be smoothed
+     * @return New histogram which works over multiple threads
+     */
+    public static final Histogram createHistogram(
+            Function<Pixel, Integer> function,
+            Bitmap source,
+            int width,
+            int height,
+            Color startColor,
+            Color finalColor,
+            int dataLength,
+            boolean smooth
+    )
+    {
+        Histogram reti = new Histogram(function, source, ThreadManager.createBitmap(width, height), startColor, finalColor, dataLength, smooth);
         ThreadManager.threads.add(reti);
         reti.start();
         return reti;

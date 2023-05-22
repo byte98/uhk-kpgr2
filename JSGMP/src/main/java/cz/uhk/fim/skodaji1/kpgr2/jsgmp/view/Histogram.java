@@ -186,7 +186,13 @@ public class Histogram implements Threadable
      */
     private void smooth()
     {
-        
+        for (int i = 0; i < this.data.length; i++)
+        {
+            if (this.data[i] == 0 && i > 0 && i < this.data.length - 1)
+            {
+                this.data[i] = (int)Math.round(((double)this.data[i - 1] + (double)this.data[i + 1]) / 2f);
+            }
+        }
     }
     
     /**
@@ -236,6 +242,11 @@ public class Histogram implements Threadable
                             max = this.data[val];
                         }
                     }
+                }
+                
+                if (this.smooth == true)
+                {
+                    this.smooth();
                 }
                 
                 // Second, display data

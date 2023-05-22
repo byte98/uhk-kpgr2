@@ -154,7 +154,8 @@ public class BrightnessContrast implements Effect, Threadable
                 Globals.HISTOGRAM_HEIGHT,
                 Color.BLACK,
                 Color.rgb(176, 255, 244),
-                256
+                256,
+                true
         );
         this.chart = ThreadManager.createBitmap(Globals.HISTOGRAM_WIDTH, Globals.HISTOGRAM_HEIGHT);
         this.thread = new Thread(this, "JSGMP:BrightnessContrast-" + BrightnessContrast.counter);
