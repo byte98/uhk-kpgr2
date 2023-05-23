@@ -23,10 +23,13 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Effect;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Histogram;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.ZoomDiagram;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.paint.Color;
 
 /**
@@ -128,6 +131,38 @@ public class ThreadManager
     public static EffectsController createEffectsController(Bitmap bitmap)
     {
         EffectsController reti = new EffectsController(bitmap);
+        ThreadManager.threads.add(reti);
+        reti.start();
+        return reti;
+    }
+    
+    /**
+     * Creates new diagram of zoom
+     * @param viewWidthProperty Width of view
+     * @param viewHeightProperty Height of view
+     * @param imageWidthProperty Width of image
+     * @param imageHeightProperty Height of image
+     * @param scrollTopProperty Scroll distance from top
+     * @param scrollLeftProperty Scroll distance from left
+     * @param source Source of image data (image itself)
+     * @return New diagram of zoom
+     */
+    public static ZoomDiagram createZoomDiagram(
+            ReadOnlyDoubleProperty viewWidthProperty,
+            ReadOnlyDoubleProperty viewHeightProperty,
+            ReadOnlyDoubleProperty imageWidthProperty,
+            ReadOnlyDoubleProperty imageHeightProperty,
+            ReadOnlyDoubleProperty scrollTopProperty,
+            ReadOnlyDoubleProperty scrollLeftProperty,
+            Bitmap source
+    )
+    {
+        ZoomDiagram reti = new ZoomDiagram(
+                viewWidthProperty, viewHeightProperty,
+                imageWidthProperty, imageHeightProperty,
+                scrollTopProperty, scrollLeftProperty,
+                source
+        );
         ThreadManager.threads.add(reti);
         reti.start();
         return reti;

@@ -19,6 +19,7 @@ package cz.uhk.fim.skodaji1.kpgr2.jsgmp.view;
 
 import com.sun.javafx.PlatformUtil;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.JSGMP;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency.ThreadManager;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller.MainController;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.BrightnessContrast;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap;
@@ -31,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,10 +44,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
@@ -121,6 +127,11 @@ public class FXMLMainWindow implements Initializable {
      */
     private FXMLTemperature temperatureController;
     
+    /**
+     * Diagram of zoom
+     */
+    private ZoomDiagram zoomDiagram;
+    
     @FXML
     private ImageView imageViewMain;
     
@@ -160,6 +171,22 @@ public class FXMLMainWindow implements Initializable {
     private MenuItem menuItemContrast;
     @FXML
     private MenuItem menuItemTemperature;
+    @FXML
+    private MenuItem menuItemZoom;
+    @FXML
+    private ImageView imageCheckZoom;
+    @FXML
+    private MenuItem menuItemDiscard;
+    @FXML
+    private Tab tabZoom;
+    @FXML
+    private ImageView imageViewZoom;
+    @FXML
+    private Slider sliderZoom;
+    @FXML
+    private Label labelZoomValue;
+    @FXML
+    private AnchorPane tabZoomContent;
     
     /**
      * Sets reference to primary stage of program
@@ -190,6 +217,16 @@ public class FXMLMainWindow implements Initializable {
         });
         this.initializeTabs();
         this.hideAllTabs();
+        this.sliderZoom.valueProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
+            int prev = (int)Math.round((Double)t);
+            int next = (int)Math.round((Double)t1);
+            this.labelZoomValue.setText(String.format("%.0f %%", ((double)Math.round((Double)t1 * 100f) / 100f)));
+            int delta = next - prev;
+            if (delta != 0)
+            {
+                // TODO: Implement zoom
+            }            
+        });
         this.controller.mainWindowLoaded();
     }    
     
@@ -203,6 +240,20 @@ public class FXMLMainWindow implements Initializable {
         this.initializeBrightness();
         this.initializeContrast();
         this.initializeTemperature();
+        this.initializeZoom();
+    }
+    
+    /**
+     * Initializes zoom zool
+     */
+    private void initializeZoom()
+    {
+        this.tabZoom.getContent().getStyleClass().add(JMetroStyleClass.BACKGROUND);
+        this.zoomDiagram = ThreadManager.createZoomDiagram(
+                this.scrollPaneMainImage.widthProperty(),
+                this.scrollPaneMainImage.heightProperty(),
+                this.imageViewMain.
+        );
     }
     
     /**
@@ -301,6 +352,7 @@ public class FXMLMainWindow implements Initializable {
         this.tabPaneTools.getTabs().remove(this.tabBrightness);
         this.tabPaneTools.getTabs().remove(this.tabContrast);
         this.tabPaneTools.getTabs().remove(this.tabTemperature);
+        this.tabPaneTools.getTabs().remove(this.tabZoom);
     }
     
     /**
@@ -386,6 +438,8 @@ public class FXMLMainWindow implements Initializable {
         this.menuItemContrast.setDisable(disable);
         this.menuItemHistogram.setDisable(disable);
         this.menuItemTemperature.setDisable(disable);
+        this.menuItemZoom.setDisable(disable);
+        this.menuItemDiscard.setDisable(disable);
     }
     
     /**
@@ -594,6 +648,8 @@ public class FXMLMainWindow implements Initializable {
             tab.setContent(content);
             stage.close();
         });
+        stage.setWidth(this.primaryStage.getWidth() * (2f / 5f));
+        stage.setHeight(this.primaryStage.getHeight());
         stage.iconifiedProperty().addListener(new ChangeListener<Boolean>(){
             @Override
             public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1)
@@ -657,5 +713,44 @@ public class FXMLMainWindow implements Initializable {
     @FXML
     private void temperatureCloseOnAction(ActionEvent event) {
         this.closeTab(this.imageCheckTemperature, this.tabTemperature);
+    }
+
+    @FXML
+    private void menuZoomOnAction(ActionEvent event) {
+        if (this.imageCheckZoom.isVisible() == false)
+        {
+            this.tabPaneTools.getTabs().add(this.tabZoom);
+            this.imageCheckZoom.setVisible(true);
+        }
+    }
+
+    @FXML
+    private void menuDiscardOnAction(ActionEvent event)
+    {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        
+        alert.setTitle("Zahození všech změn");
+        alert.setHeaderText("Zahodit všechny změny");
+        alert.setContentText("Opravdu chcete zahodit všechny změny?\nTato akce je nevratná.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK)
+        {
+            this.resetValues();
+        }
+    }
+
+    @FXML
+    private void zoomPopupOnAction(ActionEvent event) {
+        this.popupOnAction("Lupa", this.tabZoomContent, this.tabZoom, this.imageCheckZoom);
+    }
+
+    @FXML
+    private void zoomCloseOnAction(ActionEvent event) {
+        this.closeTab(this.imageCheckZoom, this.tabZoom);
+    }
+
+    @FXML
+    private void buttomZoomRefreshOnAction(ActionEvent event) {
+        this.sliderZoom.setValue(100f);
     }
 }
