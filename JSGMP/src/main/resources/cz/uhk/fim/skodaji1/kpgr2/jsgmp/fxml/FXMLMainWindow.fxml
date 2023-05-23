@@ -286,7 +286,7 @@
                            </children>
                         </GridPane>
                      </graphic></MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#menuHistogramOnAction">
+                  <MenuItem fx:id="menuItemHistogram" mnemonicParsing="false" onAction="#menuHistogramOnAction">
                      <graphic>
                         <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
                            <columnConstraints>
@@ -317,7 +317,7 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Upravit">
               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#menuBrightnessOnAction">
+                  <MenuItem fx:id="menuItemBrightness" mnemonicParsing="false" onAction="#menuBrightnessOnAction">
                      <graphic>
                         <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
                            <columnConstraints>
@@ -344,7 +344,7 @@
                         </GridPane>
                      </graphic>
                   </MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#menuContrastOnAction">
+                  <MenuItem fx:id="menuItemContrast" mnemonicParsing="false" onAction="#menuContrastOnAction">
                      <graphic>
                         <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
                            <columnConstraints>
@@ -371,7 +371,7 @@
                         </GridPane>
                      </graphic>
                   </MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#menuTemperatureOnAction">
+                  <MenuItem fx:id="menuItemTemperature" mnemonicParsing="false" onAction="#menuTemperatureOnAction">
                      <graphic>
                         <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
                            <columnConstraints>

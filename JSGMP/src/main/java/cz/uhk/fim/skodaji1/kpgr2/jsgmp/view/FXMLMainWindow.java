@@ -44,6 +44,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -51,6 +52,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.robot.Robot;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -150,6 +152,14 @@ public class FXMLMainWindow implements Initializable {
     private ImageView imageCheckTemperature;
     @FXML
     private Tab tabTemperature;
+    @FXML
+    private MenuItem menuItemHistogram;
+    @FXML
+    private MenuItem menuItemBrightness;
+    @FXML
+    private MenuItem menuItemContrast;
+    @FXML
+    private MenuItem menuItemTemperature;
     
     /**
      * Sets reference to primary stage of program
@@ -180,6 +190,7 @@ public class FXMLMainWindow implements Initializable {
         });
         this.initializeTabs();
         this.hideAllTabs();
+        this.controller.mainWindowLoaded();
     }    
     
     
@@ -356,6 +367,28 @@ public class FXMLMainWindow implements Initializable {
     }
     
     /**
+     * Resets all set values
+     */
+    public void resetValues()
+    {
+        this.brightnessController.resetValue();
+        this.contrastController.resetValue();
+        this.temperatureController.resetValue();
+    }
+    
+    /**
+     * Disables all menu items except open file
+     * @param disable Flag, whether items should be disabled (TRUE) or not (FALSE)
+     */
+    public void diableMenu(boolean disable)
+    {
+        this.menuItemBrightness.setDisable(disable);
+        this.menuItemContrast.setDisable(disable);
+        this.menuItemHistogram.setDisable(disable);
+        this.menuItemTemperature.setDisable(disable);
+    }
+    
+    /**
      * Sets displayed image
      * @param bitmap Bitmap containing data of image
      */
@@ -393,7 +426,14 @@ public class FXMLMainWindow implements Initializable {
      */
     public void setFileSize(int width, int height)
     {
-        this.labelFileSize.setText(String.format("%d px × %d px", width, height));
+        if (width == 0 && height == 0)
+        {
+            this.labelFileSize.setText("(žádný soubor)");
+        }
+        else
+        {
+            this.labelFileSize.setText(String.format("%d px × %d px", width, height));
+        }
     }
     
     /**

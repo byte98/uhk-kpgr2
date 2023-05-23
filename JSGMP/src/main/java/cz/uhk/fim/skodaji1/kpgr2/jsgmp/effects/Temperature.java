@@ -64,6 +64,15 @@ public class Temperature extends AbstractEffect
         this.value = temperature;
         this.invokeChange();
     }
+    
+    /**
+     * Gets actually set value of temperature
+     * @return Actual value of temperature
+     */
+    public int getTemperature()
+    {
+        return this.value;
+    }
 
     @Override
     public Pixel apply(Pixel pixel)

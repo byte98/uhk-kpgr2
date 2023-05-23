@@ -17,6 +17,7 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller;
 
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.JSGMP;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency.ThreadManager;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.BrightnessContrast;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Temperature;
@@ -76,12 +77,18 @@ public class MainController
     private Temperature temperature;
     
     /**
+     * Flag, whether opened file is initial title or not
+     */
+    private boolean initialOpen;
+    
+    /**
      * Creates new controller of main window
      * @param mainWindow Reference to main window
      */
     public MainController(FXMLMainWindow mainWindow)
     {
         this.mainWindow = mainWindow;
+        this.initialOpen = true;
     }
     
     /**
@@ -144,6 +151,12 @@ public class MainController
         this.mainWindow.setFileSize(image.getBitmap().getWidth(), image.getBitmap().getHeight());
         
         this.image.getBitmap().setOriginal();
+        if (this.initialOpen == false)
+        {            
+            this.mainWindow.diableMenu(false);
+            this.mainWindow.resetValues();
+        }
+        this.initialOpen = false;
     }
     
     /**
@@ -171,5 +184,17 @@ public class MainController
     public void temperatureChanged(int newValue)
     {
         this.temperature.setTemperature(newValue);
+    }
+    
+    /**
+     * Handles load of main window
+     */
+    public void mainWindowLoaded()
+    {
+        this.fileOpen(JSGMP.class.getResource("icons/title.png").getFile());
+        this.mainWindow.setFileName("(žádný soubor)");
+        this.mainWindow.setFilePath("(žádný soubor)");
+        this.mainWindow.setFileSize(0, 0);
+        this.mainWindow.diableMenu(true);
     }
 }

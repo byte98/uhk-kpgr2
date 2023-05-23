@@ -21,8 +21,10 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller.MainController;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -46,6 +48,8 @@ public class FXMLTemperature implements Initializable {
      * Main controller of application
      */
     private MainController mainController;
+    @FXML
+    private Label labelValue;
 
     /**
      * Initializes the controller class.
@@ -59,6 +63,7 @@ public class FXMLTemperature implements Initializable {
         this.sliderTemperature.valueProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
             int prev = (int)Math.round((Double)t);
             int next = (int)Math.round((Double)t1);
+            this.labelValue.setText(((Double)t1 > 0 ? "+" : "") + String.format("%.2f", ((double)Math.round((Double)t1 * 100f) / 100f)));
             int delta = next - prev;
             if (delta != 0)
             {
@@ -66,6 +71,14 @@ public class FXMLTemperature implements Initializable {
             }            
         });
     }    
+    
+    /**
+     * Resets actually set value of temperature
+     */
+    public void resetValue()
+    {
+        this.sliderTemperature.setValue(0f);
+    }
     
     /**
      * Sets main controller of application
@@ -83,6 +96,11 @@ public class FXMLTemperature implements Initializable {
     public void setHistogram(Image image)
     {
         this.imageViewTemperature.setImage(image);
+    }
+
+    @FXML
+    private void buttonRefreshOnAction(ActionEvent event) {
+        this.resetValue();
     }
     
 }

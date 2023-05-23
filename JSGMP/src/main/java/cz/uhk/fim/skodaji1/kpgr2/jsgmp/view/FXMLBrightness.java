@@ -22,8 +22,10 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.BrightnessContrast;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -49,6 +51,16 @@ public class FXMLBrightness implements Initializable {
     private MainController mainWindow;
     @FXML
     private ImageView imageViewChart;
+    @FXML
+    private Label labelValue;
+    
+    /**
+     * Resets actually set value
+     */
+    public void resetValue()
+    {
+        this.sliderBrightness.setValue(0f);
+    }
     
     /**
      * Sets reference to main window
@@ -81,6 +93,7 @@ public class FXMLBrightness implements Initializable {
         this.sliderBrightness.valueProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
             int prev = (int)Math.round((Double)t);
             int next = (int)Math.round((Double)t1);
+            this.labelValue.setText(((Double)t1 > 0 ? "+" : "") + String.format("%.2f", ((double)Math.round((Double)t1 * 100f) / 100f)));
             int delta = next - prev;
             if (delta != 0)
             {
@@ -96,6 +109,11 @@ public class FXMLBrightness implements Initializable {
     public void setBrightnessHistogram(Image brightnessHistogram)
     {
         this.imageViewBrightness.setImage(brightnessHistogram);
+    }
+
+    @FXML
+    private void buttonRefreshOnAction(ActionEvent event) {
+        this.resetValue();
     }
     
 }

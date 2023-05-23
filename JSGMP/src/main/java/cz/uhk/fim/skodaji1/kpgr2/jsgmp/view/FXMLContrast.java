@@ -21,8 +21,10 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller.MainController;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -41,7 +43,6 @@ public class FXMLContrast implements Initializable {
     private ImageView imageViewContrast;
     @FXML
     private ImageView imageViewChart;
-    private Slider sliderBrightness;
     
     
     /**
@@ -50,6 +51,16 @@ public class FXMLContrast implements Initializable {
     private MainController mainWindow;
     @FXML
     private Slider sliderContrast;
+    @FXML
+    private Label labelValue;
+    
+    /**
+     * Resets actually set value of contrast
+     */
+    public void resetValue()
+    {
+        this.sliderContrast.setValue(1.0f);
+    }
     
     /**
      * Sets reference to main window
@@ -73,6 +84,7 @@ public class FXMLContrast implements Initializable {
             double prev = (Double)t;
             double next = (Double)t1;
             double delta = next - prev;
+            this.labelValue.setText(((Double)t1 > 0 ? "+" : "") + String.format("%.2f", ((double)Math.round((Double)t1 * 100f) / 100f)));
             if (delta != 0)
             {
                 this.mainWindow.contrastChanged(next);
@@ -96,5 +108,10 @@ public class FXMLContrast implements Initializable {
     public void setChart(Image chart)
     {
         this.imageViewChart.setImage(chart);
+    }
+
+    @FXML
+    private void buttonRefreshOnAction(ActionEvent event) {
+        this.resetValue();
     }
 }
