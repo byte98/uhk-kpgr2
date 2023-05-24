@@ -26,6 +26,7 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.ImageFile;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.FXMLMainWindow;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Histogram;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Zoom;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javafx.scene.paint.Color;
@@ -80,6 +81,11 @@ public class MainController
      * Flag, whether opened file is initial title or not
      */
     private boolean initialOpen;
+    
+    /**
+     * Handler of image zoom
+     */
+    private Zoom zoom;
     
     /**
      * Creates new controller of main window
@@ -149,6 +155,9 @@ public class MainController
         this.mainWindow.setFileName(p.getFileName().toString());
         this.mainWindow.setFilePath(Paths.get(path).toAbsolutePath().normalize().toString());
         this.mainWindow.setFileSize(image.getBitmap().getWidth(), image.getBitmap().getHeight());
+        
+        this.zoom = new Zoom(this.image.getBitmap());
+        this.mainWindow.setZoom(this.zoom);
         
         this.image.getBitmap().setOriginal();
         if (this.initialOpen == false)

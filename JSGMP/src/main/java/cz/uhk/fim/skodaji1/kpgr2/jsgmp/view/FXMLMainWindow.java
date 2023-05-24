@@ -127,10 +127,6 @@ public class FXMLMainWindow implements Initializable {
      */
     private FXMLTemperature temperatureController;
     
-    /**
-     * Diagram of zoom
-     */
-    private ZoomDiagram zoomDiagram;
     
     @FXML
     private ImageView imageViewMain;
@@ -189,6 +185,11 @@ public class FXMLMainWindow implements Initializable {
     private AnchorPane tabZoomContent;
     
     /**
+     * Handler of zoom of image
+     */
+    private Zoom zoom;
+    
+    /**
      * Sets reference to primary stage of program
      * @param stage Reference to primary stage of program
      */
@@ -215,17 +216,18 @@ public class FXMLMainWindow implements Initializable {
             FXMLMainWindow.this.relocateMainImage(FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getWidth(), FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getHeight());
             FXMLMainWindow.this.resizeMainImageWrapper(this.imageViewMain.getFitWidth(), this.imageViewMain.getFitHeight());
         });
+        this.imageViewMain.fitHeightProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
+            FXMLMainWindow.this.relocateMainImage(FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getWidth(), FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getHeight());
+            FXMLMainWindow.this.resizeMainImageWrapper(this.imageViewMain.getFitWidth(), this.imageViewMain.getFitHeight());
+        });
+        this.imageViewMain.fitWidthProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
+            FXMLMainWindow.this.relocateMainImage(FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getWidth(), FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getHeight());
+            FXMLMainWindow.this.resizeMainImageWrapper(this.imageViewMain.getFitWidth(), this.imageViewMain.getFitHeight());
+        });
         this.initializeTabs();
         this.hideAllTabs();
         this.sliderZoom.valueProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
-            int prev = (int)Math.round((Double)t);
-            int next = (int)Math.round((Double)t1);
-            this.labelZoomValue.setText(String.format("%.0f %%", ((double)Math.round((Double)t1 * 100f) / 100f)));
-            int delta = next - prev;
-            if (delta != 0)
-            {
-                // TODO: Implement zoom
-            }            
+            this.labelZoomValue.setText(String.format("%.0f %%", ((double)Math.round((Double)t1 * 100f) / 100f)));            
         });
         this.controller.mainWindowLoaded();
     }    
@@ -249,11 +251,6 @@ public class FXMLMainWindow implements Initializable {
     private void initializeZoom()
     {
         this.tabZoom.getContent().getStyleClass().add(JMetroStyleClass.BACKGROUND);
-        this.zoomDiagram = ThreadManager.createZoomDiagram(
-                this.scrollPaneMainImage.widthProperty(),
-                this.scrollPaneMainImage.heightProperty(),
-                this.imageViewMain.
-        );
     }
     
     /**
@@ -453,6 +450,22 @@ public class FXMLMainWindow implements Initializable {
         this.imageViewMain.setFitHeight(bitmap.getHeight());
         this.resizeMainImageWrapper(bitmap.getWidth(), bitmap.getHeight());
         this.relocateMainImage(this.scrollPaneMainImage.getViewportBounds().getWidth(), this.scrollPaneMainImage.getViewportBounds().getHeight());
+    }
+    
+    /**
+     * Sets handler of image zoom
+     * @param zoom Handler of image zoom
+     */
+    public void setZoom(Zoom zoom)
+    {
+        this.zoom = zoom;
+        this.zoom.setImageView(this.imageViewMain);
+        this.zoom.setScrollPane(this.scrollPaneMainImage);
+        this.imageViewZoom.setImage(this.zoom.getDiagram());
+        this.sliderZoom.valueProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
+            int value = (int)Math.round((Double)t1);
+            this.zoom.setZoomLevel(value);
+        });
     }
     
     /**

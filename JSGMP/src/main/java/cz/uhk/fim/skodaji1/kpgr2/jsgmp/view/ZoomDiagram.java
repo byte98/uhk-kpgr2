@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.image.Image;
 
 /**
  * Class representing diagram of zoom
@@ -153,6 +154,15 @@ public class ZoomDiagram implements Threadable
             this.scrollLeft = (int)Math.round((Double)t1);
             this.refresh = true;
         });
+    }
+    
+    /**
+     * Gets image representation of diagram
+     * @return Image containing diagram
+     */
+    public Image toImage()
+    {
+        return this.bitmap.toImage();
     }
 
     @Override
