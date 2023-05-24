@@ -84,7 +84,7 @@ public class FXMLContrast implements Initializable {
             double prev = (Double)t;
             double next = (Double)t1;
             double delta = next - prev;
-            this.labelValue.setText(((Double)t1 > 0 ? "+" : "") + String.format("%.2f", ((double)Math.round((Double)t1 * 100f) / 100f)));
+            this.labelValue.setText(String.format("%.2f", ((double)Math.round((Double)t1 * 100f) / 100f)));
             if (delta != 0)
             {
                 this.mainWindow.contrastChanged(next);
