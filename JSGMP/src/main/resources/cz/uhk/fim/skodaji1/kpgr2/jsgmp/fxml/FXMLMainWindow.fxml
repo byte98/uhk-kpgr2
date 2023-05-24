@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
@@ -37,7 +38,10 @@
                      <content>
                         <Pane fx:id="paneMainImageWrapper" prefHeight="491.0" prefWidth="657.0">
                            <children>
-                              <ImageView fx:id="imageViewMain" fitHeight="137.0" fitWidth="222.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="imageViewMain" fitHeight="137.0" fitWidth="222.0" onMouseDragged="#imageViewMainOnMouseDragged" onMousePressed="#imageViewMainOnMousePressed" onMouseReleased="#imageViewMainOnMouseReleased" pickOnBounds="true" preserveRatio="true">
+                                 <cursor>
+                                    <Cursor fx:constant="OPEN_HAND" />
+                                 </cursor></ImageView>
                            </children>
                         </Pane>
                      </content>
@@ -502,6 +506,28 @@
                         </GridPane>
                      </graphic>
                   </MenuItem>
+                  <Menu mnemonicParsing="false">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/color16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Barevnost" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </Menu>
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="menuItemDiscard" mnemonicParsing="false" onAction="#menuDiscardOnAction">
                      <graphic>

@@ -205,5 +205,6 @@ public class MainController
         this.mainWindow.setFilePath("(žádný soubor)");
         this.mainWindow.setFileSize(0, 0);
         this.mainWindow.diableMenu(true);
+        this.mainWindow.centerImage();
     }
 }

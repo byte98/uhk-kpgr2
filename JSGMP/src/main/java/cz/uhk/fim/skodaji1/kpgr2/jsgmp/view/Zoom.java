@@ -72,7 +72,13 @@ public class Zoom
     public Zoom(Bitmap source)
     {
         this.source = source;
-        this.level = 0;
+        this.level = 100;
+        this.source.addChangeActionListener(new Bitmap.BitmapChangedActionListener() {
+            @Override
+            public void onChange(Bitmap bitmap){
+                Zoom.this.diagram.refresh();
+            }
+        });
     }
     
     /**
@@ -84,8 +90,6 @@ public class Zoom
         this.level = level;
         double newWidth = this.defaultWidth * ((double)this.level / 100f);
         double newHeight = this.defaultHeight * ((double)this.level / 100f);
-//        this.imageView.setScaleX((double)this.level / 100f);
-//        this.imageView.setScaleY((double)this.level / 100f);
         this.imageView.setFitWidth(newWidth);
         this.imageView.setFitHeight(newHeight);
     }
@@ -124,15 +128,16 @@ public class Zoom
                     this.scrollPane.heightProperty(),
                     this.imageView.fitWidthProperty(),
                     this.imageView.fitHeightProperty(),
-                    this.scrollPane.hvalueProperty(),
                     this.scrollPane.vvalueProperty(),
+                    this.scrollPane.hvalueProperty(),
                     this.source
             );
+            this.diagram.refresh();
         }
     }
     
     /**
-     * Gets diagram of actual lavel of zoom
+     * Gets diagram of actual level of zoom
      * @return Image containing diagram of actual level of zoom
      */
     public Image getDiagram()

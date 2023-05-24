@@ -40,6 +40,45 @@ import javafx.scene.paint.Color;
 public class ConcurrentBitmap extends Bitmap implements Threadable
 {
     /**
+     * Class representing transaction which works across multiple threads
+     */
+    public static class ConcurrentBitmapTransaction extends Bitmap.BitmapTransaction
+    {
+        /**
+         * List of all transaction items
+         */
+        private final List<TransactionItem> concurrentItems;
+        
+        /**
+         * Creates new transaction over bitmap which works across multiple threads
+         */
+        public ConcurrentBitmapTransaction()
+        {
+            this.concurrentItems = Collections.synchronizedList(new ArrayList<>());
+        }
+
+        @Override
+        public List<TransactionItem> getItems()
+        {
+            synchronized(this.concurrentItems)
+            {
+                return this.concurrentItems;
+            }
+            
+        }
+
+        @Override
+        public void setPixel(int x, int y, Pixel px)
+        {
+            synchronized(this.concurrentItems)
+            {
+                this.concurrentItems.add(new Bitmap.BitmapTransaction.TransactionItem(x, y, px));
+            }            
+        }        
+        
+    }
+    
+    /**
      * Counter of created bitmaps
      */
     private static long counter = 0;

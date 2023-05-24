@@ -353,6 +353,14 @@ public class FXMLMainWindow implements Initializable {
     }
     
     /**
+     * Moves image into center
+     */
+    public void centerImage()
+    {
+        this.relocateMainImage(this.scrollPaneMainImage.getWidth(), this.scrollPaneMainImage.getHeight());
+    }
+    
+    /**
      * Changes position of main image to be always in center
      * @param parentWidth Width of parent pane
      * @param parentHeight Height of parent pane
@@ -466,6 +474,8 @@ public class FXMLMainWindow implements Initializable {
             int value = (int)Math.round((Double)t1);
             this.zoom.setZoomLevel(value);
         });
+        this.zoom.setZoomLevel(101);
+        this.zoom.setZoomLevel(100);
     }
     
     /**
