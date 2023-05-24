@@ -90,7 +90,6 @@
                                                 <Hyperlink fx:id="hyperLinkFilePath" onAction="#hyperLinkFilePathOnAction" text="(žádný soubor)" textOverrun="CENTER_ELLIPSIS" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                              </children>
                                           </GridPane>
-                                          <ImageView fx:id="imageViewDetail" fitHeight="228.0" fitWidth="327.0" pickOnBounds="true" preserveRatio="true" />
                                        </children>
                                        <padding>
                                           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

@@ -42,6 +42,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -56,6 +57,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.robot.Robot;
@@ -73,8 +75,20 @@ import jfxtras.styles.jmetro.Style;
  */
 public class FXMLMainWindow implements Initializable {
 
-    @FXML
-    private ImageView imageViewDetail;
+    /**
+     * Step when using mouse drag for scrolling
+     */
+    private static final double SCROLL_STEP = 0.0001;
+    
+    /**
+     * Last position of mouse on X axis
+     */
+    private double lastX;
+    
+    /**
+     * Last position of mouse on Y axis
+     */
+    private double lastY;
     
     /**
      * Primary stage of application
@@ -775,5 +789,39 @@ public class FXMLMainWindow implements Initializable {
     @FXML
     private void buttomZoomRefreshOnAction(ActionEvent event) {
         this.sliderZoom.setValue(100f);
+    }
+
+    @FXML
+    private void imageViewMainOnMouseReleased(MouseEvent event) {
+        this.imageViewMain.setCursor(Cursor.OPEN_HAND);
+    }
+
+    @FXML
+    private void imageViewMainOnMouseDragged(MouseEvent event) {
+        
+        double stepX = (this.scrollPaneMainImage.getHmax() - this.scrollPaneMainImage.getHmin()) / this.imageViewMain.getFitWidth();
+        double stepY = (this.scrollPaneMainImage.getVmax() - this.scrollPaneMainImage.getVmin()) / this.imageViewMain.getFitHeight();
+        
+        double dX = event.getX() - this.lastX;
+        double dY = event.getY() - this.lastY;
+        
+        double targetX = this.scrollPaneMainImage.getHvalue() - (dX * stepX);
+        if (targetX > this.scrollPaneMainImage.getHmax()) targetX = this.scrollPaneMainImage.getHmax(); if (targetX < this.scrollPaneMainImage.getHmin()) targetX = this.scrollPaneMainImage.getHmin();
+
+        double targetY = this.scrollPaneMainImage.getVvalue() - (dY * stepY);
+        if (targetY > this.scrollPaneMainImage.getVmax()) targetY = this.scrollPaneMainImage.getVmax(); if (targetY < this.scrollPaneMainImage.getVmin()) targetY = this.scrollPaneMainImage.getVmin();
+        
+        this.scrollPaneMainImage.setHvalue(targetX);
+        this.scrollPaneMainImage.setVvalue(targetY);
+        
+        this.lastX = event.getX();
+        this.lastY = event.getY();
+    }
+
+    @FXML
+    private void imageViewMainOnMousePressed(MouseEvent event) {
+        this.imageViewMain.setCursor(Cursor.CLOSED_HAND);
+        this.lastX = event.getX();
+        this.lastY = event.getY();
     }
 }
