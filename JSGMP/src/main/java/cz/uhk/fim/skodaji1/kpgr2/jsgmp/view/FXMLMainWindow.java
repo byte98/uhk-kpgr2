@@ -77,6 +77,13 @@ import jfxtras.styles.jmetro.Style;
  */
 public class FXMLMainWindow implements Initializable {
 
+    @FXML
+    private ImageView imageCheckGrayscale;
+
+    @FXML
+    private void menuGrayscaleOnAction(ActionEvent event) {
+    }
+
     /**
      * Class which performs loading tool from FXML file
      * @param T Type of tool (data type of controller of tool)
@@ -527,6 +534,12 @@ public class FXMLMainWindow implements Initializable {
         this.brightnessController.resetValue();
         this.contrastController.resetValue();
         this.temperatureController.resetValue();
+        this.redController.resetValue();
+        this.greenController.resetValue();
+        this.blueController.resetValue();
+        this.cyanController.resetValue();
+        this.magentaController.resetValue();
+        this.yellowController.resetValue();
     }
     
     /**

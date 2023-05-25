@@ -871,6 +871,33 @@
                         </MenuItem>
                      </items>
                   </Menu>
+                  <MenuItem mnemonicParsing="false" onAction="#menuGrayscaleOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/grayscale16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Stupně šedi" GridPane.columnIndex="1" />
+                              <ImageView fx:id="imageCheckGrayscale" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
+                                 <image>
+                                    <Image url="@../icons/check16.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#menuDiscardOnAction">
                      <graphic>

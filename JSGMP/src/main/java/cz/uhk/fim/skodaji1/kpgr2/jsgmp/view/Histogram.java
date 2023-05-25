@@ -243,11 +243,10 @@ public class Histogram implements Threadable
                         {
                             val = this.data.length - 1;
                         }
-                        if (val < 0)
+                        if (val >= 0)
                         {
-                            val = 0;
-                        }
-                        this.data[val]++;
+                            this.data[val]++;
+                        }                        
                         if (this.data[val] > max)
                         {
                             max = this.data[val];
