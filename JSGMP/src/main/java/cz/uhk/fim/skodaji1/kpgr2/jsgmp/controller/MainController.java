@@ -20,6 +20,7 @@ package cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.JSGMP;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency.ThreadManager;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.BrightnessContrast;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.ColorEffect;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Temperature;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Globals;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.ImageFile;
@@ -29,6 +30,7 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Histogram;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Zoom;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import javafx.scene.paint.Color;
 
 /**
@@ -63,6 +65,21 @@ public class MainController
     private Histogram blueHistogram;
     
     /**
+     * Histogram of cyan color channel
+     */
+    private Histogram cyanHistogram;
+    
+    /**
+     * Histogram of magenta color channel
+     */
+    private Histogram magentaHistogram;
+    
+    /**
+     * Histogram of yellow color channel
+     */
+    private Histogram yellowHistogram;
+    
+    /**
      * Handler of brightness and contrast of image
      */
     private BrightnessContrast brightness;
@@ -88,6 +105,36 @@ public class MainController
     private Zoom zoom;
     
     /**
+     * Handler of red coloring effect
+     */
+    private ColorEffect redColorEffect;
+    
+    /**
+     * Handler of green coloring effect
+     */
+    private ColorEffect greenColorEffect;
+    
+    /**
+     * Handler of blue coloring effect
+     */
+    private ColorEffect blueColorEffect;
+    
+    /**
+     * Handler of cyan coloring effect
+     */
+    private ColorEffect cyanColorEffect;
+    
+    /**
+     * Handler of magenta coloring effect
+     */
+    private ColorEffect magentaColorEffect;
+    
+    /**
+     * Handler of yellow coloring effect
+     */
+    private ColorEffect yellowColorEffect;
+    
+    /**
      * Creates new controller of main window
      * @param mainWindow Reference to main window
      */
@@ -98,17 +145,83 @@ public class MainController
     }
     
     /**
+     * Kills all unnecessary threads
+     */
+    private void killUnnecessaryy()
+    {
+        if (Objects.nonNull(this.redHistogram))
+        {
+            ThreadManager.stopOne(this.redHistogram);
+            this.redHistogram = null;
+        }
+        if (Objects.nonNull(this.greenHistogram))
+        {
+            ThreadManager.stopOne(this.greenHistogram);
+            this.greenHistogram = null;
+        }
+        if (Objects.nonNull(this.blueHistogram))
+        {
+            ThreadManager.stopOne(this.blueHistogram);
+            this.blueHistogram = null;
+        }
+        if (Objects.nonNull(this.cyanHistogram))
+        {
+            ThreadManager.stopOne(this.cyanHistogram);
+            this.cyanHistogram = null;
+        }
+        if (Objects.nonNull(this.magentaHistogram))
+        {
+            ThreadManager.stopOne(this.magentaHistogram);
+            this.magentaHistogram = null;
+        }
+        if (Objects.nonNull(this.yellowHistogram))
+        {
+            ThreadManager.stopOne(this.yellowHistogram);
+            this.yellowHistogram = null;
+        }
+        
+        if (Objects.nonNull(this.brightness))
+        {
+            ThreadManager.stopOne(this.brightness);
+            this.brightness = null;
+        }
+        
+        if (Objects.nonNull(this.zoom))
+        {
+            this.zoom.stop();
+            this.zoom = null;
+        }
+        
+        if (Objects.nonNull(this.effects))
+        {
+            ThreadManager.stopOne(this.effects);
+            this.effects = null;
+        }
+        
+        this.temperature = null;
+        this.redColorEffect = null;
+        this.greenColorEffect = null;
+        this.blueColorEffect = null;
+        this.cyanColorEffect = null;
+        this.magentaColorEffect = null;
+        this.yellowColorEffect = null;
+        
+        System.gc();
+    }
+    
+    /**
      * Handles file to open has been selected
      * @param path Path to selected file
      */
     public void fileOpen(String path)
     {
+        this.killUnnecessaryy();
         this.image = new ImageFile(path);
         this.effects = ThreadManager.createEffectsController(this.image.getBitmap());
         
         this.mainWindow.setImage(this.image.getBitmap());
         
-        this.redHistogram = ThreadManager.createHistogram(
+        this.redColorEffect = new ColorEffect(ThreadManager.createHistogram(
                 (Pixel px) -> {return (int)px.getRed();},
                 this.image.getBitmap(),
                 Globals.HISTOGRAM_WIDTH,
@@ -116,10 +229,11 @@ public class MainController
                 Color.rgb(0, 0, 0),
                 Color.rgb(255, 0, 0),
                 256
-        );
+        ), true, false, false);
+        this.redHistogram = this.redColorEffect.getHistogram();
         this.mainWindow.setRedHistogram(this.redHistogram.getImage());
         
-        this.greenHistogram = ThreadManager.createHistogram(
+        this.greenColorEffect = new ColorEffect(ThreadManager.createHistogram(
                 (Pixel px) -> {return (int)px.getGreen();},
                 this.image.getBitmap(),
                 Globals.HISTOGRAM_WIDTH,
@@ -127,10 +241,11 @@ public class MainController
                 Color.rgb(0, 0, 0),
                 Color.rgb(0, 255, 0),
                 256
-        );
+        ), false, true, false);
+        this.greenHistogram = this.greenColorEffect.getHistogram();
         this.mainWindow.setGreenHistogram(this.greenHistogram.getImage());
         
-        this.blueHistogram = ThreadManager.createHistogram(
+        this.blueColorEffect = new ColorEffect(ThreadManager.createHistogram(
                 (Pixel px) -> {return (int)px.getBlue();},
                 this.image.getBitmap(),
                 Globals.HISTOGRAM_WIDTH,
@@ -138,8 +253,53 @@ public class MainController
                 Color.rgb(0, 0, 0),
                 Color.rgb(0, 0, 255),
                 256
-        );
+        ), false, false, true);
+        this.blueHistogram = this.blueColorEffect.getHistogram();
         this.mainWindow.setBlueHistogram(this.blueHistogram.getImage());
+        
+        
+        this.cyanColorEffect = new ColorEffect(ThreadManager.createHistogram(
+                (Pixel px) -> {return (int)Math.round((double)(px.getGreen() + px.getBlue()) / 2f);},
+                this.image.getBitmap(),
+                Globals.HISTOGRAM_WIDTH,
+                Globals.HISTOGRAM_HEIGHT,
+                Color.rgb(0, 0, 0),
+                Color.rgb(0, 255, 255),
+                256
+        ), false, true, true);
+        this.cyanHistogram = this.cyanColorEffect.getHistogram();
+        this.mainWindow.setCyanHistogram(this.cyanHistogram.getImage());
+        
+        this.magentaColorEffect = new ColorEffect(ThreadManager.createHistogram(
+                (Pixel px) -> {return (int)Math.round((double)(px.getRed() + px.getBlue()) / 2f);},
+                this.image.getBitmap(),
+                Globals.HISTOGRAM_WIDTH,
+                Globals.HISTOGRAM_HEIGHT,
+                Color.rgb(0, 0, 0),
+                Color.rgb(255, 0, 255),
+                256
+        ), true, false, true);
+        this.magentaHistogram = this.magentaColorEffect.getHistogram();
+        this.mainWindow.setMagentaHistogram(this.magentaHistogram.getImage());
+        
+        this.yellowColorEffect = new ColorEffect(ThreadManager.createHistogram(
+                (Pixel px) -> {return (int)Math.round((double)(px.getRed() + px.getGreen()) / 2f);},
+                this.image.getBitmap(),
+                Globals.HISTOGRAM_WIDTH,
+                Globals.HISTOGRAM_HEIGHT,
+                Color.rgb(0, 0, 0),
+                Color.rgb(255, 255, 0),
+                256
+        ), true, true, false);
+        this.yellowHistogram = this.yellowColorEffect.getHistogram();
+        this.mainWindow.setYellowHistogram(this.yellowHistogram.getImage());
+        
+        this.effects.addEffect(this.redColorEffect);
+        this.effects.addEffect(this.greenColorEffect);
+        this.effects.addEffect(this.blueColorEffect);
+        this.effects.addEffect(this.cyanColorEffect);
+        this.effects.addEffect(this.magentaColorEffect);
+        this.effects.addEffect(this.yellowColorEffect);
         
         this.brightness = ThreadManager.createBrightnessContrastEffect(this.image.getBitmap());
         this.effects.addEffect(this.brightness);
@@ -158,6 +318,8 @@ public class MainController
         
         this.zoom = new Zoom(this.image.getBitmap());
         this.mainWindow.setZoom(this.zoom);
+        
+        
         
         this.image.getBitmap().setOriginal();
         if (this.initialOpen == false)
@@ -206,5 +368,59 @@ public class MainController
         this.mainWindow.setFileSize(0, 0);
         this.mainWindow.diableMenu(true);
         this.mainWindow.centerImage();
+    }
+    
+    /**
+     * Handles change of blue color value
+     * @param newValue New value of blue color
+     */
+    public void blueChanged(int newValue)
+    {
+        this.blueColorEffect.setValue(newValue);
+    }
+    
+    /**
+     * Handles change of red color value
+     * @param newValue New value of red color
+     */
+    public void redChanged(int newValue)
+    {
+        this.redColorEffect.setValue(newValue);
+    }
+    
+    /**
+     * Handles change of green color value
+     * @param newValue New value of green color
+     */
+    public void greenChanged(int newValue)
+    {
+        this.greenColorEffect.setValue(newValue);
+    }
+    
+    /**
+     * Handles change of yellow color value
+     * @param newValue New value of yellow color
+     */
+    public void yellowChanged(int newValue)
+    {
+        this.yellowColorEffect.setValue(newValue);
+    }
+    
+    /**
+     * Handles change of magenta color value
+     * @param newValue New value of magenta color
+     */
+    public void magentaChanged(int newValue)
+    {
+        this.magentaColorEffect.setValue(newValue);
+    }
+    
+    /**
+     * Handles change of cyan color value
+     * @param newValue New value of cyan color
+     */
+    public void cyanChanged(int newValue)
+    {
+        this.cyanColorEffect.setValue(newValue);
     }
 }

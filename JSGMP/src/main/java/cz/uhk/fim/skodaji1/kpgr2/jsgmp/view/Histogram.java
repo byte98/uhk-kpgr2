@@ -17,6 +17,8 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.view;
 
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency.ConcurrentBitmap;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency.ThreadManager;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency.Threadable;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Globals;
@@ -179,6 +181,11 @@ public class Histogram implements Threadable
     @Override
     public void stop() {
         this.running = false;
+        if (this.result instanceof ConcurrentBitmap)
+        {
+            ConcurrentBitmap concurrentResult = (ConcurrentBitmap)this.result;
+            ThreadManager.stopOne(concurrentResult);
+        }
     }
     
     /**
@@ -289,6 +296,7 @@ public class Histogram implements Threadable
                 Logger.getLogger(Histogram.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        this.thread.stop();
     }
     
 }

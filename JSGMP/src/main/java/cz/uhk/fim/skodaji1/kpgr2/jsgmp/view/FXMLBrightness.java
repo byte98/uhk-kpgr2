@@ -36,7 +36,7 @@ import javafx.scene.layout.VBox;
  *
  * @author Jiri Skoda <jiri.skoda@student.upce.cz>
  */
-public class FXMLBrightness implements Initializable {
+public class FXMLBrightness extends FXMLController implements Initializable {
 
     @FXML
     private VBox vBoxContent;
@@ -44,33 +44,17 @@ public class FXMLBrightness implements Initializable {
     private ImageView imageViewBrightness;
     @FXML
     private Slider sliderBrightness;
-    
-    /**
-     * Controller of main window
-     */
-    private MainController mainWindow;
     @FXML
     private ImageView imageViewChart;
     @FXML
     private Label labelValue;
     
-    /**
-     * Resets actually set value
-     */
+    @Override
     public void resetValue()
     {
         this.sliderBrightness.setValue(0f);
     }
     
-    /**
-     * Sets reference to main window
-     * @param mainWindow Controller of main window
-     */
-    public void setMainWindow(MainController mainWindow)
-    {
-        this.mainWindow = mainWindow;
-    }
-
     /**
      * Sets chart of brightness/contrast curve
      * @param chart Image which contains chart with contrast/brightness chart
@@ -97,7 +81,7 @@ public class FXMLBrightness implements Initializable {
             int delta = next - prev;
             if (delta != 0)
             {
-                this.mainWindow.brightnessChanged(next);
+                this.mainController.brightnessChanged(next);
             }            
         });
     }    

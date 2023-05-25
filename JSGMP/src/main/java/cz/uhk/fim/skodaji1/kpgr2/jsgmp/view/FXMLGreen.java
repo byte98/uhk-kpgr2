@@ -17,7 +17,6 @@
  */
 package cz.uhk.fim.skodaji1.kpgr2.jsgmp.view;
 
-import cz.uhk.fim.skodaji1.kpgr2.jsgmp.controller.MainController;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
@@ -31,28 +30,20 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
 /**
- * FXML Controller class of contrast tool
+ * FXML Controller class
  *
  * @author Jiri Skoda <jiri.skoda@student.upce.cz>
  */
-public class FXMLContrast extends FXMLController implements Initializable {
+public class FXMLGreen extends FXMLController implements Initializable {
 
     @FXML
     private VBox vBoxContent;
     @FXML
-    private ImageView imageViewContrast;
+    private ImageView imageViewHistogram;
     @FXML
-    private ImageView imageViewChart;
-        @FXML
-    private Slider sliderContrast;
+    private Slider sliderColor;
     @FXML
     private Label labelValue;
-    
-    @Override
-    public void resetValue()
-    {
-        this.sliderContrast.setValue(1.0f);
-    }    
 
     /**
      * Initializes the controller class.
@@ -61,40 +52,37 @@ public class FXMLContrast extends FXMLController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         this.vBoxContent.widthProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) ->
         {
-            FXMLContrast.this.imageViewContrast.setFitWidth(FXMLContrast.this.vBoxContent.getWidth() - 10);
+            FXMLGreen.this.imageViewHistogram.setFitWidth(FXMLGreen.this.vBoxContent.getWidth() - 10);
         });
-        this.sliderContrast.valueProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
-            double prev = (Double)t;
-            double next = (Double)t1;
-            double delta = next - prev;
-            this.labelValue.setText(String.format("%.2f", ((double)Math.round((Double)t1 * 100f) / 100f)));
+        this.sliderColor.valueProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
+            int prev = (int)Math.round((Double)t);
+            int next = (int)Math.round((Double)t1);
+            this.labelValue.setText(((Double)t1 > 0 ? "+" : "") + String.format("%d", (int)Math.round((Double)t1)));
+            int delta = next - prev;
             if (delta != 0)
             {
-                this.mainController.contrastChanged(next);
+                this.mainController.greenChanged(next);
             }            
         });
     }    
-    
-    /**
-     * Sets histogram of contrast
-     * @param image Image containing histogram of contrast
-     */
-    public void setHistogram(Image image)
-    {
-        this.imageViewContrast.setImage(image);
-    }
-    
-    /**
-     * Sets chart of brightness/contrast
-     * @param chart Image containing chart of brightness/contrast
-     */
-    public void setChart(Image chart)
-    {
-        this.imageViewChart.setImage(chart);
-    }
 
     @FXML
     private void buttonRefreshOnAction(ActionEvent event) {
         this.resetValue();
     }
+
+    @Override
+    public void resetValue() {
+        this.sliderColor.setValue(0f);
+    }
+    
+    /**
+     * Sets histogram of color
+     * @param histogram Image containing histogram of color
+     */
+    public void setHistogram(Image histogram)
+    {
+        this.imageViewHistogram.setImage(histogram);
+    }
+    
 }

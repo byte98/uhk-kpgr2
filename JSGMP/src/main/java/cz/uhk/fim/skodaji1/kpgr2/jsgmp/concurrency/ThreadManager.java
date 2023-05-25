@@ -27,7 +27,11 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.ZoomDiagram;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.paint.Color;
@@ -169,14 +173,44 @@ public class ThreadManager
     }
     
     /**
+     * Stops one object
+     * @param t Object which will be stopped
+     */
+    public static synchronized final void stopOne(Threadable t)
+    {
+        if (ThreadManager.threads.contains(t))
+        {
+            ThreadManager.threads.remove(t);
+            t.stop();
+        }
+        
+    }
+    
+    /**
      * Stops all managed threads
      */
-    public static synchronized final void stopThreads()
+    public static synchronized final void stopAll()
     {
+        BlockingQueue<Threadable> toRemove = new LinkedBlockingQueue<>(ThreadManager.threads.size());
         for(Threadable t: ThreadManager.threads)
+        {
+            try
+            {
+                toRemove.put(t);
+            }
+            catch (InterruptedException ex)
+            {
+                Logger.getLogger(ThreadManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        ThreadManager.threads.clear();
+        for(Threadable t: toRemove)
         {
             t.stop();
         }
+        toRemove.clear();
+        toRemove = null;
+        System.gc();
     }
 }
 

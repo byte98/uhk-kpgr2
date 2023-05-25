@@ -50,6 +50,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
@@ -76,9 +78,65 @@ import jfxtras.styles.jmetro.Style;
 public class FXMLMainWindow implements Initializable {
 
     /**
-     * Step when using mouse drag for scrolling
+     * Class which performs loading tool from FXML file
+     * @param T Type of tool (data type of controller of tool)
      */
-    private static final double SCROLL_STEP = 0.0001;
+    private static class ToolLoader<T extends FXMLController>
+    {
+        /**
+         * Controller of tool
+         */
+        private T controller;
+        
+        /**
+         * Content of tool
+         */
+        private Pane content;
+        
+        /**
+         * Creates new loader of tool
+         * @param fileName Name of file which contains definition of tool
+         * @param tab Tab to which tool will be loaded
+         * @param controller Reference to main controller
+         */
+        public ToolLoader(String fileName, Tab tab, MainController controller)
+        {
+            FXMLLoader loader = new FXMLLoader(JSGMP.class.getResource("fxml/" + fileName));
+            try
+            {
+                this.content = (Pane)loader.load();
+                this.controller = (T)loader.getController();
+                this.controller.setMainController(controller);
+                this.controller.resetValue();
+                this.content.prefWidthProperty().bind(tab.getTabPane().widthProperty());
+                this.content.prefHeightProperty().bind(tab.getTabPane().heightProperty());
+                this.content.getStyleClass().add(JMetroStyleClass.BACKGROUND);
+                tab.setContent(this.content);
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(FXMLMainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        /**
+         * Gets content of tool
+         * @return Pane with content of tool
+         */
+        public Pane getContent()
+        {
+            return this.content;
+        }
+        
+        /**
+         * Gets controller of tool
+         * @return Controller of tool
+         */
+        public T getController()
+        {
+            return this.controller;
+        }
+    }
     
     /**
      * Last position of mouse on X axis
@@ -141,6 +199,66 @@ public class FXMLMainWindow implements Initializable {
      */
     private FXMLTemperature temperatureController;
     
+    /**
+     * Controller of blue tool
+     */
+    private FXMLBlue blueController;
+    
+    /**
+     * Content of blue tool
+     */
+    private Pane bluePane;
+    
+    /**
+     * Controller of red tool
+     */
+    private FXMLRed redController;
+    
+    /**
+     * Content of red tool
+     */
+    private Pane redPane;
+    
+    /**
+     * Controller of green tool
+     */
+    private FXMLGreen greenController;
+    
+    /**
+     * Content of green tool
+     */
+    private Pane greenPane;
+    
+    /**
+     * Controller of cyan tool
+     */
+    private FXMLCyan cyanController;
+    
+    /**
+     * Content of cyan tool
+     */
+    private Pane cyanPane;
+    
+    /**
+     * Controller of yellow tool
+     */
+    private FXMLYellow yellowController;
+    
+    /**
+     * Content of yellow tool
+     */
+    private Pane yellowPane;
+    
+    /**
+     * Controller of magenta tool
+     */
+    private FXMLMagenta magentaController;
+    
+    /**
+     * Content of magenta tool
+     */
+    private Pane magentaPane;
+    
     
     @FXML
     private ImageView imageViewMain;
@@ -174,19 +292,7 @@ public class FXMLMainWindow implements Initializable {
     @FXML
     private Tab tabTemperature;
     @FXML
-    private MenuItem menuItemHistogram;
-    @FXML
-    private MenuItem menuItemBrightness;
-    @FXML
-    private MenuItem menuItemContrast;
-    @FXML
-    private MenuItem menuItemTemperature;
-    @FXML
-    private MenuItem menuItemZoom;
-    @FXML
     private ImageView imageCheckZoom;
-    @FXML
-    private MenuItem menuItemDiscard;
     @FXML
     private Tab tabZoom;
     @FXML
@@ -202,6 +308,36 @@ public class FXMLMainWindow implements Initializable {
      * Handler of zoom of image
      */
     private Zoom zoom;
+    @FXML
+    private Tab tabInfo;
+    @FXML
+    private Tab tabRed;
+    @FXML
+    private Tab tabBlue;
+    @FXML
+    private Tab tabGreen;
+    @FXML
+    private Tab tabCyan;
+    @FXML
+    private Tab tabMagenta;
+    @FXML
+    private Tab tabYellow;
+    @FXML
+    private MenuBar menuBarTopMenu;
+    @FXML
+    private MenuItem menuItemOpen;
+    @FXML
+    private ImageView imageCheckRed;
+    @FXML
+    private ImageView imageCheckGreen;
+    @FXML
+    private ImageView imageCheckBlue;
+    @FXML
+    private ImageView imageCheckCyan;
+    @FXML
+    private ImageView imageCheckMagenta;
+    @FXML
+    private ImageView imageCheckYellow;
     
     /**
      * Sets reference to primary stage of program
@@ -221,7 +357,8 @@ public class FXMLMainWindow implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        this.controller = new MainController(this);
+        this.controller = new MainController(this);        
+        this.initializeTabs();
         this.scrollPaneMainImage.widthProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
             FXMLMainWindow.this.relocateMainImage(FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getWidth(), FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getHeight());
             FXMLMainWindow.this.resizeMainImageWrapper(this.imageViewMain.getFitWidth(), this.imageViewMain.getFitHeight());
@@ -238,7 +375,6 @@ public class FXMLMainWindow implements Initializable {
             FXMLMainWindow.this.relocateMainImage(FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getWidth(), FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getHeight());
             FXMLMainWindow.this.resizeMainImageWrapper(this.imageViewMain.getFitWidth(), this.imageViewMain.getFitHeight());
         });
-        this.initializeTabs();
         this.hideAllTabs();
         this.sliderZoom.valueProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number t1) -> {
             this.labelZoomValue.setText(String.format("%.0f %%", ((double)Math.round((Double)t1 * 100f) / 100f)));            
@@ -252,10 +388,46 @@ public class FXMLMainWindow implements Initializable {
      */
     private void initializeTabs()
     {
-        this.initializeHistogram();
-        this.initializeBrightness();
-        this.initializeContrast();
-        this.initializeTemperature();
+        FXMLMainWindow.ToolLoader<FXMLHistogram> toolHistogram = new FXMLMainWindow.ToolLoader<>("FXMLHistogram.fxml", this.tabHistogram, this.controller);
+        this.histogramController = toolHistogram.getController();
+        this.histogramPane = toolHistogram.getContent();
+        
+        FXMLMainWindow.ToolLoader<FXMLBrightness> toolBrightness = new FXMLMainWindow.ToolLoader<>("FXMLBrightness.fxml", this.tabBrightness, this.controller);
+        this.brightnessController = toolBrightness.getController();
+        this.brightnessPane = toolBrightness.getContent();
+        
+        FXMLMainWindow.ToolLoader<FXMLContrast> toolContrast = new FXMLMainWindow.ToolLoader<>("FXMLContrast.fxml", this.tabContrast, this.controller);
+        this.contrastController = toolContrast.getController();
+        this.contrastPane = toolContrast.getContent();
+        
+        FXMLMainWindow.ToolLoader<FXMLTemperature> toolTemperature = new FXMLMainWindow.ToolLoader<>("FXMLTemperature.fxml", this.tabTemperature, this.controller);
+        this.temperatureController = toolTemperature.getController();
+        this.temperaturePane = toolTemperature.getContent();
+        
+        FXMLMainWindow.ToolLoader<FXMLBlue> toolBlue = new FXMLMainWindow.ToolLoader<>("FXMLBlue.fxml", this.tabBlue, this.controller);
+        this.blueController = toolBlue.getController();
+        this.bluePane = toolBlue.getContent();
+        
+        FXMLMainWindow.ToolLoader<FXMLGreen> toolGreen = new FXMLMainWindow.ToolLoader<>("FXMLGreen.fxml", this.tabGreen, this.controller);
+        this.greenController = toolGreen.getController();
+        this.greenPane = toolGreen.getContent();
+        
+        FXMLMainWindow.ToolLoader<FXMLRed> toolRed = new FXMLMainWindow.ToolLoader<>("FXMLRed.fxml", this.tabRed, this.controller);
+        this.redController = toolRed.getController();
+        this.redPane = toolRed.getContent();
+        
+        FXMLMainWindow.ToolLoader<FXMLMagenta> toolMagenta = new FXMLMainWindow.ToolLoader<>("FXMLMagenta.fxml", this.tabMagenta, this.controller);
+        this.magentaController = toolMagenta.getController();
+        this.magentaPane = toolMagenta.getContent();
+        
+        FXMLMainWindow.ToolLoader<FXMLYellow> toolYellow = new FXMLMainWindow.ToolLoader<>("FXMLYellow.fxml", this.tabYellow, this.controller);
+        this.yellowController = toolYellow.getController();
+        this.yellowPane = toolYellow.getContent();
+        
+        FXMLMainWindow.ToolLoader<FXMLCyan> toolCyan = new FXMLMainWindow.ToolLoader<>("FXMLCyan.fxml", this.tabCyan, this.controller);
+        this.cyanController = toolCyan.getController();
+        this.cyanPane = toolCyan.getContent();
+        
         this.initializeZoom();
     }
     
@@ -266,104 +438,14 @@ public class FXMLMainWindow implements Initializable {
     {
         this.tabZoom.getContent().getStyleClass().add(JMetroStyleClass.BACKGROUND);
     }
-    
-    /**
-     * Initializes histogram
-     */
-    private void initializeHistogram()
-    {
-        FXMLLoader histogramLoader = new FXMLLoader(JSGMP.class.getResource("fxml/FXMLHistogram.fxml"));
-        try
-        {
-            this.histogramPane = (Pane)histogramLoader.load();
-            this.histogramController = (FXMLHistogram)histogramLoader.getController();
-            this.histogramPane.prefWidthProperty().bind(this.tabHistogram.getTabPane().widthProperty());
-            this.histogramPane.prefHeightProperty().bind(this.tabHistogram.getTabPane().heightProperty());
-            this.histogramPane.getStyleClass().add(JMetroStyleClass.BACKGROUND);
-            this.tabHistogram.setContent(this.histogramPane);
-        }
-        catch (IOException ex)
-        {
-            Logger.getLogger(FXMLMainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    /**
-     * Initializes brightness tool
-     */
-    private void initializeBrightness()
-    {
-        FXMLLoader brightnessLoader = new FXMLLoader(JSGMP.class.getResource("fxml/FXMLBrightness.fxml"));
-        try
-        {
-            this.brightnessPane = (Pane)brightnessLoader.load();
-            this.brightnessController = (FXMLBrightness)brightnessLoader.getController();
-            this.brightnessController.setMainWindow(this.controller);
-            this.brightnessPane.prefWidthProperty().bind(this.tabBrightness.getTabPane().widthProperty());
-            this.brightnessPane.prefHeightProperty().bind(this.tabBrightness.getTabPane().heightProperty());
-            this.brightnessPane.getStyleClass().add(JMetroStyleClass.BACKGROUND);
-            this.tabBrightness.setContent(this.brightnessPane);
-        }
-        catch (IOException ex)
-        {
-            Logger.getLogger(FXMLMainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    /**
-     * Initializes contrast tool
-     */
-    private void initializeContrast()
-    {
-        FXMLLoader loader = new FXMLLoader(JSGMP.class.getResource("fxml/FXMLContrast.fxml"));
-        try
-        {
-            this.contrastPane = (Pane)loader.load();
-            this.contrastController = (FXMLContrast)loader.getController();
-            this.contrastController.setMainWindow(this.controller);
-            this.contrastPane.prefWidthProperty().bind(this.tabContrast.getTabPane().widthProperty());
-            this.contrastPane.prefHeightProperty().bind(this.tabContrast.getTabPane().heightProperty());
-            this.contrastPane.getStyleClass().add(JMetroStyleClass.BACKGROUND);
-            this.tabContrast.setContent(this.contrastPane);
-        }
-        catch (IOException ex)
-        {
-            Logger.getLogger(FXMLMainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    /**
-     * Initializes temperature tool
-     */
-    private void initializeTemperature()
-    {
-        FXMLLoader loader = new FXMLLoader(JSGMP.class.getResource("fxml/FXMLTemperature.fxml"));
-        try
-        {
-            this.temperaturePane = (Pane)loader.load();
-            this.temperatureController = (FXMLTemperature)loader.getController();
-            this.temperatureController.setMainController(this.controller);
-            this.temperaturePane.prefWidthProperty().bind(this.tabTemperature.getTabPane().widthProperty());
-            this.temperaturePane.prefHeightProperty().bind(this.tabTemperature.getTabPane().heightProperty());
-            this.temperaturePane.getStyleClass().add(JMetroStyleClass.BACKGROUND);
-            this.tabTemperature.setContent(this.temperaturePane);
-        }
-        catch (IOException ex)
-        {
-            Logger.getLogger(FXMLMainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
+        
     /**
      * Hides all tabs which should not be visible
      */
     private void hideAllTabs()
     {
-        this.tabPaneTools.getTabs().remove(this.tabHistogram);
-        this.tabPaneTools.getTabs().remove(this.tabBrightness);
-        this.tabPaneTools.getTabs().remove(this.tabContrast);
-        this.tabPaneTools.getTabs().remove(this.tabTemperature);
-        this.tabPaneTools.getTabs().remove(this.tabZoom);
+        this.tabPaneTools.getTabs().clear();
+        this.tabPaneTools.getTabs().add(this.tabInfo);
     }
     
     /**
@@ -453,12 +535,14 @@ public class FXMLMainWindow implements Initializable {
      */
     public void diableMenu(boolean disable)
     {
-        this.menuItemBrightness.setDisable(disable);
-        this.menuItemContrast.setDisable(disable);
-        this.menuItemHistogram.setDisable(disable);
-        this.menuItemTemperature.setDisable(disable);
-        this.menuItemZoom.setDisable(disable);
-        this.menuItemDiscard.setDisable(disable);
+        for(Menu m: this.menuBarTopMenu.getMenus())
+        {
+            for(MenuItem mI: m.getItems())
+            {
+                mI.setDisable(disable);
+            }
+        }
+        this.menuItemOpen.setDisable(false);
     }
     
     /**
@@ -534,6 +618,7 @@ public class FXMLMainWindow implements Initializable {
     public void setRedHistogram(Image image)
     {
         this.histogramController.setRedHistogram(image);
+        this.redController.setHistogram(image);
     }
     
     /**
@@ -543,6 +628,7 @@ public class FXMLMainWindow implements Initializable {
     public void setGreenHistogram(Image image)
     {
         this.histogramController.setGreenHistogram(image);
+        this.greenController.setHistogram(image);
     }
     
     /**
@@ -552,6 +638,37 @@ public class FXMLMainWindow implements Initializable {
     public void setBlueHistogram(Image image)
     {
         this.histogramController.setBlueHistogram(image);
+        this.blueController.setHistogram(image);
+    }
+    
+    /**
+     * Sets histogram of cyan color channel
+     * @param image Image representation of histogram of cyan color channel
+     */
+    public void setCyanHistogram(Image image)
+    {
+        this.histogramController.setCyanHistogram(image);
+        this.cyanController.setHistogram(image);
+    }
+    
+    /**
+     * Sets histogram of magenta color channel
+     * @param image Image representation of histogram of magenta color channel
+     */
+    public void setMagentaHistogram(Image image)
+    {
+        this.histogramController.setMagentaHistogram(image);
+        this.magentaController.setHistogram(image);
+    }
+    
+    /**
+     * Sets histogram of yellow color channel
+     * @param image Image representation of histogram of yellow color channel
+     */
+    public void setYellowHistogram(Image image)
+    {
+        this.histogramController.setYellowHistogram(image);
+        this.yellowController.setHistogram(image);
     }
     
     /**
@@ -701,6 +818,7 @@ public class FXMLMainWindow implements Initializable {
             }        
         });
         JMetro jmetro = new JMetro(scene, Style.DARK);
+        scene.getStylesheets().add(JSGMP.class.getResource("fxml/CSSTabs.css").toExternalForm());
         stage.show();
     }
     
@@ -823,5 +941,119 @@ public class FXMLMainWindow implements Initializable {
         this.imageViewMain.setCursor(Cursor.CLOSED_HAND);
         this.lastX = event.getX();
         this.lastY = event.getY();
+    }
+
+    @FXML
+    private void menuRedOnAction(ActionEvent event) {
+        if (this.imageCheckRed.isVisible() == false)
+        {
+            this.tabPaneTools.getTabs().add(this.tabRed);
+            this.imageCheckRed.setVisible(true);
+        }
+    }
+
+    @FXML
+    private void menuGreenOnAction(ActionEvent event) {
+        if (this.imageCheckGreen.isVisible() == false)
+        {
+            this.tabPaneTools.getTabs().add(this.tabGreen);
+            this.imageCheckGreen.setVisible(true);
+        }
+    }
+
+    @FXML
+    private void menuBlueOnAction(ActionEvent event) {
+        if (this.imageCheckBlue.isVisible() == false)
+        {
+            this.tabPaneTools.getTabs().add(this.tabBlue);
+            this.imageCheckBlue.setVisible(true);
+        }
+    }
+
+    @FXML
+    private void menuCyanOnAction(ActionEvent event) {
+        if (this.imageCheckCyan.isVisible() == false)
+        {
+            this.tabPaneTools.getTabs().add(this.tabCyan);
+            this.imageCheckCyan.setVisible(true);
+        }
+    }
+
+    @FXML
+    private void menuMagentaOnAction(ActionEvent event) {
+        if (this.imageCheckMagenta.isVisible() == false)
+        {
+            this.tabPaneTools.getTabs().add(this.tabMagenta);
+            this.imageCheckMagenta.setVisible(true);
+        }
+    }
+
+    @FXML
+    private void menuYellowOnAction(ActionEvent event) {
+        if (this.imageCheckYellow.isVisible() == false)
+        {
+            this.tabPaneTools.getTabs().add(this.tabYellow);
+            this.imageCheckYellow.setVisible(true);
+        }
+    }
+
+    @FXML
+    private void redPopupOnAction(ActionEvent event) {
+        this.popupOnAction("Barevnost - červená", this.redPane, this.tabRed, this.imageCheckRed);
+    }
+
+    @FXML
+    private void redCloseOnAction(ActionEvent event) {
+        this.closeTab(this.imageCheckRed, this.tabRed);
+    }
+
+    @FXML
+    private void bluePopupOnAction(ActionEvent event) {
+        this.popupOnAction("Barevnost - modrá", this.bluePane, this.tabBlue, this.imageCheckBlue);
+    }
+
+    @FXML
+    private void blueCloseOnAction(ActionEvent event) {
+        this.closeTab(this.imageCheckBlue, this.tabBlue);
+    }
+
+    @FXML
+    private void greenPopupOnAction(ActionEvent event) {
+        this.popupOnAction("Barevnost - zelená", this.greenPane, this.tabGreen, this.imageCheckGreen);
+    }
+
+    @FXML
+    private void greenCloseOnAction(ActionEvent event) {
+        this.closeTab(this.imageCheckGreen, this.tabGreen);
+    }
+
+    @FXML
+    private void cyanPopupOnAction(ActionEvent event) {
+        this.popupOnAction("Barevnost - azurová", this.cyanPane, this.tabCyan, this.imageCheckCyan);
+    }
+
+    @FXML
+    private void cyanCloseOnAction(ActionEvent event) {
+        this.closeTab(this.imageCheckCyan, this.tabCyan);
+    }
+
+    @FXML
+    private void magentaPopupOnAction(ActionEvent event) {
+        this.popupOnAction("Barevnost - purpurová", this.magentaPane, this.tabMagenta, this.imageCheckMagenta);
+    }
+
+    @FXML
+    private void magentaCloseOnAction(ActionEvent event) {
+        this.closeTab(this.imageCheckMagenta, this.tabMagenta);
+    }
+
+    @FXML
+    private void yellowPopupOnAction(ActionEvent event) {
+        this.popupOnAction("Barevnost - žlutá", this.yellowPane, this.tabYellow, this.imageCheckYellow);
+    }
+
+    @FXML
+    private void yellowCloseOnAction(ActionEvent event) {
+        this.closeTab(this.imageCheckYellow, this.tabYellow);
     }
 }

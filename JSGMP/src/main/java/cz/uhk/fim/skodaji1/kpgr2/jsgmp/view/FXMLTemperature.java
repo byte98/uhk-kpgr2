@@ -35,7 +35,7 @@ import javafx.scene.layout.VBox;
  *
  * @author Jiri Skoda <jiri.skoda@student.upce.cz>
  */
-public class FXMLTemperature implements Initializable {
+public class FXMLTemperature extends FXMLController implements Initializable {
 
     @FXML
     private VBox vBoxContent;
@@ -44,10 +44,6 @@ public class FXMLTemperature implements Initializable {
     @FXML
     private Slider sliderTemperature;
     
-    /**
-     * Main controller of application
-     */
-    private MainController mainController;
     @FXML
     private Label labelValue;
 
@@ -72,23 +68,12 @@ public class FXMLTemperature implements Initializable {
         });
     }    
     
-    /**
-     * Resets actually set value of temperature
-     */
+    @Override
     public void resetValue()
     {
         this.sliderTemperature.setValue(0f);
     }
-    
-    /**
-     * Sets main controller of application
-     * @param controller Reference to main controller of application
-     */
-    public void setMainController(MainController controller)
-    {
-        this.mainController = controller;
-    }
-    
+        
     /**
      * Sets histogram of temperature
      * @param image Image containing histogram of temperature

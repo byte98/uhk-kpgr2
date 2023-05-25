@@ -468,5 +468,6 @@ public class ZoomDiagram implements Threadable
                 Logger.getLogger(ZoomDiagram.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        this.thread.stop();
     }
 }

@@ -405,6 +405,7 @@ public class ConcurrentBitmap extends Bitmap implements Threadable
                 Logger.getLogger(ConcurrentBitmap.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        this.thread.stop();
     }
 
     @Override

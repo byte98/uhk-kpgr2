@@ -3,12 +3,15 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="vBoxContent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="432.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.FXMLHistogram">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1065.0" prefWidth="432.0" stylesheets="@CSSTabs.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.FXMLHistogram">
    <children>
       <HBox prefHeight="36.0" prefWidth="600.0" spacing="10.0">
          <children>
@@ -27,20 +30,86 @@
          <VBox.margin>
             <Insets bottom="20.0" />
          </VBox.margin></Separator>
-      <Label text="Červený kanál" />
-      <ImageView fx:id="imageViewRed" fitHeight="150.0" fitWidth="393.0" pickOnBounds="true" preserveRatio="true">
-         <VBox.margin>
-            <Insets bottom="20.0" />
-         </VBox.margin>
-      </ImageView>
-      <Label layoutX="20.0" layoutY="88.0" text="Zelený kanál" />
-      <ImageView fx:id="imageViewGreen" fitHeight="150.0" fitWidth="411.0" layoutX="20.0" layoutY="106.0" pickOnBounds="true" preserveRatio="true">
-         <VBox.margin>
-            <Insets bottom="20.0" />
-         </VBox.margin>
-      </ImageView>
-      <Label layoutX="20.0" layoutY="276.0" text="Modrý kanál" />
-      <ImageView fx:id="imageViewBlue" fitHeight="150.0" fitWidth="411.0" layoutX="20.0" layoutY="294.0" pickOnBounds="true" preserveRatio="true" />
+      <TabPane id="tool-tabs" fx:id="tabPaneContent" prefHeight="958.0" prefWidth="412.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="RGB">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label text="Červený kanál" />
+                              <ImageView fx:id="imageViewRed" fitHeight="150.0" fitWidth="411.0" pickOnBounds="true" preserveRatio="true">
+                                 <VBox.margin>
+                                    <Insets bottom="20.0" />
+                                 </VBox.margin>
+                              </ImageView>
+                              <Label text="Zelený kanál" />
+                              <ImageView fx:id="imageViewGreen" fitHeight="150.0" fitWidth="411.0" pickOnBounds="true" preserveRatio="true">
+                                 <VBox.margin>
+                                    <Insets bottom="20.0" />
+                                 </VBox.margin>
+                              </ImageView>
+                              <Label text="Modrý kanál" />
+                              <ImageView fx:id="imageViewBlue" fitHeight="150.0" fitWidth="411.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+            </content>
+               <graphic>
+                  <HBox alignment="CENTER" prefHeight="24.0" prefWidth="61.0" spacing="10.0">
+                     <children>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" style="-fx-rotate: -90;">
+                           <image>
+                              <Image url="@../icons/rgb.png" />
+                           </image>
+                        </ImageView>
+                        <Label style="-fx-font-size: 12px;" text="RGB" />
+                     </children>
+                  </HBox>
+               </graphic>
+          </Tab>
+          <Tab text="CMY">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="962.0" prefWidth="412.0">
+                     <children>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label text="Azurový kanál" />
+                              <ImageView fx:id="imageViewCyan" fitHeight="150.0" fitWidth="411.0" pickOnBounds="true" preserveRatio="true">
+                                 <VBox.margin>
+                                    <Insets bottom="20.0" />
+                                 </VBox.margin>
+                              </ImageView>
+                              <Label text="Purpurový kanál" />
+                              <ImageView fx:id="imageViewMagenta" fitHeight="150.0" fitWidth="411.0" pickOnBounds="true" preserveRatio="true">
+                                 <VBox.margin>
+                                    <Insets bottom="20.0" />
+                                 </VBox.margin>
+                              </ImageView>
+                              <Label text="Žlutý kanál" />
+                              <ImageView fx:id="imageViewYellow" fitHeight="150.0" fitWidth="411.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+            </content>
+               <graphic>
+                  <HBox alignment="CENTER" prefHeight="24.0" prefWidth="61.0" spacing="10.0">
+                     <children>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" style="-fx-rotate: -90;">
+                           <image>
+                              <Image url="@../icons/cmy.png" />
+                           </image>
+                        </ImageView>
+                        <Label style="-fx-font-size: 12px;" text="CMY" />
+                     </children>
+                  </HBox>
+               </graphic>
+          </Tab>
+        </tabs>
+      </TabPane>
    </children>
    <padding>
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

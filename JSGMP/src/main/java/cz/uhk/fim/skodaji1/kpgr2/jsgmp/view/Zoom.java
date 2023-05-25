@@ -76,7 +76,10 @@ public class Zoom
         this.source.addChangeActionListener(new Bitmap.BitmapChangedActionListener() {
             @Override
             public void onChange(Bitmap bitmap){
-                Zoom.this.diagram.refresh();
+                if (Objects.nonNull(Zoom.this.diagram))
+                {
+                    Zoom.this.diagram.refresh();
+                }                
             }
         });
     }
@@ -134,6 +137,15 @@ public class Zoom
             );
             this.diagram.refresh();
         }
+    }
+    
+    /**
+     * Stops diagram of zoom
+     */
+    public void stop()
+    {
+        ThreadManager.stopOne(this.diagram);
+        this.diagram = null;
     }
     
     /**
