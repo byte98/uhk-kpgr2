@@ -22,6 +22,7 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.BrightnessContrast;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Effect;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Bitmap;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.GrayscaleChart;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Histogram;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.ZoomDiagram;
 import java.util.ArrayList;
@@ -119,7 +120,7 @@ public class ThreadManager
      * @param bitmap Bitmap on which histograms will be computed
      * @return Brightness/contrast effect handler
      */
-    public static BrightnessContrast createBrightnessContrastEffect(Bitmap bitmap)
+    public static final BrightnessContrast createBrightnessContrastEffect(Bitmap bitmap)
     {
         BrightnessContrast reti = new BrightnessContrast(bitmap);
         ThreadManager.threads.add(reti);
@@ -132,7 +133,7 @@ public class ThreadManager
      * @param bitmap Bitmap on which effects will be applied
      * @return Controller of all effects
      */
-    public static EffectsController createEffectsController(Bitmap bitmap)
+    public static final EffectsController createEffectsController(Bitmap bitmap)
     {
         EffectsController reti = new EffectsController(bitmap);
         ThreadManager.threads.add(reti);
@@ -151,7 +152,7 @@ public class ThreadManager
      * @param source Source of image data (image itself)
      * @return New diagram of zoom
      */
-    public static ZoomDiagram createZoomDiagram(
+    public static final ZoomDiagram createZoomDiagram(
             ReadOnlyDoubleProperty viewWidthProperty,
             ReadOnlyDoubleProperty viewHeightProperty,
             ReadOnlyDoubleProperty imageWidthProperty,
@@ -167,6 +168,19 @@ public class ThreadManager
                 scrollTopProperty, scrollLeftProperty,
                 source
         );
+        ThreadManager.threads.add(reti);
+        reti.start();
+        return reti;
+    }
+    
+    /**
+     * Creates data provider for grayscale chart
+     * @param bitmap Source of data
+     * @return Provider of data for pie chart
+     */
+    public static final GrayscaleChart createGrayscaleChart(Bitmap bitmap)
+    {
+        GrayscaleChart reti = new GrayscaleChart(bitmap);
         ThreadManager.threads.add(reti);
         reti.start();
         return reti;

@@ -479,6 +479,36 @@
                               </HBox>
                            </graphic>
                         </Tab>
+                        <Tab fx:id="tabGrayscale" closable="false" text="STUPNĚ ŠEDI">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                           <graphic>
+                              <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="STUPNĚ ŠEDI" />
+                                    <Button mnemonicParsing="false" onAction="#grayscalePopupOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                             <image>
+                                                <Image url="@../icons/popout16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#grayscaleCloseOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/close16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Tab>
                     </tabs>
                   </TabPane>
                </children>

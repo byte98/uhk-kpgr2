@@ -77,13 +77,6 @@ import jfxtras.styles.jmetro.Style;
  */
 public class FXMLMainWindow implements Initializable {
 
-    @FXML
-    private ImageView imageCheckGrayscale;
-
-    @FXML
-    private void menuGrayscaleOnAction(ActionEvent event) {
-    }
-
     /**
      * Class which performs loading tool from FXML file
      * @param T Type of tool (data type of controller of tool)
@@ -266,6 +259,16 @@ public class FXMLMainWindow implements Initializable {
      */
     private Pane magentaPane;
     
+    /**
+     * Controller of grayscale tool
+     */
+    private FXMLGrayscale grayscaleController;
+    
+    /**
+     * Content of grayscale tool
+     */
+    private Pane grayscalePane;
+    
     
     @FXML
     private ImageView imageViewMain;
@@ -345,6 +348,10 @@ public class FXMLMainWindow implements Initializable {
     private ImageView imageCheckMagenta;
     @FXML
     private ImageView imageCheckYellow;
+    @FXML
+    private ImageView imageCheckGrayscale;
+    @FXML
+    private Tab tabGrayscale;
     
     /**
      * Sets reference to primary stage of program
@@ -434,6 +441,10 @@ public class FXMLMainWindow implements Initializable {
         FXMLMainWindow.ToolLoader<FXMLCyan> toolCyan = new FXMLMainWindow.ToolLoader<>("FXMLCyan.fxml", this.tabCyan, this.controller);
         this.cyanController = toolCyan.getController();
         this.cyanPane = toolCyan.getContent();
+        
+        FXMLMainWindow.ToolLoader<FXMLGrayscale> toolGrayscale = new FXMLMainWindow.ToolLoader<>("FXMLGrayscale.fxml", this.tabGrayscale, this.controller);
+        this.grayscaleController = toolGrayscale.getController();
+        this.grayscalePane = toolGrayscale.getContent();
         
         this.initializeZoom();
     }
@@ -540,13 +551,14 @@ public class FXMLMainWindow implements Initializable {
         this.cyanController.resetValue();
         this.magentaController.resetValue();
         this.yellowController.resetValue();
+        this.grayscaleController.resetValue();
     }
     
     /**
      * Disables all menu items except open file
      * @param disable Flag, whether items should be disabled (TRUE) or not (FALSE)
      */
-    public void diableMenu(boolean disable)
+    public void disableMenu(boolean disable)
     {
         for(Menu m: this.menuBarTopMenu.getMenus())
         {
@@ -587,6 +599,15 @@ public class FXMLMainWindow implements Initializable {
         });
         this.zoom.setZoomLevel(101);
         this.zoom.setZoomLevel(100);
+    }
+    
+    /**
+     * Sets data provider for grayscale chart
+     * @param chart New provider of data for grayscale chart
+     */
+    public void setGrayscaleChart(GrayscaleChart chart)
+    {
+        this.grayscaleController.setGrayscaleChart(chart);
     }
     
     /**
@@ -1068,5 +1089,24 @@ public class FXMLMainWindow implements Initializable {
     @FXML
     private void yellowCloseOnAction(ActionEvent event) {
         this.closeTab(this.imageCheckYellow, this.tabYellow);
+    }
+    
+    @FXML
+    private void menuGrayscaleOnAction(ActionEvent event) {
+        if (this.imageCheckGrayscale.isVisible() == false)
+        {
+            this.tabPaneTools.getTabs().add(this.tabGrayscale);
+            this.imageCheckGrayscale.setVisible(true);
+        }
+    }
+
+    @FXML
+    private void grayscalePopupOnAction(ActionEvent event) {
+        this.popupOnAction("Stupně šedi", this.grayscalePane, this.tabGrayscale, this.imageCheckGrayscale);
+    }
+
+    @FXML
+    private void grayscaleCloseOnAction(ActionEvent event) {
+        this.closeTab(this.imageCheckGrayscale, this.tabGrayscale);
     }
 }

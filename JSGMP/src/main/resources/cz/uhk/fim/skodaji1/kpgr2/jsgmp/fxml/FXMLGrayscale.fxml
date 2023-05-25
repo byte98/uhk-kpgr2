@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="vBoxContent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="449.0" prefWidth="432.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.FXMLRed">
+<VBox fx:id="vBoxContent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="449.0" prefWidth="432.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.FXMLGrayscale">
    <children>
       <HBox prefHeight="36.0" prefWidth="600.0" spacing="10.0">
          <children>
@@ -32,15 +32,15 @@
             <Insets bottom="20.0" />
          </VBox.margin></Separator>
       <Label text="Distribuce šedivých pixelů" />
-      <PieChart fx:id="chartGrayscaleDistribution" labelsVisible="false" legendVisible="false">
+      <PieChart fx:id="chartGrayscaleDistribution" labelsVisible="false">
          <VBox.margin>
             <Insets bottom="20.0" />
          </VBox.margin>
       </PieChart>
-      <Slider fx:id="sliderColor" blockIncrement="1.0" min="-100.0" minorTickCount="5" showTickMarks="true" />
+      <Slider fx:id="sliderValue" blockIncrement="1.0" minorTickCount="5" showTickMarks="true" />
       <FlowPane alignment="TOP_CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0">
          <children>
-            <Label fx:id="labelValue" text="0" />
+            <Label fx:id="labelValue" text="0 %" />
             <Button mnemonicParsing="false" onAction="#buttonRefreshOnAction">
                <graphic>
                   <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">

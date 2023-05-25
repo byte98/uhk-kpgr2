@@ -21,11 +21,13 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.JSGMP;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.concurrency.ThreadManager;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.BrightnessContrast;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.ColorEffect;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Grayscale;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.effects.Temperature;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Globals;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.ImageFile;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.model.Pixel;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.FXMLMainWindow;
+import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.GrayscaleChart;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Histogram;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Zoom;
 import java.nio.file.Path;
@@ -135,6 +137,16 @@ public class MainController
     private ColorEffect yellowColorEffect;
     
     /**
+     * Provider of data for grayscale chart
+     */
+    private GrayscaleChart grayscaleChart;
+    
+    /**
+     * Grayscale effect handler
+     */
+    private Grayscale grayscaleEffect;
+    
+    /**
      * Creates new controller of main window
      * @param mainWindow Reference to main window
      */
@@ -197,6 +209,11 @@ public class MainController
             ThreadManager.stopOne(this.effects);
             this.effects = null;
         }
+        if (Objects.nonNull(this.grayscaleChart))
+        {
+            ThreadManager.stopOne(this.grayscaleChart);
+            this.grayscaleChart = null;
+        }
         
         this.temperature = null;
         this.redColorEffect = null;
@@ -205,6 +222,7 @@ public class MainController
         this.cyanColorEffect = null;
         this.magentaColorEffect = null;
         this.yellowColorEffect = null;
+        this.grayscaleEffect = null;
         
         System.gc();
     }
@@ -319,12 +337,15 @@ public class MainController
         this.zoom = new Zoom(this.image.getBitmap());
         this.mainWindow.setZoom(this.zoom);
         
-        
+        this.grayscaleEffect = new Grayscale();
+        this.grayscaleChart = ThreadManager.createGrayscaleChart(this.image.getBitmap());
+        this.mainWindow.setGrayscaleChart(this.grayscaleChart);
+        this.effects.addEffect(this.grayscaleEffect);
         
         this.image.getBitmap().setOriginal();
         if (this.initialOpen == false)
         {            
-            this.mainWindow.diableMenu(false);
+            this.mainWindow.disableMenu(false);
             this.mainWindow.resetValues();
         }
         this.initialOpen = false;
@@ -366,7 +387,7 @@ public class MainController
         this.mainWindow.setFileName("(žádný soubor)");
         this.mainWindow.setFilePath("(žádný soubor)");
         this.mainWindow.setFileSize(0, 0);
-        this.mainWindow.diableMenu(true);
+        this.mainWindow.disableMenu(true);
         this.mainWindow.centerImage();
     }
     
@@ -422,5 +443,14 @@ public class MainController
     public void cyanChanged(int newValue)
     {
         this.cyanColorEffect.setValue(newValue);
+    }
+    
+    /**
+     * Handles change of grayscale percentage
+     * @param newValue New percentage of grayscale
+     */
+    public void grayscaleChanged(double newValue)
+    {
+        this.grayscaleEffect.setValue(newValue);
     }
 }
