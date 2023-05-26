@@ -27,7 +27,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.image.Image;
@@ -129,7 +128,8 @@ public class ZoomDiagram implements Threadable
             Bitmap source
     )
     {
-        this.thread = new Thread(this, String.format("JSGMP:ZoomDiagram-%d", counter));
+        this.thread = new Thread(this, String.format("JSGMP:ZoomDiagram-%d", ZoomDiagram.counter));
+        ZoomDiagram.counter++;
         this.source = source;
         this.running = false;
         this.refresh = false;

@@ -37,10 +37,6 @@ public class JSGMP extends Application {
         stage.setScene(scene);
         JMetro jmetro = new JMetro(scene, Style.DARK);
         stage.show();
-        stage.setOnCloseRequest((WindowEvent t) -> {
-            ThreadManager.stopAll();
-            Platform.exit();
-        });
     }
 
     public static void main(String[] args) {

@@ -36,6 +36,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -66,6 +67,8 @@ import javafx.scene.robot.Robot;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.JMetroStyleClass;
 import jfxtras.styles.jmetro.Style;
@@ -76,6 +79,22 @@ import jfxtras.styles.jmetro.Style;
  * @author Jiri Skoda <jiri.skoda@student.upce.cz>
  */
 public class FXMLMainWindow implements Initializable {
+
+    @FXML
+    private MenuItem menuItemSave;
+    @FXML
+    private MenuItem menuItemBMP;
+    @FXML
+    private MenuItem menuItemGif;
+    @FXML
+    private MenuItem menuItemJPG;
+    @FXML
+    private MenuItem menuItemPNG;
+    @FXML
+    private MenuItem menuItemAbout;
+    @FXML
+    private MenuItem menuItemClose;
+
 
     /**
      * Class which performs loading tool from FXML file
@@ -364,6 +383,24 @@ public class FXMLMainWindow implements Initializable {
             FXMLMainWindow.this.relocateMainImage(FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getWidth(), FXMLMainWindow.this.scrollPaneMainImage.getViewportBounds().getHeight());
             FXMLMainWindow.this.resizeMainImageWrapper(this.imageViewMain.getFitWidth(), this.imageViewMain.getFitHeight());
         });
+        this.primaryStage.setTitle("Java Simple Graphic Modification Program (UHK_FIM_B22L_SKODAJI1)");
+        this.primaryStage.getIcons().add(new Image(JSGMP.class.getResourceAsStream("icons/icon_default.png")));
+        this.primaryStage.setOnCloseRequest((t) -> {
+            Alert alert = new Alert(AlertType.CONFIRMATION);        
+            alert.setTitle("Konec programu");
+            alert.setHeaderText("Opravdu chcete ukončit program?");
+            alert.setContentText("Veškeré neuzložené změny budou zahozeny.");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK)
+            {                
+                ThreadManager.stopAll();
+                Platform.exit();
+            }
+            else
+            {
+                t.consume();
+            }
+        });
     }
     
     /**
@@ -530,6 +567,7 @@ public class FXMLMainWindow implements Initializable {
                 }),
                 new FileChooser.ExtensionFilter("Obrázky PNG", "*.png")
         );
+        
         File selectedFile = fc.showOpenDialog(this.primaryStage);
         if (Objects.nonNull(selectedFile) && selectedFile.exists())
         {
@@ -568,6 +606,8 @@ public class FXMLMainWindow implements Initializable {
             }
         }
         this.menuItemOpen.setDisable(false);
+        this.menuItemAbout.setDisable(false);
+        this.menuItemClose.setDisable(false);
     }
     
     /**
@@ -617,6 +657,10 @@ public class FXMLMainWindow implements Initializable {
     public void setFileName(String name)
     {
         this.labelFileName.setText(name);
+        if (Objects.nonNull(this.primaryStage))
+        {   
+            this.primaryStage.setTitle(name + " - Java Simple Graphic Modification Program (UHK_FIM_B22L_SKODAJI1)");
+        }
     }
     
     /**
@@ -799,7 +843,7 @@ public class FXMLMainWindow implements Initializable {
 
     @FXML
     private void histogramPopupOnAction(ActionEvent event) {
-        this.popupOnAction("Histogram", this.histogramPane, this.tabHistogram, this.imageCheckHistogram);
+        this.popupOnAction("Histogram", this.histogramPane, this.tabHistogram, this.imageCheckHistogram, "icon_histogram.png");
     }
 
     @FXML
@@ -822,8 +866,9 @@ public class FXMLMainWindow implements Initializable {
      * @param content Content of tool
      * @param tab Tab with tool
      * @param imageCheck Image showing whether tool is opened or not
+     * @param icon Name of file with icon of tool
      */
-    private void popupOnAction(String title, Pane content, Tab tab, ImageView imageCheck)
+    private void popupOnAction(String title, Pane content, Tab tab, ImageView imageCheck, String icon)
     {
         tab.setContent(null);
         Scene scene = new Scene(content);
@@ -853,12 +898,13 @@ public class FXMLMainWindow implements Initializable {
         });
         JMetro jmetro = new JMetro(scene, Style.DARK);
         scene.getStylesheets().add(JSGMP.class.getResource("fxml/CSSTabs.css").toExternalForm());
+        stage.getIcons().add(new Image(JSGMP.class.getResourceAsStream("icons/" + icon)));
         stage.show();
     }
     
     @FXML
     private void brightnessPopupOnAction(ActionEvent event) {
-        this.popupOnAction("Jas", this.brightnessPane, this.tabBrightness, this.imageCheckBrightness);
+        this.popupOnAction("Jas", this.brightnessPane, this.tabBrightness, this.imageCheckBrightness, "icon_brightness.png");
     }
 
     @FXML
@@ -877,7 +923,7 @@ public class FXMLMainWindow implements Initializable {
 
     @FXML
     private void contrastPopupOnAction(ActionEvent event) {
-       this.popupOnAction("Kontrast", this.contrastPane, this.tabContrast, this.imageCheckContrast);
+       this.popupOnAction("Kontrast", this.contrastPane, this.tabContrast, this.imageCheckContrast, "icon_contrast.png");
     }
 
     @FXML
@@ -896,7 +942,7 @@ public class FXMLMainWindow implements Initializable {
 
     @FXML
     private void temperaturePopupOnAction(ActionEvent event) {
-        this.popupOnAction("Teplota", this.temperaturePane, this.tabTemperature, this.imageCheckTemperature);
+        this.popupOnAction("Teplota", this.temperaturePane, this.tabTemperature, this.imageCheckTemperature, "icon_temperature.png");
     }
 
     @FXML
@@ -930,7 +976,7 @@ public class FXMLMainWindow implements Initializable {
 
     @FXML
     private void zoomPopupOnAction(ActionEvent event) {
-        this.popupOnAction("Lupa", this.tabZoomContent, this.tabZoom, this.imageCheckZoom);
+        this.popupOnAction("Lupa", this.tabZoomContent, this.tabZoom, this.imageCheckZoom, "icon_zoom.png");
     }
 
     @FXML
@@ -1033,7 +1079,7 @@ public class FXMLMainWindow implements Initializable {
 
     @FXML
     private void redPopupOnAction(ActionEvent event) {
-        this.popupOnAction("Barevnost - červená", this.redPane, this.tabRed, this.imageCheckRed);
+        this.popupOnAction("Barevnost - červená", this.redPane, this.tabRed, this.imageCheckRed, "icon_red.png");
     }
 
     @FXML
@@ -1043,7 +1089,7 @@ public class FXMLMainWindow implements Initializable {
 
     @FXML
     private void bluePopupOnAction(ActionEvent event) {
-        this.popupOnAction("Barevnost - modrá", this.bluePane, this.tabBlue, this.imageCheckBlue);
+        this.popupOnAction("Barevnost - modrá", this.bluePane, this.tabBlue, this.imageCheckBlue, "icon_blue.png");
     }
 
     @FXML
@@ -1053,7 +1099,7 @@ public class FXMLMainWindow implements Initializable {
 
     @FXML
     private void greenPopupOnAction(ActionEvent event) {
-        this.popupOnAction("Barevnost - zelená", this.greenPane, this.tabGreen, this.imageCheckGreen);
+        this.popupOnAction("Barevnost - zelená", this.greenPane, this.tabGreen, this.imageCheckGreen, "icon_green.png");
     }
 
     @FXML
@@ -1063,7 +1109,7 @@ public class FXMLMainWindow implements Initializable {
 
     @FXML
     private void cyanPopupOnAction(ActionEvent event) {
-        this.popupOnAction("Barevnost - azurová", this.cyanPane, this.tabCyan, this.imageCheckCyan);
+        this.popupOnAction("Barevnost - azurová", this.cyanPane, this.tabCyan, this.imageCheckCyan, "icon_cyan.png");
     }
 
     @FXML
@@ -1073,7 +1119,7 @@ public class FXMLMainWindow implements Initializable {
 
     @FXML
     private void magentaPopupOnAction(ActionEvent event) {
-        this.popupOnAction("Barevnost - purpurová", this.magentaPane, this.tabMagenta, this.imageCheckMagenta);
+        this.popupOnAction("Barevnost - purpurová", this.magentaPane, this.tabMagenta, this.imageCheckMagenta, "icon_magenta.png");
     }
 
     @FXML
@@ -1083,7 +1129,7 @@ public class FXMLMainWindow implements Initializable {
 
     @FXML
     private void yellowPopupOnAction(ActionEvent event) {
-        this.popupOnAction("Barevnost - žlutá", this.yellowPane, this.tabYellow, this.imageCheckYellow);
+        this.popupOnAction("Barevnost - žlutá", this.yellowPane, this.tabYellow, this.imageCheckYellow, "icon_yellow.png");
     }
 
     @FXML
@@ -1102,11 +1148,110 @@ public class FXMLMainWindow implements Initializable {
 
     @FXML
     private void grayscalePopupOnAction(ActionEvent event) {
-        this.popupOnAction("Stupně šedi", this.grayscalePane, this.tabGrayscale, this.imageCheckGrayscale);
+        this.popupOnAction("Stupně šedi", this.grayscalePane, this.tabGrayscale, this.imageCheckGrayscale, "icon_grayscale.png");
     }
 
     @FXML
     private void grayscaleCloseOnAction(ActionEvent event) {
         this.closeTab(this.imageCheckGrayscale, this.tabGrayscale);
+    }
+    
+    @FXML
+    private void menuSaveOnAction(ActionEvent event) {
+        this.controller.saveClicked();
+    }
+
+    @FXML
+    private void menuBMPOnAction(ActionEvent event) {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Uložit soubor jako");
+        fc.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Obrázky BMP", "*.bmp")
+        );
+        
+        File selectedFile = fc.showSaveDialog(this.primaryStage);
+        if (Objects.nonNull(selectedFile))
+        {
+            this.controller.saveClicked(selectedFile.getAbsolutePath());
+        }     
+    }
+
+    @FXML
+    private void menuGIFOnAction(ActionEvent event) {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Uložit soubor jako");
+        fc.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Obrázky GIF", "*.gif")
+        );
+        
+        File selectedFile = fc.showSaveDialog(this.primaryStage);
+        if (Objects.nonNull(selectedFile))
+        {
+            this.controller.saveClicked(selectedFile.getAbsolutePath());
+        }  
+    }
+
+    @FXML
+    private void menuJPGOnACtion(ActionEvent event) {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Uložit soubor jako");
+        fc.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Obrázky JPG", new ArrayList<String>(){
+                    {
+                        add("*.jpg");
+                        add("*.jpeg");
+                    }
+                })
+        );
+        
+        File selectedFile = fc.showSaveDialog(this.primaryStage);
+        if (Objects.nonNull(selectedFile))
+        {
+            this.controller.saveClicked(selectedFile.getAbsolutePath());
+        }  
+    }
+
+    @FXML
+    private void menuPNGOnAction(ActionEvent event) {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Uložit soubor jako");
+        fc.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Obrázky PNG", "*.png")
+        );
+        
+        File selectedFile = fc.showSaveDialog(this.primaryStage);
+        if (Objects.nonNull(selectedFile))
+        {
+            this.controller.saveClicked(selectedFile.getAbsolutePath());
+        }  
+    }
+    
+    
+    @FXML
+    private void menuAboutOnAction(ActionEvent event) {
+        FXMLLoader loader = new FXMLLoader(JSGMP.class.getResource("fxml/FXMLAbout.fxml"));
+        try
+        {
+            Pane content = (Pane)loader.load();
+            content.getStyleClass().add(JMetroStyleClass.BACKGROUND);
+            Scene scene = new Scene(content);
+            Stage stage = new Stage();            
+            JMetro jmetro = new JMetro(scene, Style.DARK);
+            stage.setTitle("O programu");
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.UTILITY);
+            stage.getIcons().add(new Image(JSGMP.class.getResourceAsStream("icons/icon_about.png")));
+            stage.showAndWait();
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(FXMLMainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+
+    @FXML
+    private void menuCloseOnAction(ActionEvent event) {
+        this.primaryStage.fireEvent(new WindowEvent(this.primaryStage, WindowEvent.WINDOW_CLOSE_REQUEST));
     }
 }

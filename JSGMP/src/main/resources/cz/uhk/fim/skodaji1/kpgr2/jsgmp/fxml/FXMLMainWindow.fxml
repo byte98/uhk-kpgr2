@@ -17,7 +17,6 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -522,9 +521,6 @@
             <Menu mnemonicParsing="false" text="Soubor">
               <items>
                 <MenuItem fx:id="menuItemOpen" mnemonicParsing="false" onAction="#menuOpenOnAction">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator>
                      <graphic>
                         <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
                            <columnConstraints>
@@ -542,6 +538,165 @@
                                  </image>
                               </ImageView>
                               <Label text="Otevřít" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem fx:id="menuItemSave" mnemonicParsing="false" onAction="#menuSaveOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/save16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Uložit" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
+                  <Menu mnemonicParsing="false">
+                    <items>
+                        <MenuItem fx:id="menuItemBMP" mnemonicParsing="false" onAction="#menuBMPOnAction">
+                           <graphic>
+                              <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Soubor BMP" GridPane.columnIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </graphic>
+                        </MenuItem>
+                        <MenuItem fx:id="menuItemGif" mnemonicParsing="false" onAction="#menuGIFOnAction">
+                           <graphic>
+                              <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Soubor GIF" GridPane.columnIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </graphic>
+                        </MenuItem>
+                        <MenuItem fx:id="menuItemJPG" mnemonicParsing="false" onAction="#menuJPGOnACtion">
+                           <graphic>
+                              <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Soubor JPG" GridPane.columnIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </graphic>
+                        </MenuItem>
+                        <MenuItem fx:id="menuItemPNG" mnemonicParsing="false" onAction="#menuPNGOnAction">
+                           <graphic>
+                              <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Soubor PNG" GridPane.columnIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </graphic>
+                        </MenuItem>
+                    </items>
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/saveas16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Uložit jako" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </Menu>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="menuItemAbout" mnemonicParsing="false" onAction="#menuAboutOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/about16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="O programu" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem fx:id="menuItemClose" mnemonicParsing="false" onAction="#menuCloseOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/close16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Zavřít" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
                      </graphic>

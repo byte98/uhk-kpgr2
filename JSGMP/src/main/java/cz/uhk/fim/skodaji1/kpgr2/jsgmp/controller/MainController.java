@@ -30,10 +30,21 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.FXMLMainWindow;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.GrayscaleChart;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Histogram;
 import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Zoom;
+import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.paint.Color;
+import javax.imageio.ImageIO;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * Class which handles behaviour of main window
@@ -452,5 +463,33 @@ public class MainController
     public void grayscaleChanged(double newValue)
     {
         this.grayscaleEffect.setValue(newValue);
+    }
+    
+    /**
+     * Handles click on save button
+     */
+    public void saveClicked()
+    {
+        this.saveClicked(this.image.getPath());
+    }
+    
+    
+    /**
+     * Handles click on save button
+     * @param path Path to output file
+     */
+    public void saveClicked(String path)
+    {
+        File output = new File(path);
+        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(this.image.getBitmap().toImage(), null);
+        String format = FilenameUtils.getExtension(path);
+        try
+        {
+            ImageIO.write(bufferedImage, format, output);
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
