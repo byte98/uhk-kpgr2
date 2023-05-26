@@ -1,0 +1,1114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.FXMLMainWindow">
+   <center>
+      <SplitPane dividerPositions="0.5939334637964775" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="739.0" prefWidth="596.0">
+               <children>
+                  <ScrollPane fx:id="scrollPaneMainImage" hbarPolicy="ALWAYS" layoutX="151.0" layoutY="153.0" prefHeight="200.0" prefWidth="200.0" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <content>
+                        <Pane fx:id="paneMainImageWrapper" prefHeight="491.0" prefWidth="657.0">
+                           <children>
+                              <ImageView fx:id="imageViewMain" fitHeight="137.0" fitWidth="222.0" onMouseDragged="#imageViewMainOnMouseDragged" onMousePressed="#imageViewMainOnMousePressed" onMouseReleased="#imageViewMainOnMouseReleased" pickOnBounds="true" preserveRatio="true">
+                                 <cursor>
+                                    <Cursor fx:constant="OPEN_HAND" />
+                                 </cursor></ImageView>
+                           </children>
+                        </Pane>
+                     </content>
+                  </ScrollPane>
+               </children></AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <TabPane id="tool-tabs" fx:id="tabPaneTools" layoutX="-100.0" layoutY="55.0" prefHeight="200.0" prefWidth="200.0" stylesheets="@CSSTabs.css" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <tabs>
+                      <Tab fx:id="tabInfo" closable="false" text="INFORMACE">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox layoutX="85.0" layoutY="39.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" prefHeight="36.0" prefWidth="320.0" spacing="10.0">
+                                             <children>
+                                                <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../icons/info.png" />
+                                                   </image>
+                                                </ImageView>
+                                                <Label style="-fx-font-size: 24px;" text="Informace o souboru" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </padding>
+                                          </HBox>
+                                          <Separator prefWidth="200.0" />
+                                          <GridPane prefHeight="90.0" prefWidth="320.0">
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="153.0" minWidth="10.0" prefWidth="112.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="231.0" minWidth="10.0" prefWidth="208.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <Label text="Název souboru" />
+                                                <Label text="Umístění" GridPane.rowIndex="1" />
+                                                <Label text="Velikost" GridPane.rowIndex="2" />
+                                                <Label fx:id="labelFileName" text="(žádný soubor)" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
+                                                <Label fx:id="labelFileSize" text="(žádný soubor)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <Hyperlink fx:id="hyperLinkFilePath" onAction="#hyperLinkFilePathOnAction" text="(žádný soubor)" textOverrun="CENTER_ELLIPSIS" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </padding>
+                                    </VBox>
+                                 </children></AnchorPane>
+                        </content>
+                           <graphic>
+                              <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="INFORMACE" />
+                                 </children>
+                              </HBox>
+                           </graphic>
+                      </Tab>
+                        <Tab fx:id="tabHistogram" closable="false" text="HISTOGRAM">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                          </content>
+                           <graphic>
+                              <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="HISTOGRAM" />
+                                    <Button mnemonicParsing="false" onAction="#histogramPopupOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                             <image>
+                                                <Image url="@../icons/popout16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#histogramCloseOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/close16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Tab>
+                        <Tab fx:id="tabBrightness" closable="false" text="JAS">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                           <graphic>
+                              <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="JAS" />
+                                    <Button mnemonicParsing="false" onAction="#brightnessPopupOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                             <image>
+                                                <Image url="@../icons/popout16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#brightnessCloseOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/close16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Tab>
+                        <Tab fx:id="tabContrast" closable="false" text="KONTRAST">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                           <graphic>
+                              <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="KONTRAST" />
+                                    <Button mnemonicParsing="false" onAction="#contrastPopupOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                             <image>
+                                                <Image url="@../icons/popout16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#contrastCloseOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/close16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Tab>
+                        <Tab fx:id="tabTemperature" closable="false" text="TEPLOTA">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                           <graphic>
+                              <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="TEPLOTA" />
+                                    <Button mnemonicParsing="false" onAction="#temperaturePopupOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                             <image>
+                                                <Image url="@../icons/popout16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#temperatureCloseOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/close16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Tab>
+                        <Tab fx:id="tabZoom" closable="false" text="LUPA">
+                           <content>
+                              <AnchorPane fx:id="tabZoomContent" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" prefHeight="36.0" prefWidth="320.0" spacing="10.0">
+                                             <children>
+                                                <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../icons/zoom.png" />
+                                                   </image>
+                                                </ImageView>
+                                                <Label style="-fx-font-size: 24px;" text="Lupa" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </padding>
+                                          </HBox>
+                                          <Separator prefWidth="200.0" />
+                                          <ImageView fx:id="imageViewZoom" fitHeight="150.0" fitWidth="393.0" pickOnBounds="true" preserveRatio="true">
+                                             <VBox.margin>
+                                                <Insets bottom="20.0" />
+                                             </VBox.margin>
+                                          </ImageView>
+                                          <Slider fx:id="sliderZoom" majorTickUnit="100.0" max="1000.0" min="10.0" minorTickCount="5" showTickMarks="true" value="100.0" />
+                                          <FlowPane alignment="TOP_CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0">
+                                             <children>
+                                                <Label fx:id="labelZoomValue" text="100 %" />
+                                                <Button mnemonicParsing="false" onAction="#buttomZoomRefreshOnAction">
+                                                   <graphic>
+                                                      <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../icons/refresh.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Button>
+                                             </children>
+                                          </FlowPane>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </padding>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                           <graphic>
+                              <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="LUPA" />
+                                    <Button mnemonicParsing="false" onAction="#zoomPopupOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                             <image>
+                                                <Image url="@../icons/popout16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#zoomCloseOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/close16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Tab>
+                        <Tab fx:id="tabRed" closable="false" text="BAREVNOST - ČERVENÁ">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                           <graphic>
+                              <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="ČERVENÁ" />
+                                    <Button mnemonicParsing="false" onAction="#redPopupOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                             <image>
+                                                <Image url="@../icons/popout16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#redCloseOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/close16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Tab>
+                        <Tab fx:id="tabBlue" closable="false" text="BAREVNOST - MODRÁ">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                           <graphic>
+                              <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="MODRÁ" />
+                                    <Button mnemonicParsing="false" onAction="#bluePopupOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                             <image>
+                                                <Image url="@../icons/popout16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#blueCloseOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/close16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Tab>
+                        <Tab fx:id="tabGreen" closable="false" text="BAREVNOST - ZELENÁ">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                           <graphic>
+                              <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="ZELENÁ" />
+                                    <Button mnemonicParsing="false" onAction="#greenPopupOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                             <image>
+                                                <Image url="@../icons/popout16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#greenCloseOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/close16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Tab>
+                        <Tab fx:id="tabCyan" closable="false" text="BAREVNOST - AZUROVÁ">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                           <graphic>
+                              <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="AZUROVÁ" />
+                                    <Button mnemonicParsing="false" onAction="#cyanPopupOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                             <image>
+                                                <Image url="@../icons/popout16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#cyanCloseOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/close16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Tab>
+                        <Tab fx:id="tabMagenta" closable="false" text="BAREVNOST - PURPUROVÁ">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                           <graphic>
+                              <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="PURPUROVÁ" />
+                                    <Button mnemonicParsing="false" onAction="#magentaPopupOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                             <image>
+                                                <Image url="@../icons/popout16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#magentaCloseOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/close16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Tab>
+                        <Tab fx:id="tabYellow" closable="false" text="BAREVNOST - ŽLUTÁ">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                           <graphic>
+                              <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="ŽLUTÁ" />
+                                    <Button mnemonicParsing="false" onAction="#yellowPopupOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                             <image>
+                                                <Image url="@../icons/popout16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#yellowCloseOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/close16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Tab>
+                        <Tab fx:id="tabGrayscale" closable="false" text="STUPNĚ ŠEDI">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                           </content>
+                           <graphic>
+                              <HBox alignment="CENTER" prefHeight="16.0" spacing="2.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="STUPNĚ ŠEDI" />
+                                    <Button mnemonicParsing="false" onAction="#grayscalePopupOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: transparent;">
+                                             <image>
+                                                <Image url="@../icons/popout16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button layoutX="97.0" layoutY="10.0" mnemonicParsing="false" onAction="#grayscaleCloseOnAction" style="-fx-background-color: transparent;">
+                                       <graphic>
+                                          <ImageView fitHeight="16.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/close16.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </center>
+   <top>
+      <MenuBar fx:id="menuBarTopMenu" BorderPane.alignment="CENTER">
+        <menus>
+            <Menu mnemonicParsing="false" text="Soubor">
+              <items>
+                <MenuItem fx:id="menuItemOpen" mnemonicParsing="false" onAction="#menuOpenOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/open16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Otevřít" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem fx:id="menuItemSave" mnemonicParsing="false" onAction="#menuSaveOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/save16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Uložit" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
+                  <Menu mnemonicParsing="false">
+                    <items>
+                        <MenuItem fx:id="menuItemBMP" mnemonicParsing="false" onAction="#menuBMPOnAction">
+                           <graphic>
+                              <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Soubor BMP" GridPane.columnIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </graphic>
+                        </MenuItem>
+                        <MenuItem fx:id="menuItemGif" mnemonicParsing="false" onAction="#menuGIFOnAction">
+                           <graphic>
+                              <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Soubor GIF" GridPane.columnIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </graphic>
+                        </MenuItem>
+                        <MenuItem fx:id="menuItemJPG" mnemonicParsing="false" onAction="#menuJPGOnACtion">
+                           <graphic>
+                              <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Soubor JPG" GridPane.columnIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </graphic>
+                        </MenuItem>
+                        <MenuItem fx:id="menuItemPNG" mnemonicParsing="false" onAction="#menuPNGOnAction">
+                           <graphic>
+                              <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Soubor PNG" GridPane.columnIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </graphic>
+                        </MenuItem>
+                    </items>
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/saveas16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Uložit jako" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </Menu>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="menuItemAbout" mnemonicParsing="false" onAction="#menuAboutOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/about16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="O programu" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem fx:id="menuItemClose" mnemonicParsing="false" onAction="#menuCloseOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/close16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Zavřít" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Zobrazit">
+              <items>
+                <MenuItem disable="true" mnemonicParsing="false">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/info16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Informace o souboru" GridPane.columnIndex="1" />
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                 <image>
+                                    <Image url="@../icons/check16.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </GridPane>
+                     </graphic></MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#menuHistogramOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/histogram16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Histogram" GridPane.columnIndex="1" />
+                              <ImageView fx:id="imageCheckHistogram" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
+                                 <image>
+                                    <Image url="@../icons/check16.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#menuZoomOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/zoom16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Lupa" GridPane.columnIndex="1" />
+                              <ImageView fx:id="imageCheckZoom" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
+                                 <image>
+                                    <Image url="@../icons/check16.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Upravit">
+              <items>
+                  <MenuItem mnemonicParsing="false" onAction="#menuBrightnessOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/brightness16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Jas" GridPane.columnIndex="1" />
+                              <ImageView fx:id="imageCheckBrightness" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
+                                 <image>
+                                    <Image url="@../icons/check16.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#menuContrastOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/contrast16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Kontrast" GridPane.columnIndex="1" />
+                              <ImageView fx:id="imageCheckContrast" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
+                                 <image>
+                                    <Image url="@../icons/check16.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#menuTemperatureOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/temperature16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Teplota" GridPane.columnIndex="1" />
+                              <ImageView fx:id="imageCheckTemperature" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
+                                 <image>
+                                    <Image url="@../icons/check16.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
+                  <Menu mnemonicParsing="false">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/color16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Barevnost" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </graphic>
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#menuRedOnAction">
+                           <graphic>
+                              <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/red16.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label text="Červená" GridPane.columnIndex="1" />
+                                    <ImageView fx:id="imageCheckRed" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
+                                       <image>
+                                          <Image url="@../icons/check16.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </GridPane>
+                           </graphic>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#menuGreenOnAction">
+                           <graphic>
+                              <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/green16.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label text="Zelená" GridPane.columnIndex="1" />
+                                    <ImageView fx:id="imageCheckGreen" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
+                                       <image>
+                                          <Image url="@../icons/check16.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </GridPane>
+                           </graphic>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#menuBlueOnAction">
+                           <graphic>
+                              <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/blue16.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label text="Modrá" GridPane.columnIndex="1" />
+                                    <ImageView fx:id="imageCheckBlue" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
+                                       <image>
+                                          <Image url="@../icons/check16.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </GridPane>
+                           </graphic>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#menuCyanOnAction">
+                           <graphic>
+                              <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/cyan16.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label text="Azurová" GridPane.columnIndex="1" />
+                                    <ImageView fx:id="imageCheckCyan" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
+                                       <image>
+                                          <Image url="@../icons/check16.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </GridPane>
+                           </graphic>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#menuMagentaOnAction">
+                           <graphic>
+                              <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/magenta16.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label text="Purpurová" GridPane.columnIndex="1" />
+                                    <ImageView fx:id="imageCheckMagenta" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
+                                       <image>
+                                          <Image url="@../icons/check16.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </GridPane>
+                           </graphic>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#menuYellowOnAction">
+                           <graphic>
+                              <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/yellow16.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label text="Žlutá" GridPane.columnIndex="1" />
+                                    <ImageView fx:id="imageCheckYellow" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
+                                       <image>
+                                          <Image url="@../icons/check16.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </GridPane>
+                           </graphic>
+                        </MenuItem>
+                     </items>
+                  </Menu>
+                  <MenuItem mnemonicParsing="false" onAction="#menuGrayscaleOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/grayscale16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Stupně šedi" GridPane.columnIndex="1" />
+                              <ImageView fx:id="imageCheckGrayscale" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" visible="false" GridPane.columnIndex="2">
+                                 <image>
+                                    <Image url="@../icons/check16.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#menuDiscardOnAction">
+                     <graphic>
+                        <GridPane hgap="5.0" prefHeight="16.0" prefWidth="239.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="91.0" minWidth="10.0" prefWidth="18.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="15.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/trash16.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Zahodit všechny změny" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </graphic>
+                  </MenuItem>
+              </items>
+            </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>
