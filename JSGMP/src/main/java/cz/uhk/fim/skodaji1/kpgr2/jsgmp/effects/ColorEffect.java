@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Jiri Skoda <jiri.skoda@student.upce.cz>
+ * Copyright (C) 2023 Jiri Skoda <jiri.skoda@uhk.cz>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,7 +22,7 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Histogram;
 
 /**
  * Class representing coloring effect
- * @author Jiri Skoda <jiri.skoda@student.upce.cz>
+ * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
 public class ColorEffect extends AbstractEffect
 {

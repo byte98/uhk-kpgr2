@@ -15,36 +15,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package cz.uhk.fim.skodaji1.kpgr2.jsgmp.model;
-
-import java.util.function.Function;
-import javafx.scene.paint.Color;
+package cz.uhk.fim.skodaji1.kpgr2.jsgmp;
 
 /**
- * Class which stores global settings
+ * Main class of program
  * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
-public class Globals {
-    /**
-     * Height of histograms
-     */
-    public static final int HISTOGRAM_HEIGHT = 200;
+public class Main {
     
-    /**
-     * Width of histograms
-     */
-    public static final int HISTOGRAM_WIDTH = 512;
-    
-    /**
-     * Background of histogram where are no data present
-     */
-    public static final Pixel HISTOGRAM_CLEAR = new Pixel((short)51, (short)51, (short)51);
-    
-    /**
-     * Function which computes intensity of pixel
-     */
-    public static final Function<Pixel, Integer> INTENSITY = (Pixel px) -> 
-    {
-        return (int)Math.round(((double)px.getRed() + (double)px.getGreen() + (double)px.getBlue()) / 3f);
-    };
 }

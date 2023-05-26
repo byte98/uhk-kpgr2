@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Jiri Skoda <jiri.skoda@student.upce.cz>
+ * Copyright (C) 2023 Jiri Skoda <jiri.skoda@uhk.cz>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -35,7 +35,7 @@ import javafx.scene.layout.VBox;
 /**
  * FXML Controller class of histogram document
  *
- * @author Jiri Skoda <jiri.skoda@student.upce.cz>
+ * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
 public class FXMLHistogram extends FXMLController implements Initializable {
 
