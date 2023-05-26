@@ -33,9 +33,11 @@ import cz.uhk.fim.skodaji1.kpgr2.jsgmp.view.Zoom;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
@@ -244,8 +246,27 @@ public class MainController
      */
     public void fileOpen(String path)
     {
+        try
+        {
+            this.fileOpen(new FileInputStream(path));
+            Path p = Paths.get(path);
+            this.mainWindow.setFileName(p.getFileName().toString());
+            this.mainWindow.setFilePath(Paths.get(path).toAbsolutePath().normalize().toString());
+        }
+        catch (FileNotFoundException ex)
+        {
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * Opens file
+     * @param stream Stream with file data
+     */
+    private void fileOpen(InputStream stream)
+    {
         this.killUnnecessaryy();
-        this.image = new ImageFile(path);
+        this.image = new ImageFile(stream);
         this.effects = ThreadManager.createEffectsController(this.image.getBitmap());
         
         this.mainWindow.setImage(this.image.getBitmap());
@@ -340,9 +361,7 @@ public class MainController
         this.effects.addEffect(this.temperature);
         this.mainWindow.setTemperatureHistogram(this.temperature.getHistogram().getImage());
         
-        Path p = Paths.get(path);
-        this.mainWindow.setFileName(p.getFileName().toString());
-        this.mainWindow.setFilePath(Paths.get(path).toAbsolutePath().normalize().toString());
+        
         this.mainWindow.setFileSize(image.getBitmap().getWidth(), image.getBitmap().getHeight());
         
         this.zoom = new Zoom(this.image.getBitmap());
@@ -394,12 +413,19 @@ public class MainController
      */
     public void mainWindowLoaded()
     {
-        this.fileOpen(JSGMP.class.getResource("icons/title.png").getFile());
-        this.mainWindow.setFileName("(žádný soubor)");
-        this.mainWindow.setFilePath("(žádný soubor)");
-        this.mainWindow.setFileSize(0, 0);
-        this.mainWindow.disableMenu(true);
-        this.mainWindow.centerImage();
+        try
+        {
+            this.fileOpen(JSGMP.class.getResource("icons/title.png").openStream());
+            this.mainWindow.setFileName("(žádný soubor)");
+            this.mainWindow.setFilePath("(žádný soubor)");
+            this.mainWindow.setFileSize(0, 0);
+            this.mainWindow.disableMenu(true);
+            this.mainWindow.centerImage();
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     /**

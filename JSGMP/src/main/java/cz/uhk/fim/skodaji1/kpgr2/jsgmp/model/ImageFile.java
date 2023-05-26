@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,6 +43,41 @@ public class ImageFile
      * Image data stored in file
      */
     private final Bitmap data;
+    
+    /**
+     * Creates new wrapper for file with image data
+     * @param stream Stream with file data
+     */
+    public ImageFile(InputStream stream)
+    {
+        this.path = "(žádný soubor)";
+        Bitmap data = new Bitmap(1, 1);
+        try
+        {
+            BufferedImage rawImage = ImageIO.read(stream);
+            data = ThreadManager.createBitmap(rawImage.getWidth(), rawImage.getHeight());
+            //data = new Bitmap(rawImage.getWidth(), rawImage.getHeight());
+            Bitmap.BitmapTransaction transaction = new Bitmap.BitmapTransaction();
+            for (int y = 0; y < rawImage.getHeight(); y++)
+            {
+                for (int x = 0; x < rawImage.getWidth(); x++)
+                {
+                    Color c = new Color(rawImage.getRGB(x, y), true);
+                    short r = (short)c.getRed();
+                    short g = (short)c.getGreen();
+                    short b = (short)c.getBlue();
+                    short a = (short)c.getAlpha();
+                    transaction.setPixel(x, y, new Pixel(r, g, b, a));
+                }
+            }
+            data.processTransaction(transaction);
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(ImageFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.data = data;
+    }
     
     /**
      * Creates new wrapper for file with image data

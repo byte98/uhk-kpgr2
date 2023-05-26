@@ -22,5 +22,11 @@ package cz.uhk.fim.skodaji1.kpgr2.jsgmp;
  * @author Jiri Skoda <jiri.skoda@uhk.cz>
  */
 public class Main {
-    
+    /**
+     * Main function of program
+     * @param args Arguments of program
+     */
+    public static void main(String[] args) {
+        JSGMP.main(args);
+    }
 }
